@@ -1,0 +1,625 @@
+:root {
+    --color-principal:#CB1149;
+    --color-secundario:#39CCCC;
+    --color-p-rgba:rgba(203, 17, 73 , 0.9);
+}
+h5::selection,p::selection,td::selection,input::selection,h5::selection {
+    background: var(--color-principal);
+    color: white;
+}
+.float-rigth{
+    float: right;
+}
+.modal-header{
+    background: var(--color-principal)!important;
+}
+body{
+    overflow: hidden!important;
+}
+.badge-xl{
+    font-size: 15px!important;
+}
+.modal-lx table{
+    border: 1px solid black!important;
+}
+.modal-xl .modal-body{
+    overflow: auto!important;
+    max-height: 450px!important;
+}
+.modal-xl .modal-body::-webkit-scrollbar {
+    width: 7px;
+}
+.modal-xl .modal-body::-webkit-scrollbar-thumb{
+    background: #e1e1e1;
+    border-radius: 7px;
+}
+.modal-xl .modal-body::-webkit-scrollbar-thumb:hover {
+    background: #c5c2c2!important;
+    border-radius: 10px;
+}
+.modal-white{
+    background: rgba(255, 255, 255, 0.9)!important;
+} 
+.modal-colo-p{
+    background: white!important;
+}
+.modal-colo-p .modal-header{
+    background: var(--color-p-rgba)!important;
+}
+.modal-title{
+    color: white!important;
+}
+.text-icon{
+    width: 25px;
+}
+.nav-header{
+    width: 100%;
+    height: 80px;
+    background: rgba(119, 81, 81, 0.2);
+    padding: 0px 0px!important;
+    margin: 0px 0px!important;
+}
+.v-toast{
+    border-radius: 20px!important;
+}
+.bg-menu{
+    background: var(--color-principal) !important;
+}
+.card-header{
+    background: transparent;
+}
+.cartas-home{
+    display: flex!important;
+    align-items: center!important;
+    justify-content: center!important;
+    margin:auto!important;
+}
+.cartas-home i{
+    font-size: 50px!important;
+    text-align: left!important;
+}
+.cartas-home b{
+    color: white!important;
+    text-align: center!important;
+}
+@media screen and (max-width: 480px) {
+    .cartas-home{
+      width: 100%;
+    }
+    .cartas-home .card{
+      width: 100%;
+    }
+  }
+.vistas-vuejs{
+    overflow: scroll;
+    height: 100vh;
+}
+.spinner-border{
+    position: fixed!important;
+    top: 50%!important;
+    left: 50%!important;
+    z-index: 100;
+}
+.v-toast-text{
+    color: white!important;
+    margin: 15px 15px!important;
+    border-radius: 15px!important;
+}
+.img-details{
+    width: 60px!important;
+    height: 60px!important;
+    border-radius: 20px!important;
+    left: 50%!important;
+}
+thead{
+    background: var(--color-principal);
+    color: white;
+}
+.card-body table thead{
+    background: white;
+    color: rgb(71, 71, 71);
+}
+.table-scroll{
+    overflow: auto!important;
+    border-radius: 2px!important;
+    width: 100%!important;
+}
+.table-scroll::-webkit-scrollbar {
+    width: 1px!important;
+}
+.table-scroll::-webkit-scrollbar-thumb{
+    background: #e1e1e1!important;
+    border-radius: 7px;
+}
+.table-scroll::-webkit-scrollbar-thumb:hover {
+    background: #c5c2c2!important;
+    border-radius: 10px;
+}
+.table-scroll:hover{
+    overflow: auto!important;
+}
+.menu-scroll{
+    height: 100vh;
+    overflow: auto;
+}
+.menu-scroll::-webkit-scrollbar {
+    width: 7px;
+}
+
+.menu-scroll::-webkit-scrollbar-thumb{
+    background: #e1e1e1;
+    border-radius: 7px;
+}
+.menu-scroll::-webkit-scrollbar-thumb:hover {
+    background: #c5c2c2!important;
+    border-radius: 10px;
+}
+.img-product{
+    display: flex!important;
+    align-items: center!important;
+    justify-content: center!important;
+    margin:auto;
+}
+.input-search{
+    padding: 10px 10px;
+    border: 1px solid #DBDBDB ;
+    border-radius: 5px;
+    /* margin: 10px 0px; */
+}
+.permisos
+{
+    display: flex!important;
+    align-items: center!important;
+    justify-content: center!important;
+    margin:auto;
+    background: var(--color-principal);
+    height: 100vh;
+}
+.rol-user{
+    width: 500px;
+    border-radius: 20px;
+    border:1px solid #DBDBDB ;
+    height: 100px;
+}
+.permisos-div{
+    border: 1px solid #DBDBDB;
+    border-radius: 5px;
+}
+.sub-item-permisos{
+    margin: 10px 20px!important;
+}
+.select-permisos{
+    width: 250px!important;
+}
+.centrar{
+    display: flex!important;
+    align-items: center!important;
+    justify-content: center!important;
+    margin:auto!important;
+}
+.formularios_sistema{
+    border: 1px solid #DBDBDB!important;
+    border-radius: 5px!important;
+    padding: 40px 40px;
+}
+.inversion-text{
+    font-size: 40px!important;
+}
+.text-grande{
+    font-size: 20px!important;
+}
+.border-modal{
+    border: 4px solid white!important;
+    border-radius: 10px!important;
+}
+.border-estado{
+    border: 6px solid rgb(38, 192, 97)!important;
+    border-radius: 10px!important;
+}
+table{
+    text-align: center !important;
+}
+.precio_factura{
+    width: 90%;
+    border:2px solid #DBDBDB;
+    border-radius: 20px;
+}
+.text-total{
+    font-size: 40px;
+    padding: 10px 10px;
+    text-align: center;
+}
+.button{
+    background:#fff;
+    padding: 10px 10px;
+    border-radius: 5px;
+    color:#A39D9D  ;
+    border:1px solid #DBDBDB;
+}
+.pagination a{
+    color: black!important;
+    padding: 10px 15px!important;
+    border:1px solid #DBDBDB;   
+}
+.active_pagination a{
+    /* background: rgb(226, 53, 53)!important; */
+    background: white;
+    /* padding: 10px 15px!important; */
+    /* color: white!important; */
+    border:4px solid black!important;   
+}
+.table-system{
+    height: 80vh!important;
+    /* background: #fff;
+    border-radius: 5px;
+    padding: 10px 10px;
+    border:1px solid #DBDBDB;
+    border-top: 4px solid #DBDBDB; */
+}
+.date-item{
+    list-style: none!important;
+    padding: 8px 8px!important;
+}
+.list-group{
+    background: transparent!important;
+}
+.modal-opacity{
+    opacity: 0.9!important;
+}
+.carga-principal,.carga-centrar{
+    height: 100vh!important;
+}
+.carga-principal{
+    width: 100%;
+    z-index:10000;
+    position: absolute;
+}
+.scroll{
+    max-height: 90vh; 
+    overflow-x: hidden; 
+}
+.scroll::-webkit-scrollbar {
+    width: 7px;
+}
+
+.scroll::-webkit-scrollbar-thumb{
+    background: #e1e1e1;
+    border-radius: 7px;
+}
+.scroll::-webkit-scrollbar-thumb:hover {
+    background: #c5c2c2!important;
+    border-radius: 10px;
+}
+.select{
+    width: 215px!important;
+    border:1px solid#c5c2c2;
+    padding: 10px 10px;
+}
+.modal-backdrop{
+	background-color: transparent!important;
+	border-radius:2px!important;
+}
+.wd-90{
+    width: 90px!important;
+}
+.text-system{
+    color:white!important;   
+    font-size: 19px;
+    font-family: monospace;
+}
+.input-table{
+    background-color:transparent;
+    border:0;
+    border-bottom: 1px solid black;
+    color:black;
+}
+.btn-modal-tbl{
+    background: var(--color-principal);
+    color:white;
+    padding: 10px 15px;
+    transition: .5s;
+    border:1px solid white;
+}
+.btn-modal-tbl:hover{
+    color:var(--color-principal);
+    transition: .5s;
+    background: white ;
+    border:1px solid var(--color-principal);
+}
+.btn-system{
+    background: var(--color-principal);
+    color: white;
+}
+.btn-system:hover{
+    color: white;
+    background: var(--color-principal)!important;
+}
+.btn-system:active{
+    background: var(--color-principal)!important;
+    color: white;
+}
+.tbl-text-white{
+    color: black!important;
+    background: transparent;
+}
+.title-css{
+    top:2%;
+    display: none;
+    background: rgba(0, 0, 0,0.9);
+    color: white;
+    border-radius: 10px;
+    width: 190px;
+    left: 81%;
+    font-size: 12px;
+    padding: 15px 15px;
+    margin: auto;
+    text-align: center;
+    position: absolute;
+    transition: all ease .3s!important;
+}
+.title-css:before {
+    content: "";
+    position: absolute;
+    bottom: -25px;
+    left: 12%;
+    width: 0;
+    height: 0;
+    border-width: 25px 25px 0;
+    border-style: solid;
+    border-color: rgba(0, 0, 0,0.9) transparent transparent;
+}
+.title_total:hover > .title-css{
+    display: block;
+}
+.icon-error{
+    font-size: 150px!important;
+    padding: 10px 10px!important;
+}
+.pdd-30{
+    padding: 30px 30px!important;
+}
+.bg-white{
+    padding:12px 5px!important;
+}
+.text-pequeño{
+    font-size: 11px;
+    color: white!important;
+}
+select{
+    text-transform: capitalize!important;
+}
+.carga-total{
+    height: 100vh!important;
+    width: 100%!important;
+    position:fixed;
+}
+.swal-content__input{
+    border:1px solid#C2C9CB !important;
+}
+.swal-content__input:Focus {
+    border: 1px solid#919697  !important;
+}
+.border-system{
+    border:1px solid rgb(48, 65, 86)!important;
+}
+.border-input{
+    border:4px solid #38c172;
+    border-radius: 100px;
+}
+.border-calculos{
+    border:1px solid #C2C9CB;
+    background: white;
+    padding: 14px 10px;
+    border-radius: 5px;
+}
+
+/* CAROUSEL */
+#carrusel {
+    float:left;
+    width:100%;
+    overflow:hidden;
+    height:50px;
+    position:relative;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+ 
+#carrusel .left-arrow {
+    position:absolute;
+    left:10px;
+    z-index:1;
+    top:50%;
+    margin-top:-9px;
+}
+ 
+#carrusel .right-arrow {
+    position:absolute;
+    right:10px;
+    z-index:1;
+    top:50%;
+    margin-top:-9px;
+}
+ 
+.carrusel {
+    width:4000px;
+    left:0px;
+    position:absolute;
+    z-index:0;
+}
+ 
+.carrusel>div {
+    float: left;
+    height: 203px;
+    margin-right: 5px;
+    width: 100%;
+    text-align:center;
+}
+ 
+.carrusel img {
+    cursor:pointer;
+}
+.pointer{
+    cursor:pointer;
+}
+
+
+/* ******** BOTON ESTADO ********* */
+.content-input input,
+.content-select select{
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+ 
+.content-input input{
+	visibility: hidden;
+	position: absolute;
+	right: 0;
+}
+.content-input{
+	position: relative;
+	margin-bottom: 30px;
+	padding:5px 0 5px 60px; /* Damos un padding de 60px para posicionar 
+        el elemento <i> en este espacio*/
+	display: block;
+}
+ 
+/* Estas reglas se aplicarán a todos las elementos i 
+después de cualquier input*/
+.content-input input + i{
+       background: #f0f0f0;
+       border:2px solid rgba(0,0,0,0.2);
+       position: absolute; 
+       left: 0;
+       top: 0;
+}
+/* Estas reglas se aplicarán a todos los i despues 
+de un input de tipo checkbox*/
+.content-input input[type=checkbox ] + i{
+	width: 52px;
+	height: 30px;
+	border-radius: 15px;
+}
+/*
+Creamos el círculo que aparece encima de los checkbox
+con la etqieta before. Importante aunque no haya contenido
+debemos poner definir este valor.
+*/
+.content-input input[type=checkbox] + i:before{
+	content: ''; /* No hay contenido */
+	width: 26px;
+	height: 26px;
+	background: #fff;
+	border-radius: 50%;
+	position: absolute;
+	z-index: 1;
+	left: 0px;
+	top: 0px;
+	-webkit-box-shadow: 3px 0 3px 0 rgba(0,0,0,0.2);
+	box-shadow: 3px 0 3px 0 rgba(0,0,0,0.2);
+}
+.content-input input[type=checkbox]:checked + i:before{
+	left: 22px;
+	-webkit-box-shadow: -3px 0 3px 0 rgba(0,0,0,0.2);
+	box-shadow: 3px 0 -3px 0 rgba(0,0,0,0.2);
+}
+
+ 
+.content-input input[type=checkbox]:checked + i{
+    background: var(--color-principal);
+}
+.content-input input[type=checkbox] + i:after{
+	position: absolute;
+	font-size: 10px;
+	color: rgba(255,255,255,0.6);
+	top: 8px;
+	left: 4px;
+	opacity: 0 /* Ocultamos este elemento */;
+	transition: all 0.25s ease 0.25s;
+}
+ 
+/* Cuando esté checkeado cambiamos la opacidad a 1 y lo mostramos */
+.content-input input[type=checkbox]:checked + i:after{
+ opacity: 1;
+}
+/* ************* ACTIVADO POR DEFECTO *************** */
+
+.content-input2 input,
+.content-select select{
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+ 
+.content-input2 input{
+	visibility: hidden;
+	position: absolute;
+	right: 0;
+}
+.content-input2{
+	position: relative;
+	margin-bottom: 30px;
+	padding:5px 0 5px 60px; /* Damos un padding de 60px para posicionar 
+        el elemento <i> en este espacio*/
+	display: block;
+}
+ 
+/* Estas reglas se aplicarán a todos las elementos i 
+después de cualquier input*/
+.content-input2 input + i{
+    /* background: #2AC176; */
+    background: var(--color-principal);
+       border:2px solid rgba(0,0,0,0.2);
+       position: absolute; 
+       left: 0;
+       top: 0;
+}
+/* Estas reglas se aplicarán a todos los i despues 
+de un input de tipo checkbox*/
+.content-input2 input[type=checkbox ] + i{
+	width: 52px;
+	height: 30px;
+	border-radius: 15px;
+}
+/*
+Creamos el círculo que aparece encima de los checkbox
+con la etqieta before. Importante aunque no haya contenido
+debemos poner definir este valor.
+*/
+.content-input2 input[type=checkbox] + i:before{
+	content: ''; /* No hay contenido */
+	width: 26px;
+	height: 26px;
+    background: #fff;
+	border-radius: 50%;
+	position: absolute;
+	z-index: 1;
+	left: 0px;
+	top: 0px;
+    left: 22px;
+    -webkit-box-shadow: -3px 0 3px 0 rgba(0,0,0,0.2);
+	box-shadow: 3px 0 -3px 0 rgba(0,0,0,0.2);
+}
+.content-input2 input[type=checkbox]:checked + i:before{
+	left: 0px;
+	-webkit-box-shadow: 3px 0 3px 0 rgba(0,0,0,0.2);
+	box-shadow: 3px 0 3px 0 rgba(0,0,0,0.2);
+}
+ 
+.content-input2 input[type=checkbox]:checked + i{
+	background: #f0f0f0;
+}
+.content-input2 input[type=checkbox] + i:after{
+	position: absolute;
+	font-size: 10px;
+	color: rgba(255,255,255,0.6);
+	top: 8px;
+	left: 4px;
+	opacity: 0 /* Ocultamos este elemento */;
+	transition: all 0.25s ease 0.25s;
+}
+ 
+/* Cuando esté checkeado cambiamos la opacidad a 1 y lo mostramos */
+.content-input2 input[type=checkbox]:checked + i:after{
+ opacity: 1;
+}
