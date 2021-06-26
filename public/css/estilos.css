@@ -1,7 +1,7 @@
 :root {
-    --color-principal:#CB1149;
+    --color-principal:#ad1103;
     --color-secundario:#39CCCC;
-    --color-p-rgba:rgba(203, 17, 73 , 0.9);
+    --color-p-rgba:rgba(173, 17, 3 , 0.9);
 }
 h5::selection,p::selection,td::selection,input::selection,h5::selection {
     background: var(--color-principal);

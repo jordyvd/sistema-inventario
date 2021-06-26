@@ -108,7 +108,7 @@ $medidaTicket = 180;
 
 <body>
     <div class="ticket centrado">
-        <img src="https://www.wando.pe/business/sistema-inventarios/wp-content/uploads/2018/01/inventario.png" >
+        <img src="images/logosinfondo.png" >
         <p>RUC:10618141948</p>
         <p>av. por mi vecino al costado luego al frente y ahi no es</p>
         <p>Celular & Whatsapp: 9855200358</p>

@@ -12,7 +12,7 @@
             <div class="row g-0">
               <div class="col-md-12">
                 <img
-                  src="https://www.wando.pe/business/sistema-inventarios/wp-content/uploads/2018/01/inventario.png"
+                  src="images/logosinfondo.png"
                   class="mb-3 img-fluid logo"
                   alt="logo"
                 />
