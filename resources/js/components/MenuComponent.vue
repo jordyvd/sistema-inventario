@@ -105,6 +105,11 @@
                         >nuevo</router-link
                       >
                     </li>
+                     <li>
+                      <router-link :to="{ name: 'listamayor' }"
+                        >lista de ventas</router-link
+                      >
+                    </li>
                   </ul>
                 </li>
               </ul>

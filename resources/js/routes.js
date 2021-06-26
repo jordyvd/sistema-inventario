@@ -90,6 +90,11 @@ export default new Router({
             component : require('./views/nuevaVentaMayor').default
         },
         {
+            path:'/listaventasxmayor',
+            name:'listamayor',
+            component : require('./views/ventasmayorlista').default
+        },
+        {
             path:'/creditos',
             name:'creditos',
             component : require('./views/pago_credito').default

@@ -47,9 +47,11 @@ Route::get('/exportar_movimiento/{desde}/{hasta}/{cond}/{sucursal}','SystemContr
 // VENTAS 
 Route::get('/agregadosP/{sucursal}','VentasController@agregadosP');
 Route::get('/listventas/{sucursal}/{fecha}/{desde}/{estado}','VentasController@listventas');
+Route::get('/listventasmayor/{sucursal}/{fecha}/{desde}/{estado}','VentasController@listventasmayor');
 Route::get('/listcreditos/{sucursal}/{fecha}/{desde}','VentasController@listcreditos');
 Route::get('/listdetalles/{nrof}/{sucursal}','VentasController@listdetalles');
 Route::get('/search_ventas/{search}/{sucursal}/{estado}','VentasController@search_ventas');
+Route::get('/search_ventasmayor/{search}/{sucursal}/{estado}','VentasController@search_ventasmayor');
 Route::get('/buscarclienteventa/{cliente}','VentasController@buscarclienteventa');
 Route::get('/llenar_listaV/{nrof}','VentasController@llenar_listaV');
 // *********** BUSCAR REGISTROS ************

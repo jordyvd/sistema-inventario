@@ -74,14 +74,14 @@ class VentasController extends Controller
     public function search_ventas($search,$sucursal,$estado){
         if($estado === "1"){
             $ventas = ventas::where('sucursal',$sucursal)
-            ->where('nrof','like','%'.$search.'%')
+            ->where('cod_sucursal','like','%'.$search.'%')
             ->where('estado','!=','0')
             ->where('anulado','0')
             ->orderBy('id','DESC')
             ->paginate(12);
         }else{
             $ventas = ventas::where('sucursal',$sucursal)
-            ->where('nrof','like','%'.$search.'%')
+            ->where('cod_sucursal','like','%'.$search.'%')
             ->where('estado',$estado)
             ->where('anulado','0')
             ->orderBy('id','DESC')
@@ -99,6 +99,63 @@ class VentasController extends Controller
             'ventas' => $ventas
          ];
     }
+    // ******************* POR MAYOR ****************
+    public function listventasmayor(Request $request, $sucursal,$fecha,$desde,$estado){
+        if($fecha === "1" && $desde === "1"){
+           $fecha = date('Y-m-d');
+           $desde = date('Y-m-d');
+        }
+        $ventas = ventas::where('sucursal',$sucursal)
+        ->whereBetween('fecha',[$desde,$fecha])
+        ->where('nrof','>',0)
+        ->where('estado','!=','0')
+        ->where('anulado','0')
+        ->where('xmayor',1)
+        ->orderBy('id','DESC')
+        ->paginate(12);
+        return [
+            'paginate' => [
+                 'total'        => $ventas->total(),
+                 'current_page' => $ventas->currentPage(),
+                 'per_page'     => $ventas->perPage(),
+                 'last_page'    => $ventas->lastPage(),
+                 'from'         => $ventas->firstItem(),
+                 'to'           => $ventas->lastPage(),
+            ],
+            'ventas' => $ventas
+         ];
+    }
+    public function search_ventasmayor($search,$sucursal,$estado){
+        if($estado === "1"){
+            $ventas = ventas::where('sucursal',$sucursal)
+            ->where('cod_sucursal','like','%'.$search.'%')
+            ->where('estado','!=','0')
+            ->where('anulado','0')
+            ->where('xmayor',1)
+            ->orderBy('id','DESC')
+            ->paginate(12);
+        }else{
+            $ventas = ventas::where('sucursal',$sucursal)
+            ->where('cod_sucursal','like','%'.$search.'%')
+            ->where('estado',$estado)
+            ->where('anulado','0')
+            ->where('xmayor',1)
+            ->orderBy('id','DESC')
+            ->paginate(12);
+        }
+        return [
+            'paginate' => [
+                 'total'        => $ventas->total(),
+                //  'current_page' => $ventas->currentPage(),
+                 'per_page'     => $ventas->perPage(),
+                 'last_page'    => $ventas->lastPage(),
+                 'from'         => $ventas->firstItem(),
+                 'to'           => $ventas->lastPage(),
+            ],
+            'ventas' => $ventas
+         ];
+    }
+    // ******************** FIN POR MAYOR ****************
     public function modificaracumulado(Request $request,$id){
         $venta = ventas::find($id);
         $venta->estado_pago = $request->acumulado;
@@ -120,6 +177,7 @@ class VentasController extends Controller
         $venta->anulado = "0";
         $venta->fecha = date('Y-m-d');
         $venta->fecha_t = date("d-m-Y h:i:s a");
+        $venta->xmayor = $request->xmayor;
         $venta->save();
         return back();
     }

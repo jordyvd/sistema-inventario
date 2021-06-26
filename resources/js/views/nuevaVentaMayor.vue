@@ -7,10 +7,10 @@
       <div class="card">
         <div class="card-header">
           <b v-if="nrof.length < 1"
-            ><i class="fas fa-edit"></i> agregar venta por mayor (calculando...)</b
+            ><i class="fas fa-edit"></i> agregar venta (calculando...)</b
           >
           <b v-else
-            ><i class="fas fa-edit"></i> agregar venta por mayor (V00{{
+            ><i class="fas fa-edit"></i> agregar venta (V00{{
               user_id_sucursal
             }}-{{ producto.numfactura }})</b
           >
@@ -125,7 +125,7 @@
                 </button>
                 <button
                   v-else
-                  class="form-control btn btn-primary"
+                  class="form-control btn btn-system"
                   type="button"
                   disabled
                 >
@@ -139,12 +139,9 @@
               </div>
             </div>
           </form>
-          <!-- <button
-            type="button"
-            @click="accionprueba"
-            class="form-control btn btn-primary"
-          >
-            <i class="fas fa-piggy-bank"></i> probar web service
+
+          <!-- <button @click="abrir_ventana" class="btn btn-primary">
+            ventana
           </button> -->
         </div>
       </div>
@@ -152,15 +149,30 @@
       <br />
       <div class="card">
         <div class="card-header">
-          <button class="btn text-secondary">
-            <b><i class="fas fa-list"></i> lista de productos</b>
+          <button
+            class="btn btn-system float-rigth"
+            title="limpiar"
+            @click="limpiar"
+          >
+            <i class="fas fa-broom"></i>
           </button>
+          <!-- <button
+            class="btn btn-system float-rigth"
+            title="cotizar"
+            @click="cotizar"
+          >
+            <i class="fas fa-print"></i>
+          </button> -->
           <button
             class="btn btn-system float-rigth"
             data-toggle="modal"
             data-target="#modalLlenar"
+            title="llenar"
           >
             <i class="fas fa-fill-drip"></i>
+          </button>
+          <button class="btn text-secondary">
+            <b><i class="fas fa-list"></i> lista de productos</b>
           </button>
         </div>
         <div class="card-body">
@@ -259,9 +271,7 @@
               </button>
             </div>
             <div class="modal-body">
-              <div class="centrar text-white" v-if="spinner_modal">
-                cargando...
-              </div>
+              <div class="centrar" v-if="spinner_modal">cargando...</div>
               <table class="table table-bordered" v-else>
                 <thead class="tbl-text-white">
                   <tr>
@@ -382,7 +392,9 @@
             <button type="button" class="btn btn-dark" data-dismiss="modal">
               Cerrar
             </button>
-            <button type="button" class="btn btn-system" @click="llenar_lista">Llenar</button>
+            <button type="button" class="btn btn-system" @click="llenar_lista">
+              Llenar
+            </button>
           </div>
         </div>
       </div>
@@ -423,10 +435,11 @@ export default {
       agregados: [],
       nrof: [],
       spinner_table: false,
+      cotizacion: [],
     };
   },
   created() {
-    let agregadosDB = JSON.parse(localStorage.getItem("agregado_venta_mayor"));
+    let agregadosDB = JSON.parse(localStorage.getItem("agregado_venta"));
     if (agregadosDB === null) {
       this.agregados = [];
     } else {
@@ -486,11 +499,12 @@ export default {
       ) {
         Vue.$toast.error("completar todos los campos");
       } else {
-        if (this.agregados.length > 100) {
+        if (this.agregados.length > 16) {
           Vue.$toast.error("llegó al límite");
         } else {
           parsar_total_a_texto();
           this.agregados.push({
+            sucursal: this.user_sucursal,
             barra: this.barra_result,
             producto: this.producto.nompro,
             total_texto: this.sunat.total_texto,
@@ -502,7 +516,7 @@ export default {
             url_imagen: this.producto.img,
           });
           localStorage.setItem(
-            "agregado_venta_mayor",
+            "agregado_venta",
             JSON.stringify(this.agregados)
           );
           document.getElementById("cerrar_modal").click();
@@ -520,7 +534,7 @@ export default {
         if (willDelete) {
           this.agregados.splice(index, 1);
           localStorage.setItem(
-            "agregado_venta_mayor",
+            "agregado_venta",
             JSON.stringify(this.agregados)
           );
           Vue.$toast.info("se eliminó con éxito");
@@ -562,6 +576,7 @@ export default {
         cod_sucursal:
           "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
         usuario: this.user_name,
+        xmayor:1,
       };
       swal({
         text: "¿estás seguro?",
@@ -607,35 +622,21 @@ export default {
       this.$data.producto.ruc_dni = "";
       this.$data.producto.nom_cliente = "";
     },
-    eliminar_productos(index) {
-      this.agregados.splice(index, 1);
-      localStorage.setItem("agregado_venta_mayor", JSON.stringify(this.agregados));
-      this.spinner_table = false;
-    },
     agregarventa_detalles() {
-      let i = 0;
-      for (i = 0; i < this.agregados.length; i++) {
-        const params = {
-          sucursal: this.user_sucursal,
-          nrof: "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
-          barra: this.agregados[i].barra,
-          precio: this.agregados[i].precio,
-          cantidad: this.agregados[i].cantidad,
-          descuento: this.agregados[i].descuento,
-        };
-        if (this.agregados[6]) {
-          Vue.$toast.info("espere...");
-          axios.post("/detalle_venta", params).then((res) => {
-            this.eliminar_productos(this.agregados[i]);
-            Vue.$toast.success("venta guardada");
-          });
-        } else {
-          axios.post("/detalle_venta", params).then((res) => {
-            this.eliminar_productos(this.agregados[i]);
-            Vue.$toast.success("venta guardada");
-          });
-        }
-      }
+      const params = {
+        arrayDate: this.agregados,
+        nrof: "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
+      };
+      axios.post("/detalle_venta", params).then((res) => {
+        // this.eliminar_productos(this.agregados[i]);
+        Vue.$toast.success("venta guardada");
+        this.eliminar_productos();
+      });
+    },
+    eliminar_productos() {
+      this.agregados = [];
+      localStorage.setItem("agregado_venta", JSON.stringify(this.agregados));
+      this.spinner_table = false;
     },
     llenar_lista() {
       if (this.cod_document.trim() === "") {
@@ -644,12 +645,41 @@ export default {
         let url = "/api/llenar_listaV/" + this.cod_document;
         axios.get(url).then((res) => {
           this.agregados = res.data;
-          localStorage.setItem(
-            "agregado_venta_mayor",
-            JSON.stringify(res.data)
-          );
+          localStorage.setItem("agregado_venta", JSON.stringify(res.data));
         });
       }
+    },
+    abrir_ventana() {
+      window.open(
+        "http://localhost/printticked/print_pdf.php",
+        "imprimir-PDF",
+        "width=350,height=400,scrollbars=NO,toolbar=no, location=no, directories=no, status=no, menubar=no"
+      );
+    },
+    limpiar() {
+      swal({
+        text: "¿estás seguro?",
+        icon: "error",
+        buttons: ["no", "sí"],
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.eliminar_productos();
+        }
+      });
+    },
+    cotizar() {
+      this.cotizacion = [];
+      for (let i = 0; i < this.agregados.length; i++) {
+        this.cotizacion.push({
+          barra: this.agregados[i].barra,
+          cantidad: this.agregados[i].cantidad,
+          descuento: this.agregados[i].descuento,
+          producto: this.agregados[i].producto.replace(/\/+/g, "*"),
+        });
+      }
+      const params = {datos:this.agregados}
+      axios.post("imprimircotizar",params);
     },
   },
   computed: {
@@ -660,7 +690,7 @@ export default {
     },
     total_precio_compra() {
       return this.agregados.reduce((total, item) => {
-        return total + item.precio_compra * item.cantidad - item.descuento;
+        return total + item.precio_compra;
       }, 0);
     },
     total_ganancia() {
@@ -671,3 +701,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.float-rigth {
+  margin: 0px 5px !important;
+}
+</style>

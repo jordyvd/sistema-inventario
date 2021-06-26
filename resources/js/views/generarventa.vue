@@ -576,6 +576,7 @@ export default {
         cod_sucursal:
           "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
         usuario: this.user_name,
+        xmayor:0,
       };
       swal({
         text: "¿estás seguro?",
@@ -689,7 +690,7 @@ export default {
     },
     total_precio_compra() {
       return this.agregados.reduce((total, item) => {
-        return total + item.precio_compra * item.cantidad - item.descuento;
+        return total + item.precio_compra;
       }, 0);
     },
     total_ganancia() {
