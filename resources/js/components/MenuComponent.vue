@@ -105,7 +105,7 @@
                         >nuevo</router-link
                       >
                     </li>
-                     <li>
+                    <li>
                       <router-link :to="{ name: 'listamayor' }"
                         >lista de ventas</router-link
                       >
@@ -322,6 +322,11 @@
               </ul>
             </li>
             <li>
+              <a style="cursor: pointer" @click="backud"
+                ><i class="fa fa-database"></i> Backud</a
+              >
+            </li>
+            <li>
               <a @click="cerrar_sesion" style="cursor: pointer">
                 <i class="fas fa-times"></i> Cerrar sesión
               </a>
@@ -395,6 +400,21 @@ export default {
         if (willDelete) {
           axios.post("/cerrar").then((response) => {
             location.reload();
+          });
+        }
+      });
+    },
+    backud() {
+      swal("contraseña:", {
+        content: "input",
+      }).then((value) => {
+        if (value != null) {
+          axios.post("/api/backud",{password:value}).then((res) => {
+            swal({
+              text: res.data,
+              icon: "info",
+              button: "aceptar",
+            });
           });
         }
       });

@@ -24,7 +24,7 @@ class ScannerController extends Controller
             $almacen->barra_almacen = $request->barra;
             $almacen->stock_almacen = $request->stock;
             $almacen->precio_venta = $request->precio;
-            $almacen->precio_mayor = $request->precio_mayor;
+            $almacen->precio_mayor = $request->preciomayor;
             $almacen->sucursal = $request->sucursal;
             $almacen->save();
             return "producto guardado";
@@ -69,7 +69,7 @@ class ScannerController extends Controller
     public function buscaralmacen($condicion,$search)
     {
             $string = str_replace("*","/",trim($search));
-            $almacen = almacen::select('almacen.id','almacen.sucursal','products.codigo','products.barra','products.nompro','products.marca','products.precio','products.url_imagen','almacen.precio_venta','almacen.stock_almacen')
+            $almacen = almacen::select('almacen.id','almacen.sucursal','products.codigo','products.barra','products.nompro','products.marca','products.precio','products.url_imagen','almacen.precio_venta','almacen.precio_mayor','almacen.stock_almacen')
             ->join('products','almacen.barra_almacen','products.barra')
             ->where('products.'.$condicion,'like','%'.$string.'%')
             ->where('products.baja',0)

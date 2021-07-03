@@ -93,4 +93,4 @@ Route::get('/detalle_salidas/{nro}/{sucursal}','SalidaProductController@detalle_
 Route::get('/total_perdida/{sucursal}/{desde}/{hasta}','SalidaProductController@total_perdida');
 Route::get('/deletesalidas/{codigo}','SalidaProductController@deletesalidas');
 Route::get('/baja/{id}/{estado}','SystemController@baja');
-
+Route::post('/backud','BackudController@start');

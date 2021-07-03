@@ -204,7 +204,7 @@ class SystemController extends Controller
                     $producto->marca=trim($request->marca);
                     $producto->url_imagen="default.png";
                     $producto->baja=0;
-                    $producto->day = date('d');
+                    // $producto->day = date('d');
                     $producto->save();
                     return "agregado";
                 }else{

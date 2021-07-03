@@ -59,6 +59,14 @@
                   v-model="precio_venta"
                 />
               </div>
+              <div class="form-group">
+                <small class="form-text text-muted">precio por mayor</small>
+                <input
+                  type="text"
+                  class="form-control solonumero"
+                  v-model="precio_x_mayor"
+                />
+              </div>
               <button
                 type="submit"
                 v-if="boton"
@@ -86,6 +94,7 @@ export default {
       stock: "",
       codigo_barra:"",
       precio_venta: "",
+      precio_x_mayor:"",
       boton: true,
     };
   },
@@ -108,6 +117,7 @@ export default {
           barra: this.codigo_barra,
           stock: this.stock,
           precio: this.precio_venta,
+          preciomayor:this.precio_x_mayor,
           sucursal: this.user_sucursal,
         };
         axios.post("/nota_ingreso", params).then((res) => {
