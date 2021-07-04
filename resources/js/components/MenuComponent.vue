@@ -321,11 +321,11 @@
                 </li>
               </ul>
             </li>
-            <li>
+            <!-- <li>
               <a style="cursor: pointer" @click="backud"
                 ><i class="fa fa-database"></i> Backud</a
               >
-            </li>
+            </li> -->
             <li>
               <a @click="cerrar_sesion" style="cursor: pointer">
                 <i class="fas fa-times"></i> Cerrar sesión

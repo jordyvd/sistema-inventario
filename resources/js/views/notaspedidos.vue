@@ -195,6 +195,7 @@
                 <thead class="tbl-text-white">
                   <tr>
                     <th scope="col">n°</th>
+                    <th scope="col">codigo</th>
                     <th scope="col">producto</th>
                     <th scope="col">marca</th>
                     <th scope="col">precio</th>
@@ -210,6 +211,7 @@
                 >
                   <tr>
                     <td>{{ index + 1 }}</td>
+                    <td>{{ item.codigo }}</td>
                     <td>{{ item.nompro }}</td>
                     <td>{{ item.marca }}</td>
                     <td>{{ item.precio_com }}</td>

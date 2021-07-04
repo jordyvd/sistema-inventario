@@ -37,7 +37,7 @@
     <link rel="stylesheet" href="{{asset('css/menu.css')}}">
     <link rel="stylesheet" href="{{asset('css/estilos.css')}}">
     <link rel="stylesheet" href="{{asset('css/bienvenida.css')}}">
-    <link rel="shortcut icon" type="image/x-icon" href="images/compra.ico"/>
+    <link rel="shortcut icon" type="image/x-icon" href="images/iconoApp.ico"/>
 </head>
   <body>
     @if(Auth::user())

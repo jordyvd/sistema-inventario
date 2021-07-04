@@ -114,7 +114,7 @@ class NotasController extends Controller
    }
    public function detallesnotas_pedido($codigo)
    {
-      return detalle_notas::select('products.barra','products.nompro','products.marca','detalle_notas.precio_com','detalle_notas.cantidad','detalle_notas.descuento','detalle_notas.cod_nota')
+      return detalle_notas::select('products.barra','products.codigo','products.nompro','products.marca','detalle_notas.precio_com','detalle_notas.cantidad','detalle_notas.descuento','detalle_notas.cod_nota')
       ->join('products','detalle_notas.barra_nota','products.barra')
       ->where('detalle_notas.cod_nota',$codigo)
       ->get();

@@ -47,6 +47,7 @@
                 <small class="form-text text-muted">cantidad</small>
                 <input
                   type="text"
+                  :disabled="true"
                   class="form-control solonumero"
                   v-model="stock"
                 />
@@ -91,7 +92,7 @@ export default {
       nompro: "",
       marca: "",
       codigo: "",
-      stock: "",
+      stock: 0,
       codigo_barra:"",
       precio_venta: "",
       precio_x_mayor:"",
@@ -109,7 +110,7 @@ export default {
       });
     },
     agregarnota() {
-      if (this.stock.trim() === "" || this.precio_venta.trim() === "") {
+      if (this.precio_venta.trim() === "") {
         Vue.$toast.error("completar todos los campos");
       } else {
         this.boton = false;

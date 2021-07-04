@@ -42,7 +42,7 @@
               </span>
             </div>
             <div class="container-login100-form-btn">
-              <button type="submit" class="login100-form-btn btn btn-success">
+              <button type="submit" class="login100-form-btn btn btn-system">
                 Ingresar
               </button>
             </div>

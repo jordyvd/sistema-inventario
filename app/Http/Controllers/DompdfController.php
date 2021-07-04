@@ -22,6 +22,7 @@ class DompdfController extends Controller
         $view = \View::make('documentos.ticked',compact('datos'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
+        $pdf->setPaper(array(0,0,150,600));
         return $pdf->stream('ticked'.'.pdf');
    }
    public function cotizar(Request $request){

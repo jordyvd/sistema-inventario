@@ -690,7 +690,7 @@ export default {
     },
     total_precio_compra() {
       return this.agregados.reduce((total, item) => {
-        return total + item.precio_compra;
+        return total + item.precio_compra * item.cantidad;
       }, 0);
     },
     total_ganancia() {
