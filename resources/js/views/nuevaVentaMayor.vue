@@ -439,7 +439,7 @@ export default {
     };
   },
   created() {
-    let agregadosDB = JSON.parse(localStorage.getItem("agregado_venta"));
+    let agregadosDB = JSON.parse(localStorage.getItem("agregado_ventaxmayor"));
     if (agregadosDB === null) {
       this.agregados = [];
     } else {
@@ -516,7 +516,7 @@ export default {
             url_imagen: this.producto.img,
           });
           localStorage.setItem(
-            "agregado_venta",
+            "agregado_ventaxmayor",
             JSON.stringify(this.agregados)
           );
           document.getElementById("cerrar_modal").click();
@@ -534,7 +534,7 @@ export default {
         if (willDelete) {
           this.agregados.splice(index, 1);
           localStorage.setItem(
-            "agregado_venta",
+            "agregado_ventaxmayor",
             JSON.stringify(this.agregados)
           );
           Vue.$toast.info("se eliminó con éxito");
@@ -635,7 +635,7 @@ export default {
     },
     eliminar_productos() {
       this.agregados = [];
-      localStorage.setItem("agregado_venta", JSON.stringify(this.agregados));
+      localStorage.setItem("agregado_ventaxmayor", JSON.stringify(this.agregados));
       this.spinner_table = false;
     },
     llenar_lista() {
@@ -645,7 +645,7 @@ export default {
         let url = "/api/llenar_listaV/" + this.cod_document;
         axios.get(url).then((res) => {
           this.agregados = res.data;
-          localStorage.setItem("agregado_venta", JSON.stringify(res.data));
+          localStorage.setItem("agregado_ventaxmayor", JSON.stringify(res.data));
         });
       }
     },
