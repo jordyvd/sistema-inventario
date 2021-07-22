@@ -292,7 +292,7 @@ export default {
     agregar() {
       if (
         this.datos.descripcion.trim() === "" ||
-        this.datos.monto < 1 ||
+        this.datos.monto == "" ||
         this.condicion.trim() === ""
       ) {
         Vue.$toast.error("completar todos los campos");

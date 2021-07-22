@@ -54,7 +54,7 @@
                   </button>
                 </td>
                 <td>{{ item.sucursal }}</td>
-                <td>{{ item.fecha }}</td>
+                <td>{{ FormatDate(item.fecha) }}</td>
                 <td>
                   <p class="text-grande text-success" title="enviado">
                     <i class="fas fa-check-circle"></i>
@@ -75,7 +75,7 @@
                   </button>
                 </td>
                 <td>{{ item.sucursal }}</td>
-                <td>{{ item.fecha }}</td>
+                <td>{{ FormatDate(item.fecha) }}</td>
                 <td class="text-danger text-grande" title="no enviado">
                   <i class="fas fa-times-circle"></i>
                 </td>
@@ -255,6 +255,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment';
 export default {
   data() {
     return {
@@ -281,7 +282,7 @@ export default {
   methods: {
     listar(page) {
       this.spinner = true;
-      let url = `/api/ingresos_requer/${this.user_sucursal}/${this.fecha}`;
+      let url = `/api/ingresos_requer/${this.user_sucursal}/${this.fecha}?page=${page}`;
       axios.get(url).then((res) => {
         this.ingresos = res.data.ingresos.data;
         this.pagination = res.data.paginate;
@@ -357,6 +358,9 @@ export default {
     changePage(page) {
       this.pagination.current_page = page;
       this.listar(page);
+    },
+    FormatDate(fecha){
+       return moment(fecha).format('DD-MM-YYYY');
     },
   },
 };

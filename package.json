@@ -29,6 +29,7 @@
         "chart.js": "^2.9.3",
         "file-saver": "^2.0.2",
         "jspdf": "^2.1.1",
+        "moment": "^2.29.1",
         "sweetalert": "^2.1.2",
         "vue-chartjs": "^3.5.1",
         "vue-html-to-paper": "^1.3.1",

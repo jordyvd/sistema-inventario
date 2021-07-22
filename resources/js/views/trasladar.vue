@@ -62,7 +62,7 @@
                   </button>
                 </td>
                 <td>{{ item.para }}</td>
-                <td>{{ item.fecha }}</td>
+                <td>{{ FormatDate(item.fecha) }}</td>
                 <td>
                   <button
                     class="text-dark"
@@ -394,6 +394,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment';
 export default {
   data() {
     return {
@@ -656,6 +657,9 @@ export default {
     changePage(page) {
       this.pagination.current_page = page;
       this.listar(page);
+    },
+    FormatDate(fecha){
+       return moment(fecha).format('DD-MM-YYYY');
     },
   },
 };

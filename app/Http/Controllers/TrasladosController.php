@@ -165,13 +165,13 @@ class TrasladosController extends Controller
         $traslado = traslados::where('para',$sucursal)
         ->where('estado',1)
         ->orderBy('id','DESC')
-        ->paginate(5);
+        ->paginate(10);
       }else{
         $traslado = traslados::where('para',$sucursal)
         ->where('estado',1)
         ->where('fecha',$fecha)
         ->orderBy('id','DESC')
-        ->paginate(7);
+        ->paginate(10);
       }
       return [
         'paginate' => [

@@ -2,6 +2,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 import VueHtmlToPaper from "vue-html-to-paper";
 import pdf from 'vue-pdf';
+import moment from 'moment';
 
 Vue.component('login_user', require('./components/LoginComponent.vue').default);
 Vue.component('menu_sistema', require('./components/MenuComponent.vue').default);
