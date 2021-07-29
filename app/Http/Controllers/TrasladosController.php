@@ -247,14 +247,29 @@ class TrasladosController extends Controller
           $stock_almacen = almacen::where('barra_almacen',$value['barra'])
           ->where('sucursal',$sucursal)
           ->first();
-          $almacen = almacen::find($stock_almacen->id);
-          $almacen->stock_almacen = intval($stock_almacen->stock_almacen) + intval($value['cantidad']);
-          $almacen->save();
+          if(empty($stock_almacen)){
+            $stock_recibido = almacen::where('barra_almacen',$value['barra'])
+            ->where('sucursal',$value['de'])
+            ->first();
+            $almacen = new almacen;
+            $almacen->barra_almacen = $value['barra'];
+            $almacen->stock_almacen = $value['cantidad'];
+            $almacen->precio_venta =  $stock_recibido->precio_venta;
+            $almacen->precio_mayor = $stock_recibido->precio_mayor;
+            $almacen->sucursal = $sucursal;    
+            $almacen->save();
+            $precio = $stock_recibido->precio_venta;
+          }else{
+            $almacen = almacen::find($stock_almacen->id);
+            $almacen->stock_almacen = intval($stock_almacen->stock_almacen) + intval($value['cantidad']);
+            $almacen->save();
+            $precio = $almacen->precio_venta;
+          }
           // ******
           $movimiento = new Movimientos;
           $movimiento->nro_documento = $value['nro_tras'];
           $movimiento->barra_mov = $value['barra'];
-          $movimiento->precio = $almacen->precio_venta;
+          $movimiento->precio = $precio;
           $movimiento->condicion = "ingreso";
           $movimiento->fecha = date('Y-m-d');
           $movimiento->detalle = "recibido de ".$value['de'];
