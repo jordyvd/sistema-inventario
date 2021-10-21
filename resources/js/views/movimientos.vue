@@ -57,7 +57,7 @@
               <th scope="col">precio</th>
               <th scope="col">cantidad</th>
               <!-- <th scope="col">condición</th> -->
-              <th scope="col">detalle</th>
+              <th scope="col">condición</th>
               <th scope="col">fecha</th>
               <th scope="col">sucursal</th>
             </tr>
@@ -70,7 +70,8 @@
               <td>{{ parseFloat(item.precio).toFixed(2) }}</td>
               <td>{{ item.cantidad }}</td>
               <!-- <td>{{ item.condicion }}</td> -->
-              <td>{{ item.detalle }}</td>
+              <td v-if="item.condicion == 'salida'">--</td>
+              <td v-else>{{ item.condicion }}</td>
               <td>{{ item.fecha }}</td>
               <td>{{ item.sucursal }}</td>
             </tr>

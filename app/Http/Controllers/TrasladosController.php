@@ -8,6 +8,7 @@ use App\sucursal;
 use App\almacen;
 use App\detalle_traslado;
 use App\Movimientos;
+use Illuminate\Support\Facades\DB;
 
 class TrasladosController extends Controller
 {
@@ -82,11 +83,20 @@ class TrasladosController extends Controller
       return back();
     }
     public function detallerequer($nro){
-      return detalle_traslado::select('detalle_traslado.id','detalle_traslado.nro_tras','detalle_traslado.de','products.barra','products.nompro','products.marca','products.codigo','detalle_traslado.cantidad','detalle_traslado.para')
-      ->join('products','detalle_traslado.barra_tras','products.barra')
-      ->where('detalle_traslado.nro_tras',$nro)
-      ->orderBy('id','DESC')
-      ->get();
+      // return detalle_traslado::select('detalle_traslado.id','detalle_traslado.nro_tras','detalle_traslado.de','products.barra','products.nompro','products.marca','products.codigo','detalle_traslado.cantidad','detalle_traslado.para','almacen.precio_venta')
+      // ->join('products','detalle_traslado.barra_tras','products.barra')
+      // ->join('almacen','detalle_traslado.de','almacen.sucursal')
+      // ->join('almacen','detalle_traslado.barra_tras','almacen.barra_almacen')
+      // ->where('detalle_traslado.nro_tras',$nro)
+      // ->orderBy('id','DESC')
+      // ->get();
+      $sql = "select dt.*,al.*,ps.* from detalle_traslado dt join products ps on dt.barra_tras = ps.barra
+      join almacen al on dt.de = al.sucursal and dt.barra_tras = al.barra_almacen where dt.nro_tras = ?
+      order by dt.id desc";
+      $parameter = [
+        $nro
+      ];
+      return DB::select($sql,$parameter);
     }
     public function editrequer(Request $request, $id){
       $detalle = detalle_traslado::find($id);
@@ -247,14 +257,29 @@ class TrasladosController extends Controller
           $stock_almacen = almacen::where('barra_almacen',$value['barra'])
           ->where('sucursal',$sucursal)
           ->first();
-          $almacen = almacen::find($stock_almacen->id);
-          $almacen->stock_almacen = intval($stock_almacen->stock_almacen) + intval($value['cantidad']);
-          $almacen->save();
+          if(empty($stock_almacen)){
+            $stock_recibido = almacen::where('barra_almacen',$value['barra'])
+            ->where('sucursal',$value['de'])
+            ->first();
+            $almacen = new almacen;
+            $almacen->barra_almacen = $value['barra'];
+            $almacen->stock_almacen = $value['cantidad'];
+            $almacen->precio_venta =  $stock_recibido->precio_venta;
+            $almacen->precio_mayor = $stock_recibido->precio_mayor;
+            $almacen->sucursal = $sucursal;    
+            $almacen->save();
+            $precio = $stock_recibido->precio_venta;
+          }else{
+            $almacen = almacen::find($stock_almacen->id);
+            $almacen->stock_almacen = intval($stock_almacen->stock_almacen) + intval($value['cantidad']);
+            $almacen->save();
+            $precio = $almacen->precio_venta;
+          }
           // ******
           $movimiento = new Movimientos;
           $movimiento->nro_documento = $value['nro_tras'];
           $movimiento->barra_mov = $value['barra'];
-          $movimiento->precio = $almacen->precio_venta;
+          $movimiento->precio = $precio;
           $movimiento->condicion = "ingreso";
           $movimiento->fecha = date('Y-m-d');
           $movimiento->detalle = "recibido de ".$value['de'];

@@ -576,7 +576,7 @@ export default {
         cod_sucursal:
           "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
         usuario: this.user_name,
-        xmayor:1,
+        xmayor: 1,
       };
       swal({
         text: "¿estás seguro?",
@@ -594,8 +594,6 @@ export default {
               .post("/generar_venta", params)
               .then((res) => {
                 this.agregarventa_detalles();
-                this.generar_nuevo_numer_f();
-                this.vaciar_datos();
               })
               .catch((error) => {
                 this.spinner_table = false;
@@ -628,6 +626,8 @@ export default {
         nrof: "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
       };
       axios.post("/detalle_venta", params).then((res) => {
+        this.generar_nuevo_numer_f();
+        this.vaciar_datos();
         // this.eliminar_productos(this.agregados[i]);
         Vue.$toast.success("venta guardada");
         this.eliminar_productos();
@@ -635,7 +635,10 @@ export default {
     },
     eliminar_productos() {
       this.agregados = [];
-      localStorage.setItem("agregado_ventaxmayor", JSON.stringify(this.agregados));
+      localStorage.setItem(
+        "agregado_ventaxmayor",
+        JSON.stringify(this.agregados)
+      );
       this.spinner_table = false;
     },
     llenar_lista() {
@@ -645,7 +648,10 @@ export default {
         let url = "/api/llenar_listaV/" + this.cod_document;
         axios.get(url).then((res) => {
           this.agregados = res.data;
-          localStorage.setItem("agregado_ventaxmayor", JSON.stringify(res.data));
+          localStorage.setItem(
+            "agregado_ventaxmayor",
+            JSON.stringify(res.data)
+          );
         });
       }
     },
@@ -678,8 +684,8 @@ export default {
           producto: this.agregados[i].producto.replace(/\/+/g, "*"),
         });
       }
-      const params = {datos:this.agregados}
-      axios.post("imprimircotizar",params);
+      const params = { datos: this.agregados };
+      axios.post("imprimircotizar", params);
     },
   },
   computed: {

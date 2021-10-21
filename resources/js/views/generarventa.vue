@@ -551,7 +551,7 @@ export default {
             this.nrof = "0";
             this.nrof = parseFloat(this.nrof) + 1;
             this.nrof = zeroPad(this.nrof, 9);
-            this.producto.numfactura = this.nrof;
+            cccccthis.producto.numfactura = this.nrof;
           } else {
             this.nrof = res.data;
             this.nrof = parseFloat(this.nrof) + 1;
@@ -594,8 +594,6 @@ export default {
               .post("/generar_venta", params)
               .then((res) => {
                 this.agregarventa_detalles();
-                this.generar_nuevo_numer_f();
-                this.vaciar_datos();
               })
               .catch((error) => {
                 this.spinner_table = false;
@@ -622,12 +620,15 @@ export default {
       this.$data.producto.ruc_dni = "";
       this.$data.producto.nom_cliente = "";
     },
-    agregarventa_detalles() {
+     agregarventa_detalles() {
       const params = {
         arrayDate: this.agregados,
         nrof: "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
+        condicion: this.producto.estado == "1" ? "Efectivo" : this.producto.estado == "0" ? "Credito" : this.producto.estado,
       };
       axios.post("/detalle_venta", params).then((res) => {
+        this.generar_nuevo_numer_f();
+        this.vaciar_datos();
         // this.eliminar_productos(this.agregados[i]);
         Vue.$toast.success("venta guardada");
         this.eliminar_productos();

@@ -166,6 +166,7 @@
                       <th scope="col">producto</th>
                       <th scope="col">marca</th>
                       <th scope="col">cantidad</th>
+                      <th scope="col">precio</th>
                     </tr>
                   </thead>
                   <tbody
@@ -179,7 +180,7 @@
                       <td>{{ item.codigo }}</td>
                       <td>{{ item.nompro }}</td>
                       <td>{{ item.marca }}</td>
-                      <td>{{ item.cantidad }}</td>
+                      <td>{{ parseFloat(item.precio_venta).toFixed(2) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -228,6 +229,7 @@
                       <th scope="col">producto</th>
                       <th scope="col">marca</th>
                       <th scope="col">cantidad</th>
+                      <th scope="col">precio</th>
                     </tr>
                   </thead>
                   <tbody
@@ -242,6 +244,7 @@
                       <td>{{ item.nompro }}</td>
                       <td>{{ item.marca }}</td>
                       <td>{{ item.cantidad }}</td>
+                      <td>{{ parseFloat(item.precio_venta).toFixed(2) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -255,7 +258,7 @@
   </div>
 </template>
 <script>
-import moment from 'moment';
+import moment from "moment";
 export default {
   data() {
     return {
@@ -359,8 +362,8 @@ export default {
       this.pagination.current_page = page;
       this.listar(page);
     },
-    FormatDate(fecha){
-       return moment(fecha).format('DD-MM-YYYY');
+    FormatDate(fecha) {
+      return moment(fecha).format("DD-MM-YYYY");
     },
   },
 };

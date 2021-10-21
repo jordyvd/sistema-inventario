@@ -337,6 +337,23 @@ export default {
     this.generar_nuevo_numer_f();
   },
   methods: {
+    generarMostrar() {
+      let url = "/api/codigo_generado/" + this.user_sucursal;
+      axios.get(url).then((res) => {
+        if (res.data === "") {
+          this.codigo = "0";
+          this.codigo = parseFloat(this.codigo) + 1;
+          this.codigo = zeroPad(this.codigo, 9);
+          this.codigo_nota = this.codigo;
+        } else {
+          this.codigo = res.data;
+          this.codigo = parseFloat(this.codigo) + 1;
+          this.codigo = zeroPad(this.codigo, 9);
+          this.codigo_nota = this.codigo;
+        }
+        this.mostrar_codigo();
+      });
+    },
     generar_nuevo_numer_f() {
       let url = "/api/codigo_generado/" + this.user_sucursal;
       axios.get(url).then((res) => {
@@ -445,9 +462,6 @@ export default {
           } else {
             Vue.$toast.info("enviando datos...");
             this.agregar_nota();
-            this.agregar_detalles();
-            this.generar_nuevo_numer_f();
-            this.mostrar_codigo();
             this.$data.proveedor.ruc = "";
             this.$data.proveedor.empresa = "";
           }
@@ -467,13 +481,18 @@ export default {
         ruc: this.proveedor.ruc,
         empresa: this.proveedor.empresa,
       };
-      axios.post("/agregar_nota", params).then((res) => {});
+      axios.post("/agregar_nota", params).then((res) => {
+        this.agregar_detalles();
+      });
     },
     agregar_detalles() {
-      const params = {ArrayDate:this.agreados};
+      const params = { ArrayDate: this.agreados };
       axios.post("/agregar_detalle_nota", params).then((res) => {
         Vue.$toast.info("enviado");
         this.eliminar_del_detalle();
+        // this.generar_nuevo_numer_f();
+        // this.mostrar_codigo();
+        this.generarMostrar();
       });
     },
     eliminar_del_detalle() {

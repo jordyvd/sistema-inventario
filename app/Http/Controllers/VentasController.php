@@ -198,12 +198,11 @@ class VentasController extends Controller
             $stock = almacen::find($almacen->id);
             $stock->stock_almacen = intval($almacen->stock_almacen) - intval($value['cantidad']);
             $stock->save(); 
-            // //movimiento
             $movimiento = new Movimientos;
             $movimiento->nro_documento = $request['nrof'];
             $movimiento->barra_mov = $value['barra'];
             $movimiento->precio = $value['precio'];
-            $movimiento->condicion = "salida";
+            $movimiento->condicion = $request->condicion;
             $movimiento->fecha = date('Y-m-d');
             $movimiento->detalle = "vendido";
             $movimiento->tipo = "venta";
@@ -245,7 +244,7 @@ class VentasController extends Controller
             $movimiento->nro_documento = $value['nrof'];
             $movimiento->barra_mov = $value['barra'];
             $movimiento->precio = $almacen->precio_venta;
-            $movimiento->condicion = "entrada";
+            $movimiento->condicion = "anulado";
             $movimiento->fecha = date('Y-m-d');
             $movimiento->detalle = "anulado";
             $movimiento->tipo = "venta";
