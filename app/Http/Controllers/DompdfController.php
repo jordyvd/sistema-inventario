@@ -17,7 +17,7 @@ class DompdfController extends Controller
         $venta = ventas::where('cod_sucursal',$nrof)->get();
         $sacar_total = ventas::where('cod_sucursal',$nrof)->first();
         $formatter = new NumeroALetras();
-        $total = $formatter->toMoney($sacar_total->total_v, 2, 'SOLES', 'CENTIMOS');
+        $total = $formatter->toInvoice($sacar_total->total_v, 2, 'SOLES');
         $datos = ['detalles' => $details , 'venta' => $venta, 'total' => $total];
         $view = \View::make('documentos.ticked',compact('datos'))->render();
         $pdf = \App::make('dompdf.wrapper');

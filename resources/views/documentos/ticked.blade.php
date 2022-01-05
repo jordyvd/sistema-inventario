@@ -12,8 +12,8 @@ $medidaTicket = 180;
             font-family: 'DejaVu Sans', serif;
         }
         .title{
-             border-top:1px dashed black;
-             border-bottom:1px dashed black;
+             /* border-top:1px dashed black;
+             border-bottom:1px dashed black; */
         }
         h1 {
             font-size: 8px;
@@ -27,7 +27,7 @@ $medidaTicket = 180;
         th,
         tr,
         table {
-            border-top: 1px dashed black;
+            /* border-top: 1px dashed black; */
             border-collapse: collapse;
             margin: 0 auto;
         }
@@ -68,9 +68,10 @@ $medidaTicket = 180;
         }
 
         img {
-            max-width: inherit;
-            width: inherit;
-            padding-bottom:12px;
+            /* max-width: inherit;
+            width: inherit; */
+            width:110px;
+            /* padding-bottom:12px; */
         }
 
         * {
@@ -101,17 +102,45 @@ $medidaTicket = 180;
             text-align: center;
         }
         .montletra{
-            border-top:1px dashed black;
+            /* border-top:1px dashed black; */
+            border-top: 0.5px solid;
+        }
+        .image{
+            padding:0;
+            margin-top:-5px;
+        }
+        .content{
+            margin-top:-10px;
         }
     </style>
 </head>
 
 <body>
     <div class="ticket centrado">
-        <img src="images/logosinfondo.png" >
-        <p>RUC:10618141948</p>
-        <p>av. por mi vecino al costado luego al frente y ahi no es</p>
-        <p>Celular & Whatsapp: 9855200358</p>
+        <div class="image"><img src="images/logosinfondo.png" ></div>
+        <div class="content">
+        <p>RUC: 10405163131</p>
+        <p><?php foreach($datos['venta'] as $venta) {
+            if($venta['sucursal'] == "huaral"){
+                echo "Calle Morales Bermúdez # 340 y 342";
+            }else if($venta['sucursal'] == "lima-abancay"){
+                echo "Av. Abancay # 368 Int. 1090 - Galería La Casona";
+            }else if($venta['sucursal'] == "barranca"){
+                echo "JR. Castilla 148";
+            }
+        } ?></p>
+        <p>Teléfono: 
+        <?php 
+            foreach($datos['venta'] as $venta) {
+                if($venta['sucursal'] == "huaral"){
+                    echo "5845067";
+                }else if($venta['sucursal'] == "lima-abancay"){
+                    echo "937522124";
+                }else if($venta['sucursal'] == "barranca"){
+                    echo "5984852";
+                }
+            }
+        ?> </p>
             <div class="title"><b>TICKED DE COMPRA</b>: <?php foreach($datos['venta'] as $venta) {
             echo $venta['cod_sucursal'];
         } ?> </div>
@@ -141,8 +170,8 @@ $medidaTicket = 180;
                     <th class="text-left">COD.</th>
                     <th class="precio">DESCRIP.</th>
                     <th class="precio">CANT.</th>
-                    <th class="precio">P.UNIT</th>
                     <th class="precio">DTO</th>
+                    <th class="precio">P.UNIT</th>
                 </tr>
             </thead>
             <tbody>
@@ -155,8 +184,8 @@ $medidaTicket = 180;
                         <td class="producto"><?php echo $producto["codigo"] ?></td>
                         <td class="producto rem"><?php echo $producto["nompro"] ?></td>
                         <td class="cantidad"><?php echo number_format($producto["cantidad"], 2) ?></td>
-                        <td class="precio"><?php echo number_format($producto["precio"], 2) ?></td>
                         <td class="precio"><?php echo number_format($producto["descuento"], 2) ?></td>
+                        <td class="precio"><?php echo number_format($producto["precio"], 2) ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -173,6 +202,7 @@ $medidaTicket = 180;
         </div>
         <p class="centrado footer">¡GRACIAS POR SU COMPRA!
             <br><small>no se aceptan cambios, después de una semana</small></p>
+        </div>
     </div>
 </body>
 

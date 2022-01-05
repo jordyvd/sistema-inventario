@@ -14,6 +14,7 @@ Vue.component('grafico-vendedor', require('./components/GraficoVendedores.vue').
 Vue.component('grafico-proveedor', require('./components/GraficoProveedor.vue').default);
 Vue.component('grafico-Sinternas', require('./components/GraficoSinternas.vue').default);
 Vue.component('notpermiso', require('./components/NotpermisoComponent.vue').default);
+Vue.component('spinner', require('./components/Spinner.vue').default);
 // importar validacion de login 
 import auth from './auth';
 Vue.mixin(auth);

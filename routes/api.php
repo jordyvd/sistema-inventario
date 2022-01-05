@@ -94,3 +94,11 @@ Route::get('/total_perdida/{sucursal}/{desde}/{hasta}','SalidaProductController@
 Route::get('/deletesalidas/{codigo}','SalidaProductController@deletesalidas');
 Route::get('/baja/{id}/{estado}','SystemController@baja');
 Route::post('/backud','BackudController@start');
+
+// ***** FACTURA ELECTRONICA 
+Route::get('/dni/{number}','SunatController@getDni');
+Route::get('/ruc/{number}','SunatController@getRuc');
+Route::post('/generarDocumento','SunatController@generarDocumento');
+Route::post('/consumirApi','SunatController@facturar');
+Route::post('/editar-documento','SunatController@EditarDocumento');
+Route::post('/listar-documentos','SunatController@listarDocumentos');

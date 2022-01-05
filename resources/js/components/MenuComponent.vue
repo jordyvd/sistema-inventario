@@ -5,6 +5,7 @@
         <h1 class="bienvenida-text">Bienvenido(a) {{ user_name }}</h1>
       </div>
     </div>
+    <spinner v-if="spinnerSystem" />
     <div class="wrapper d-flex align-items-stretch">
       <nav id="sidebar" class="menu-scroll bg-menu">
         <div class="card-header">
@@ -114,6 +115,25 @@
                 </li>
               </ul>
             </li>
+            <li></li>
+            <li v-if="menu.ventas > 0">
+              <a
+                href="#documentos"
+                data-toggle="collapse"
+                aria-expanded="false"
+                class="dropdown-toggle"
+              >
+                <i class="fas fa-file-pdf"></i> Documentos
+              </a>
+              <ul class="collapse list-unstyled" id="documentos">
+                <li>
+                  <router-link :to="{ name: 'documentos' }"
+                    >listado</router-link
+                  >
+                </li>
+              </ul>
+            </li>
+            <li></li>
             <li v-if="menu.reportes > 0">
               <a
                 href="#pageSubmenuCon"
@@ -358,6 +378,7 @@
         </div>
       </div>
     </div>
+    <button id="clickButtonSpinner" hidden @click="spinnerShowHide()"></button>
   </div>
 </template>
 <script>
@@ -368,6 +389,7 @@ export default {
       menu: [],
       spinner: false,
       isActive: true,
+      spinnerSystem: false,
     };
   },
   computed: {
@@ -409,7 +431,7 @@ export default {
         content: "input",
       }).then((value) => {
         if (value != null) {
-          axios.post("/api/backud",{password:value}).then((res) => {
+          axios.post("/api/backud", { password: value }).then((res) => {
             swal({
               text: res.data,
               icon: "info",
@@ -418,6 +440,9 @@ export default {
           });
         }
       });
+    },
+    spinnerShowHide() {
+      this.spinnerSystem = !this.spinnerSystem;
     },
   },
 };

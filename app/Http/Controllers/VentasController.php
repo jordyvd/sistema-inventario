@@ -9,7 +9,9 @@ use App\detalle_venta;
 use App\cliente;
 use Illuminate\Support\Facades\Auth;
 use App\Movimientos;
+use App\credito_payments;
 use Illuminate\Support\Facades\DB;
+
 
 class VentasController extends Controller
 {
@@ -160,9 +162,15 @@ class VentasController extends Controller
         $venta = ventas::find($id);
         $venta->estado_pago = $request->acumulado;
         $venta->save();
+        $tracking = new credito_payments;
+        $tracking->monto = $request->mount;
+        $tracking->created_by =  Auth::user()->id;
+        $tracking->save();
     }
     public function generar_venta(Request $request){
+        $numero_sunat = $this->numeroSunat();
         $venta = new ventas;
+        $venta->numero_d_sunat = $numero_sunat;
         $venta->nrof = $request->nrof;
         $venta->estado = $request->estado;
         $venta->estado_pago = '0'; 
@@ -179,7 +187,15 @@ class VentasController extends Controller
         $venta->fecha_t = date("d-m-Y h:i:s a");
         $venta->xmayor = $request->xmayor;
         $venta->save();
-        return back();
+        return $numero_sunat;
+    }
+    public function numeroSunat(){
+        $numero = DB::select('select numero_d_sunat from ventas order by id desc');
+        $numero = $numero[0]->numero_d_sunat;
+        if($numero == null){
+            $numero = 1;
+        }
+        return $numero;
     }
     public function detalle_venta(Request $request){
         foreach($request['arrayDate'] as $value){

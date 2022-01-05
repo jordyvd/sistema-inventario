@@ -154,6 +154,7 @@
                   <th scope="col">documento</th>
                   <th scope="col">fecha</th>
                   <th scope="col">editar</th>
+                  <th scope="col">pagos</th>
                   <th scope="col">print</th>
                   <th scope="col">anular</th>
                 </tr>
@@ -211,6 +212,9 @@
                     >
                       <i class="fas fa-edit"></i>
                     </button>
+                  </td>
+                    <td>
+                    <i class="fas fa-file-invoice-dollar"></i>
                   </td>
                   <td>
                     <button class="text-daek" @click="imprimir(item)">
@@ -427,6 +431,7 @@ export default {
           Vue.$toast.success("actualizando información...");
           const params = {
             monto: parseFloat(value) + parseFloat(item.estado_pago),
+            mount:value,
           };
           axios
             .post("/estado_pago/" + item.id, params)

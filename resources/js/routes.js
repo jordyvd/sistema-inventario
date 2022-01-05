@@ -174,6 +174,11 @@ export default new Router({
             path:'*',
             component : require('./views/404').default
         },
+        {
+            path:'/documentos',
+            name:'documentos',
+            component: require('./views/documentos').default
+        }
     ],
     mode: 'history'
 

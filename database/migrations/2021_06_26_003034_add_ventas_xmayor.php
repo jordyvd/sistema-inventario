@@ -9,7 +9,7 @@ class AddVentasXmayor extends Migration
     public function up()
     {
         Schema::table('ventas', function ($table) {
-            $table->integer('xmayor')->after('anulado');
+            // $table->integer('xmayor')->after('anulado');
         });
     }
 
