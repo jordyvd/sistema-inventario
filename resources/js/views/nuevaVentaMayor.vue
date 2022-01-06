@@ -64,7 +64,7 @@
               </div> -->
             <div class="col-md-2 mb-3">
               <label>ruc o dni</label>
-              <form @submit.prevent="buscarcliente">
+              <form @submit.prevent="getClient()">
                 <input
                   type="search"
                   class="form-control"
@@ -399,6 +399,99 @@
         </div>
       </div>
     </div>
+    <!-- modal cliente -->
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="modalClienteOpen2"
+      data-toggle="modal"
+      data-target="#modalCliente2"
+      hidden
+    ></button>
+    <div
+      class="modal fade"
+      id="modalCliente2"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content border-modal modal-colo-p">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Cliente</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Numero de documento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="cliente.numeroDocumento"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="cliente.nombre"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Tipo de documento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="cliente.tipoDocumento"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Direccion</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="cliente.direccion"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Provincia</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="cliente.provincia"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Departamento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="cliente.departamento"
+                />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Distrito</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="cliente.distrito"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -406,6 +499,15 @@ export default {
   data() {
     return {
       tipo_v: "",
+      cliente: {
+        nombre: null,
+        numeroDocumento: null,
+        tipoDocumento: null,
+        direccion: null,
+        provincia: null,
+        departamento: null,
+        distrito: null,
+      },
       sunat: {
         total_texto: "",
       },
@@ -551,7 +653,7 @@ export default {
             this.nrof = "0";
             this.nrof = parseFloat(this.nrof) + 1;
             this.nrof = zeroPad(this.nrof, 9);
-            this.producto.numfactura = this.nrof;
+            cccccthis.producto.numfactura = this.nrof;
           } else {
             this.nrof = res.data;
             this.nrof = parseFloat(this.nrof) + 1;
@@ -577,6 +679,15 @@ export default {
           "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
         usuario: this.user_name,
         xmayor: 1,
+        cliente: this.cliente,
+
+        productos: this.agregados,
+        condicion:
+          this.producto.estado == "1"
+            ? "Efectivo"
+            : this.producto.estado == "0"
+            ? "Credito"
+            : this.producto.estado,
       };
       swal({
         text: "¿estás seguro?",
@@ -586,14 +697,21 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           // ***** validar ******
-          if (this.producto.estado.trim() === "" || this.tipo_v.trim() === "") {
-            Vue.$toast.error("completar todos los campos");
+          if (
+            this.producto.estado.trim() === "" ||
+            this.tipo_v.trim() === "" ||
+            this.agregados.length < 1
+          ) {
+            Vue.$toast.error("completar datos");
           } else {
             this.spinner_table = true;
+            document.getElementById("clickButtonSpinner").click();
             axios
               .post("/generar_venta", params)
               .then((res) => {
-                this.agregarventa_detalles();
+                // this.numeroSunat = res.data;
+                this.generarDocumento(res.data);
+                //  this.agregarventa_detalles();
               })
               .catch((error) => {
                 this.spinner_table = false;
@@ -620,18 +738,46 @@ export default {
       this.$data.producto.ruc_dni = "";
       this.$data.producto.nom_cliente = "";
     },
-    agregarventa_detalles() {
+    generarDocumento(serie) {
       const params = {
-        arrayDate: this.agregados,
-        nrof: "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
+        code: serie,
+        cliente: this.cliente,
+        productos: this.agregados,
+        condicion: this.producto.estado,
+        documento: this.tipo_v,
+        sucursal: this.user_sucursal,
       };
-      axios.post("/detalle_venta", params).then((res) => {
-        this.generar_nuevo_numer_f();
-        this.vaciar_datos();
-        // this.eliminar_productos(this.agregados[i]);
-        Vue.$toast.success("venta guardada");
-        this.eliminar_productos();
+      axios.post("/api/generarDocumento", params).then((res) => {
+        let formData = new FormData();
+        formData.append("emisor", JSON.stringify(res.data.emisor));
+        formData.append("cliente", JSON.stringify(res.data.cliente));
+        formData.append("tipoDocumento", res.data.tipoDocumento);
+        formData.append("code", res.data.code);
+        formData.append("productos", JSON.stringify(res.data.productos));
+        formData.append("fecha", res.data.fecha);
+        formData.append("fechaPdf", res.data.fechaPdf);
+        formData.append("igv", res.data.igv);
+        formData.append("total", res.data.total);
+        formData.append("totalText", res.data.totalText);
+        formData.append("totalSinIgv", res.data.totalSinIgv);
+        formData.append("porcentajeIgv", res.data.porcentajeIgv);
+        axios
+          .post(
+            "http://localhost/testcpe/api_cpe/ReceiveInformation.php",
+            formData
+          )
+          .then((res) => {
+            this.openDocumento(res.data.code);
+            this.generar_nuevo_numer_f();
+            this.vaciar_datos();
+            this.eliminar_productos();
+            this.editarDocumento(res.data);
+            document.getElementById("clickButtonSpinner").click();
+          });
       });
+    },
+    editarDocumento(params) {
+      axios.post("/api/editar-documento", params);
     },
     eliminar_productos() {
       this.agregados = [];
@@ -686,6 +832,38 @@ export default {
       }
       const params = { datos: this.agregados };
       axios.post("imprimircotizar", params);
+    },
+    getClient() {
+      document.getElementById("clickButtonSpinner").click();
+      if (this.producto.ruc_dni.length > 8) {
+        this.getRuc(this.producto.ruc_dni);
+      } else {
+        this.getDni(this.producto.ruc_dni);
+      }
+    },
+    getDni(numero) {
+      axios.get("/api/dni/" + numero).then((res) => {
+        this.producto.nom_cliente = res.data.nombre;
+        this.cliente = res.data;
+        this.tipo_v = "boleta";
+        document.getElementById("clickButtonSpinner").click();
+        if (this.cliente.numeroDocumento == null) {
+          swal("ERROR", "no se encontro un cliente", "error");
+          document.getElementById("modalClienteOpen2").click();
+        }
+      });
+    },
+    getRuc(numero) {
+      axios.get("/api/ruc/" + +numero).then((res) => {
+        this.producto.nom_cliente = res.data.nombre;
+        this.cliente = res.data;
+        this.tipo_v = "factura";
+        document.getElementById("clickButtonSpinner").click();
+        if (this.cliente.numeroDocumento == null) {
+          swal("ERROR", "no se encontro un cliente", "error");
+          document.getElementById("modalClienteOpen2").click();
+        }
+      });
     },
   },
   computed: {

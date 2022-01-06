@@ -49,7 +49,10 @@ export default {
   },
   methods: {
     listar() {
-      axios.post("/api/listar-documentos").then((res) => {
+      const params = {
+        sucursal: this.user_sucursal,
+      };
+      axios.post("/api/listar-documentos", params).then((res) => {
         this.documentos = res.data;
       });
     },

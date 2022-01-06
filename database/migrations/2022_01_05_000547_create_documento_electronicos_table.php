@@ -21,6 +21,7 @@ class CreateDocumentoElectronicosTable extends Migration
             $table->text('qr')->nullable();
             $table->integer('estado')->nullable();
             $table->integer('estado_pdf')->nullable();
+            $table->text('sucursal');
             $table->timestamps();
         });
     }

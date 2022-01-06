@@ -168,44 +168,52 @@ class VentasController extends Controller
         $tracking->save();
     }
     public function generar_venta(Request $request){
-        $numero_sunat = $this->numeroSunat();
-        $venta = new ventas;
-        $venta->numero_d_sunat = $numero_sunat;
-        $venta->nrof = $request->nrof;
-        $venta->estado = $request->estado;
-        $venta->estado_pago = '0'; 
-        $venta->tipo_v = $request->tipo_v;
-        $venta->total_v = $request->total_v;
-        $venta->total_ganancia = $request->total_ganancia;
-        $venta->ruc_dni_v = $request->ruc_dni;
-        $venta->nombre_cliente = $request->nom_cliente;
-        $venta->sucursal = $request->sucursal;
-        $venta->cod_sucursal = $request->cod_sucursal;
-        $venta->usuario = $request->usuario;
-        $venta->anulado = "0";
-        $venta->fecha = date('Y-m-d');
-        $venta->fecha_t = date("d-m-Y h:i:s a");
-        $venta->xmayor = $request->xmayor;
-        $venta->save();
-        return $numero_sunat;
+        $doc = $this->docSunat($request);
+        $procedure = "call insert_venta(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $parameter = [
+            $doc['doc'],
+            $doc['cod'],
+            $request->nrof,
+            $request->estado,
+            0,
+            $request->tipo_v,
+            $request->total_v,
+            $request->total_ganancia,
+            $request->ruc_dni,
+            $request->nom_cliente,
+            $request->sucursal,
+            $request->cod_sucursal,
+            $request->usuario,
+            $request->xmayor
+        ];
+        $this->detalleVenta($request);
+        $data = DB::select($procedure, $parameter);
+        return $data[0]->serie;
     }
-    public function numeroSunat(){
-        $numero = DB::select('select numero_d_sunat from ventas order by id desc');
-        $numero = $numero[0]->numero_d_sunat;
-        if($numero == null){
-            $numero = 1;
+    public function docSunat(Request $request){
+        $doc = "";
+        $cod = "";
+        if($request->tipo_v == "factura"){
+           $doc = "01";
+           $cod = "01-F001";
+        }else if($request->tipo_v == "boleta"){
+           $doc = "03";
+           $cod = "03-B001";
         }
-        return $numero;
+        return [
+            "doc" => $doc,
+            "cod" => $cod
+        ];
     }
-    public function detalle_venta(Request $request){
-        foreach($request['arrayDate'] as $value){
+    public function detalleVenta(Request $request){
+        foreach($request['productos'] as $value){
         //guardar detalles
             $detalle = new detalle_venta;
             $detalle->barra_detalles = $value['barra'];
             $detalle->cantidad = $value['cantidad'];
             $detalle->precio = $value['precio'];
             $detalle->descuento = $value['descuento'];
-            $detalle->nrof = $request['nrof'];
+            $detalle->nrof = $request['cod_sucursal'];
             $detalle->sucursal = $value['sucursal'];
             $detalle->save();
             //bajar stock
@@ -215,7 +223,7 @@ class VentasController extends Controller
             $stock->stock_almacen = intval($almacen->stock_almacen) - intval($value['cantidad']);
             $stock->save(); 
             $movimiento = new Movimientos;
-            $movimiento->nro_documento = $request['nrof'];
+            $movimiento->nro_documento = $request['cod_sucursal'];
             $movimiento->barra_mov = $value['barra'];
             $movimiento->precio = $value['precio'];
             $movimiento->condicion = $request->condicion;

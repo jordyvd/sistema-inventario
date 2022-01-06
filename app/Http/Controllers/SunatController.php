@@ -57,14 +57,19 @@ class SunatController extends Controller
         $codigoTypoDocumento = $this->codigoTypoDocumentoF($request);
 
         foreach($request['productos'] as $producto){
-              $importe = $producto['precio'] * $producto['cantidad'];
+             
+              $descuento = $producto['descuento'] / $producto['cantidad'];
 
-              $precio_igv = $producto['precio'] / 1.18;
+              $precio =  $producto['precio'] - $descuento;
+             
+              $importe = $precio * $producto['cantidad'];
+
+              $precio_igv = $precio / 1.18;
 
               $importe_igv = $precio_igv * $producto['cantidad'];
               $productos[] = [
                    "codigo" => $producto['barra'],
-                   "precio" => str_replace(",","", number_format($producto['precio'], 2)),
+                   "precio" => str_replace(",","", number_format($precio, 2)),
                    "precioSinIgv" => str_replace(",","", number_format($precio_igv, 2)),
                    "igv" => str_replace(",","", number_format($importe / 1.18 * 0.18, 2)),
                    "descripcion" => $producto['producto'],
@@ -102,7 +107,7 @@ class SunatController extends Controller
                     "zonaTipo" => $request->cliente['zonaTipo'],
                     "ubigeo" => $request->cliente['ubigeo']
                ],
-               "code" => $codigoTypoDocumento['codigo']."-".$codigoTypoDocumento['tipoComprobante']."-0000006",
+               "code" => $request->code,
                "tipoDocumento" => $codigoTypoDocumento['codigo'],
                "productos" => $productos,
                "fecha" => date("Y-m-d h:i:s a"),
@@ -113,7 +118,7 @@ class SunatController extends Controller
                "totalSinIgv" => str_replace(",","", number_format($total_sin_igv, 2)),
                "porcentajeIgv" => 18,
         ];
-        $this->guardarDocumento($parameter);
+        $this->guardarDocumento($request, $parameter);
         return $parameter;
     }
     public function codigoTypoDocumentoF(Request $request){
@@ -145,13 +150,14 @@ class SunatController extends Controller
     public function creditNote(Request $request){
 
     }
-    public function guardarDocumento($request){
+    public function guardarDocumento(Request $request, $par){
        $explode = explode("-", $request['code']);
-       $procedure = "call insert_documento_electronico(?,?,?,?,?,?)";
+       $procedure = "call insert_documento_electronico(?,?,?,?,?,?,?)";
        $parameter = [
-            $request['code'],
+            $request->sucursal,
+            $par['code'],
             $explode[0],
-            $request['total'],
+            $par['total'],
             null,
             null,
             null
@@ -168,8 +174,11 @@ class SunatController extends Controller
         ];
         DB::statement($procedure, $parameter);
     }
-    public function listarDocumentos(){
-        $procedure = "call listar_documentos()";
-        return DB::select($procedure);
+    public function listarDocumentos(Request $request){
+        $procedure = "call listar_documentos(?)";
+        $parameter = [
+            $request->sucursal,
+        ];
+        return DB::select($procedure, $parameter);
     }
 }

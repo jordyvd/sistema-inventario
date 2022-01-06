@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNumeroDSunatInTableVentas extends Migration
+class AddSerieAndCorrelativoAndDocSunatInVentasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,9 @@ class AddNumeroDSunatInTableVentas extends Migration
     public function up()
     {
         Schema::table('ventas', function (Blueprint $table) {
-            $table->integer('serie_sunat')->after('id')->nullable();
+            $table->text('serie')->nullable()->after('id');
+            $table->integer('correlativo')->nullable()->after('id');
+            $table->text('doc_sunat')->nullable()->after('id');
         });
     }
 

@@ -539,6 +539,7 @@ export default {
       spinner_table: false,
       cotizacion: [],
       numeroSunat: null,
+      serieSunat:null,
     };
   },
   created() {
@@ -681,6 +682,15 @@ export default {
         usuario: this.user_name,
         xmayor: 0,
         cliente: this.cliente,
+
+        productos: this.agregados,
+        condicion:
+          this.producto.estado == "1"
+            ? "Efectivo"
+            : this.producto.estado == "0"
+            ? "Credito"
+            : this.producto.estado,
+
       };
       swal({
         text: "¿estás seguro?",
@@ -702,8 +712,9 @@ export default {
             axios
               .post("/generar_venta", params)
               .then((res) => {
-                this.numeroSunat = res.data;
-                this.agregarventa_detalles();
+               // this.numeroSunat = res.data;
+                this.generarDocumento(res.data);
+              //  this.agregarventa_detalles();
               })
               .catch((error) => {
                 this.spinner_table = false;
@@ -730,24 +741,24 @@ export default {
       this.$data.producto.ruc_dni = "";
       this.$data.producto.nom_cliente = "";
     },
-    agregarventa_detalles() {
+    // agregarventa_detalles() {
+    //   const params = {
+    //     arrayDate: this.agregados,
+    //     nrof: "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
+    //     condicion:
+    //       this.producto.estado == "1"
+    //         ? "Efectivo"
+    //         : this.producto.estado == "0"
+    //         ? "Credito"
+    //         : this.producto.estado,
+    //   };
+    //   axios.post("/detalle_venta", params).then((res) => {
+    //     this.generarDocumento();
+    //   });
+    // },
+    generarDocumento(serie) {
       const params = {
-        arrayDate: this.agregados,
-        nrof: "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
-        condicion:
-          this.producto.estado == "1"
-            ? "Efectivo"
-            : this.producto.estado == "0"
-            ? "Credito"
-            : this.producto.estado,
-      };
-      axios.post("/detalle_venta", params).then((res) => {
-        this.generarDocumento();
-      });
-    },
-    generarDocumento() {
-      const params = {
-        numero: zeroPad(this.numeroSunat, 7),
+        code: serie,
         cliente: this.cliente,
         productos: this.agregados,
         condicion: this.producto.estado,
