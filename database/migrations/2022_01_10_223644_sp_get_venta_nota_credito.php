@@ -21,6 +21,7 @@ class SpGetVentaNotaCredito extends Migration
             set @serie = (select concat(\"07\",\"-\",tipo,\"-\",LPAD(@correlativo,8,'0')));
             select *,@serie code,@correlativo correlativo from ventas v where v.id = id_p;
         END";
+        DB::unprepared('DROP PROCEDURE IF EXISTS get_venta_nota_credito');
         DB::unprepared($procedure);
     }
 

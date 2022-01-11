@@ -43,6 +43,7 @@ class SpInsertVenta extends Migration
                 nombre_cliente_p,sucursal_p, cod_sucursal_p,usuario_p,0,curdate(), now(), xmayor_p,now(),now());
                 select @serie serie;
             END";
+        DB::unprepared('DROP PROCEDURE IF EXISTS insert_venta');
         DB::unprepared($procedure);
     }
 

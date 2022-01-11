@@ -151,7 +151,7 @@ class SunatController extends Controller
     }
     public function guardarCredito(Request $request, $param, $venta){
         $explode = explode("-", $venta->code);
-        $procedure = "call insertar_credito(?,?,?,?,?,?)";
+        $procedure = "call insertar_credito(?,?,?,?,?,?,?,?)";
         $parameter = [
             $request->id, // id venta
             $venta->code,
@@ -159,12 +159,15 @@ class SunatController extends Controller
             $explode[0]."-".$explode[1],
             null,
             $request->sucursal,
+            null,
+            null
         ];
         DB::statement($procedure, $parameter);
     }
     public function editarCredito(Request $request){
+        $mensaje = $request['sunat']['mensaje'];
         $explode = explode("-", $request['anular']);
-        $procedure = "call insertar_credito(?,?,?,?,?,?)";
+        $procedure = "call insertar_credito(?,?,?,?,?,?,?,?)";
         $parameter = [
             null,
             $request->code,
@@ -172,6 +175,8 @@ class SunatController extends Controller
             null,
             $request['sunat']['estado'],
             null,
+            $mensaje['msj_sunat'],
+            $mensaje['cod_sunat']
         ];
         DB::statement($procedure, $parameter);
     }
@@ -301,12 +306,15 @@ class SunatController extends Controller
        DB::statement($procedure, $parameter);
     } 
     public function EditarDocumento(Request $request){
-        $procedure = "call update_documento_electronico(?,?,?,?)";
+        $mensaje = $request['sunat']['mensaje'];
+        $procedure = "call update_documento_electronico(?,?,?,?,?,?)";
         $parameter = [
             $request['code'],
             $request['qr'],
             $request['sunat']['estado'],
-            1
+            1,
+            $mensaje['msj_sunat'],
+            $mensaje['cod_sunat']
         ];
         DB::statement($procedure, $parameter);
     }

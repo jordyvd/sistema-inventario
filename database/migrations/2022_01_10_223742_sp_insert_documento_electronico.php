@@ -21,6 +21,7 @@ class SpInsertDocumentoElectronico extends Migration
                 insert into documentos_electronicos(sucursal,serie, tipo, total, qr, estado, estado_pdf, created_at) 
                 values(sucursal_p,serie_p, tipo_p,total_p, qr_p,estado_p, estado_pdf_p, now());
         END";
+        DB::unprepared('DROP PROCEDURE IF EXISTS insert_documento_electronico');
         DB::unprepared($procedure);
     }
 

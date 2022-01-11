@@ -19,6 +19,7 @@ class SpGetDetallesVenta extends Migration
             select p.nompro producto,dv.precio,dv.cantidad ,dv.descuento,p.barra,p.marca,dv.sucursal from detalle_venta dv 
             join products p on dv.barra_detalles = p.barra where dv.nrof = nrof_p;
         END";
+        DB::unprepared('DROP PROCEDURE IF EXISTS get_detalles_venta');
         DB::unprepared($procedure);
     }
 
