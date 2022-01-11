@@ -15,8 +15,7 @@ class CreateCreditDebitoSunatTable extends Migration
     {
         Schema::create('credito_debito_sunat', function (Blueprint $table) {
             $table->id();
-            $table->integer('venta_id')->unsigned()->nullable();
-            $table->foreign('venta_id')->references('id')->on('ventas');
+            $table->integer('venta_id')->nullable();
             $table->text('serie');
             $table->integer('correlativo')->nullable();
             $table->text('tipo');
