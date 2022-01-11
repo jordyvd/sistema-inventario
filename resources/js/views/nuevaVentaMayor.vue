@@ -711,11 +711,6 @@ export default {
             axios
               .post("/generar_venta", params)
               .then((res) => {
-                this.spinner_table = true;
-            document.getElementById("clickButtonSpinner").click();
-            axios
-              .post("/generar_venta", params)
-              .then((res) => {
                 if (this.tipo_v != "ticked") {
                   this.generarDocumento(res.data);
                 } else {
@@ -724,11 +719,6 @@ export default {
                   this.eliminar_productos();
                   document.getElementById("clickButtonSpinner").click();
                 }
-              })
-              .catch((error) => {
-                this.spinner_table = false;
-                swal("ERROR", "comprobar conexión", "info");
-              });
               })
               .catch((error) => {
                 this.spinner_table = false;
@@ -770,6 +760,7 @@ export default {
         formData.append("cliente", JSON.stringify(res.data.cliente));
         formData.append("tipoDocumento", res.data.tipoDocumento);
         formData.append("code", res.data.code);
+        formData.append("codeInterno", res.data.codeInterno);
         formData.append("productos", JSON.stringify(res.data.productos));
         formData.append("fecha", res.data.fecha);
         formData.append("fechaPdf", res.data.fechaPdf);
@@ -779,19 +770,14 @@ export default {
         formData.append("totalSinIgv", res.data.totalSinIgv);
         formData.append("porcentajeIgv", res.data.porcentajeIgv);
         formData.append("medioPago", res.data.medioPago);
-        axios
-          .post(
-             this.facturadorUrl,
-            formData
-          )
-          .then((res) => {
-            this.openDocumento(res.data.code);
-            this.generar_nuevo_numer_f();
-            this.vaciar_datos();
-            this.eliminar_productos();
-            this.editarDocumento(res.data);
-            document.getElementById("clickButtonSpinner").click();
-          });
+        axios.post(this.facturadorUrl, formData).then((res) => {
+          this.openDocumento(res.data.code);
+          this.generar_nuevo_numer_f();
+          this.vaciar_datos();
+          this.eliminar_productos();
+          this.editarDocumento(res.data);
+          document.getElementById("clickButtonSpinner").click();
+        });
       });
     },
     editarDocumento(params) {
