@@ -19,8 +19,9 @@ class SpListarDocumentos extends Migration
             select dl.serie, dl.estado,dl.total ,dl.estado_pdf, dl.created_at  from documentos_electronicos dl where date(dl.created_at) = curdate()
             and dl.sucursal = sucursal_p
             union 
-            select cs.serie , cs.estado , null total, null estado_pdf, cs.created_at from credito_debito_sunat cs order by created_at desc; 
+            select cs.serie , cs.estado , null total, null estado_pdf, cs.created_at from credito_debito_sunat cs where date(cs.created_at) = curdate() order by created_at desc; 
         END";
+        DB::unprepared('DROP PROCEDURE IF EXISTS listar_documentos');
         DB::unprepared($procedure);
     }
 
