@@ -20,7 +20,7 @@ export default {
     },
     openDocumento(pdf) {
       let url =
-        "http://localhost/testcpe/api_cpe/pdf/10405163131-" + pdf + ".pdf";
+      this.facturadorFile + "pdf/10405163131-" + pdf + ".pdf";
       let params = "width= 400";
       params += ", height=" + screen.height;
       params += ", top=0, left=500";
@@ -41,7 +41,7 @@ export default {
     },
     openXmlFe(xml) {
       let url =
-        "http://localhost/testcpe/api_cpe/BETA/10405163131-" + xml + ".xml";
+      this.facturadorFile +  "xml/10405163131-" + xml + ".xml";
       let params = "width= "+screen.width;
       params += ", height=" + screen.height;
       params += ", top=0, left=500";
@@ -60,6 +60,12 @@ export default {
       }
       return false;
     },
+    editarDocumento(params){
+        axios.post('/api/editar-documento', params);
+    },
+    editarCredito(params){
+        axios.post('/api/editar-credito', params);
+    }
   },
 };
 </script>

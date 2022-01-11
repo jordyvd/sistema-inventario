@@ -99,6 +99,8 @@ Route::post('/backud','BackudController@start');
 Route::get('/dni/{number}','SunatController@getDni');
 Route::get('/ruc/{number}','SunatController@getRuc');
 Route::post('/generarDocumento','SunatController@generarDocumento');
+Route::post('/generarNotaCredito','SunatController@generarNotaCredito');
 Route::post('/consumirApi','SunatController@facturar');
 Route::post('/editar-documento','SunatController@EditarDocumento');
 Route::post('/listar-documentos','SunatController@listarDocumentos');
+Route::post('/editar-credito','SunatController@EditarCredito');

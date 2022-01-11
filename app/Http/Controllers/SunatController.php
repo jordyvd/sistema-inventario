@@ -29,31 +29,158 @@ class SunatController extends Controller
         $response = json_decode($res->getBody()->getContents(), true);
         return $response;
     }
-    public function getDni($number){
-        $token = '';
-        $numero = '46027897';
-        $client = new Client(['base_uri' => 'https://api.apis.net.pe', 'verify' => false]);
-        $parameters = [
-            'http_errors' => false,
-            'connect_timeout' => 5,
-            'headers' => [
-                'Authorization' => 'Bearer '.$token,
-                'Referer' => 'https://apis.net.pe/api-consulta-dni',
-                'User-Agent' => 'laravel/guzzle',
-                'Accept' => 'application/json',
-            ],
-            'query' => ['numero' => $number]
+    public function getDni($number){{}
+        if($number == "111"){
+            return [
+                    "nombre" => "CLIENTE VARIOS",
+                    "tipoDocumento" => "1",
+                    "numeroDocumento" => "11111111",
+                    "estado" => "",
+                    "condicion" => "",
+                    "direccion" => "",
+                    "ubigeo" => "",
+                    "viaTipo" => "",
+                    "viaNombre" => "",
+                    "zonaCodigo" => "",
+                    "zonaTipo" => "",
+                    "numero" => "",
+                    "interior" => "",
+                    "lote" => "",
+                    "dpto" => "",
+                    "manzana" =>"",
+                    "kilometro" => "",
+                    "distrito" => "",
+                    "provincia" =>"",
+                    "departamento" => "",
+            ];
+        }else{
+            $token = '';
+            $client = new Client(['base_uri' => 'https://api.apis.net.pe', 'verify' => false]);
+            $parameters = [
+                'http_errors' => false,
+                'connect_timeout' => 5,
+                'headers' => [
+                    'Authorization' => 'Bearer '.$token,
+                    'Referer' => 'https://apis.net.pe/api-consulta-dni',
+                    'User-Agent' => 'laravel/guzzle',
+                    'Accept' => 'application/json',
+                ],
+                'query' => ['numero' => $number]
+            ];
+            $res = $client->request('GET', '/v1/dni', $parameters);
+            $response = json_decode($res->getBody()->getContents(), true);
+            return $response;
+        }
+    }
+    public function getVenta(Request $request, $tipo) {
+        $procedure = "call get_venta_nota_credito(?, ?, ?)";
+        $parameter = [
+            $request['id'],
+            $tipo == "03" ? "B001" : "F001",
+            $tipo == "03" ? "07-B001" : "07-F001",
         ];
-        $res = $client->request('GET', '/v1/dni', $parameters);
-        $response = json_decode($res->getBody()->getContents(), true);
-        return $response;
+        $data = DB::select($procedure, $parameter);
+        return $data[0];
+    }
+    public function generarNotaCredito(Request $request){
+        $productos = [];
+        $igv = 0;
+        $total = 0;
+        $total_sin_igv = 0;
+        $dataSucursal = $this->dataSucursal($request);
+        $codigoTypoDocumento = $this->codigoTypoDocumentoF($request);
+        $explodeAnular = explode("-", $request->serie);
+        $venta = $this->getVenta($request, $explodeAnular[0]);
+
+        foreach($request['productos'] as $producto){
+             
+              $descuento = $producto['descuento'] / $producto['cantidad'];
+
+              $precio =  $producto['precio'] - $descuento;
+             
+              $importe = $precio * $producto['cantidad'];
+
+              $precio_igv = $precio / 1.18;
+
+              $importe_igv = $precio_igv * $producto['cantidad'];
+              $productos[] = [
+                   "codigo" => $producto['barra'],
+                   "precio" => str_replace(",","", number_format($precio, 2)),
+                   "precioSinIgv" => str_replace(",","", number_format($precio_igv, 2)),
+                   "igv" => str_replace(",","", number_format($importe / 1.18 * 0.18, 2)),
+                   "descripcion" => $producto['nompro'],
+                   "marca" => $producto['marca'],
+                   "cantidad" => $producto['cantidad'],
+                   "importe" => str_replace(",","", number_format($importe, 2)),
+                   "importSinIgv" => str_replace(",","", number_format($importe_igv, 2)),
+              ];
+              $igv += str_replace(",","", ($importe / 1.18) * 0.18);
+              
+              $total += str_replace(",","", $importe);
+
+              $total_sin_igv += str_replace(",","", $importe_igv);
+        }
+        $formatter = new NumeroALetras();
+        $totalText = $formatter->toInvoice($total, 2, 'SOLES');
+        $parameter = [
+               "emisor" => [
+                    "ruc" => "10405163131",
+                    "nombre" => "CAMONES MARCELO YOMAR WALTER",
+                    "direccion" => $dataSucursal['direccion'],
+                    "telefono" => "937522124",
+               ],
+               "cliente" => [
+                    "nombre" => $venta->nombre_cliente,
+                    "numeroDocumento" => $venta->ruc_dni_v,
+                    "tipoDocumento" => $venta->doc_sunat == "03" ? "1" : "6",
+               ],
+               "code" => $venta->code,
+               "tipoDocumento" => "07",
+               "anular" => $request->serie,
+               "productos" => $productos,
+               "fecha" => date("Y-m-d h:i:s a"),
+               "fechaPdf" => date("d-m-Y h:i:s a"),
+               "igv" => str_replace(",","", number_format($igv, 2)),
+               "total" => str_replace(",","", number_format($total, 2)),
+               "totalText" => $totalText,
+               "totalSinIgv" => str_replace(",","", number_format($total_sin_igv, 2)),
+               "porcentajeIgv" => 18,
+        ];
+        $this->guardarCredito($request, $parameter, $venta);
+        return $parameter;
+    }
+    public function guardarCredito(Request $request, $param, $venta){
+        $explode = explode("-", $venta->code);
+        $procedure = "call insertar_credito(?,?,?,?,?,?)";
+        $parameter = [
+            $request->id, // id venta
+            $venta->code,
+            ltrim($explode[2], "0"),
+            $explode[0]."-".$explode[1],
+            null,
+            $request->sucursal,
+        ];
+        DB::statement($procedure, $parameter);
+    }
+    public function editarCredito(Request $request){
+        $explode = explode("-", $request['anular']);
+        $procedure = "call insertar_credito(?,?,?,?,?,?)";
+        $parameter = [
+            null,
+            $request->code,
+            null,
+            null,
+            $request['sunat']['estado'],
+            null,
+        ];
+        DB::statement($procedure, $parameter);
     }
     public function generarDocumento(Request $request){
         $productos = [];
         $igv = 0;
         $total = 0;
         $total_sin_igv = 0;
-        $direccion = $this->direccionSucursal($request);
+        $dataSucursal = $this->dataSucursal($request);
         $codigoTypoDocumento = $this->codigoTypoDocumentoF($request);
 
         foreach($request['productos'] as $producto){
@@ -90,8 +217,8 @@ class SunatController extends Controller
                "emisor" => [
                     "ruc" => "10405163131",
                     "nombre" => "CAMONES MARCELO YOMAR WALTER",
-                    "direccion" => $direccion,
-                    "telefono" => "937522124",
+                    "direccion" => $dataSucursal['direccion'],
+                    "telefono" => $dataSucursal['telefono'],
                ],
                "cliente" => [
                     "nombre" => $request->cliente['nombre'],
@@ -108,6 +235,7 @@ class SunatController extends Controller
                     "ubigeo" => $request->cliente['ubigeo']
                ],
                "code" => $request->code,
+               "codeInterno" => $request->nrof,
                "tipoDocumento" => $codigoTypoDocumento['codigo'],
                "productos" => $productos,
                "fecha" => date("Y-m-d h:i:s a"),
@@ -117,6 +245,7 @@ class SunatController extends Controller
                "totalText" => $totalText,
                "totalSinIgv" => str_replace(",","", number_format($total_sin_igv, 2)),
                "porcentajeIgv" => 18,
+               "medioPago" => $request->condicion == 0 ? "Credito" : "Contado",
         ];
         $this->guardarDocumento($request, $parameter);
         return $parameter;
@@ -130,25 +259,32 @@ class SunatController extends Controller
         }else if($request['documento'] == "boleta"){
             $codigo = "03";
             $tipoComprobante = "B001";
+        }else if($request['documento'] == "credito"){
+            $codigo = "07";
+            $tipoComprobante = "F001";
         }
         return [
             "codigo" => $codigo,
             "tipoComprobante" => $tipoComprobante
         ];
     }
-    public function direccionSucursal(Request $request){
+    public function dataSucursal(Request $request){
         $direccion = "";
+        $telefono = "";
         if($request['sucursal'] == "huaral"){
-            $direccion = "Calle Morales Bermúdez # 340 y 342";
+            $direccion = "Calle Morales Bermúdez # 340 y 342, Huaral";
+            $telefono = "6049611";
         }else if($request['sucursal'] == "lima-abancay"){
-            $direccion = "Av. Abancay # 368 Int. 1090 - Galería La Casona";   
+            $direccion = "Av. Abancay # 368 Int. 1090 - Galería La Casona, Lima";   
+            $telefono = "937522124";
         }else if($request['sucursal'] == "barranca"){
-            $direccion = "JR. Castilla 148";   
+            $direccion = "JR. Castilla 148, Barranca";  
+            $telefono = "5984852"; 
         }
-        return $direccion;
-    }
-    public function creditNote(Request $request){
-
+        return [
+            "direccion" => $direccion,
+            "telefono" => $telefono
+        ];
     }
     public function guardarDocumento(Request $request, $par){
        $explode = explode("-", $request['code']);

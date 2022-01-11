@@ -77,6 +77,7 @@
               <input
                 type="text"
                 class="form-control"
+                disabled
                 v-model="producto.nom_cliente"
               />
             </div>
@@ -700,7 +701,8 @@ export default {
           if (
             this.producto.estado.trim() === "" ||
             this.tipo_v.trim() === "" ||
-            this.agregados.length < 1
+            this.agregados.length < 1 ||
+            this.producto.nom_cliente.trim() === ""
           ) {
             Vue.$toast.error("completar datos");
           } else {
@@ -709,9 +711,24 @@ export default {
             axios
               .post("/generar_venta", params)
               .then((res) => {
-                // this.numeroSunat = res.data;
-                this.generarDocumento(res.data);
-                //  this.agregarventa_detalles();
+                this.spinner_table = true;
+            document.getElementById("clickButtonSpinner").click();
+            axios
+              .post("/generar_venta", params)
+              .then((res) => {
+                if (this.tipo_v != "ticked") {
+                  this.generarDocumento(res.data);
+                } else {
+                  this.generar_nuevo_numer_f();
+                  this.vaciar_datos();
+                  this.eliminar_productos();
+                  document.getElementById("clickButtonSpinner").click();
+                }
+              })
+              .catch((error) => {
+                this.spinner_table = false;
+                swal("ERROR", "comprobar conexión", "info");
+              });
               })
               .catch((error) => {
                 this.spinner_table = false;
@@ -761,9 +778,10 @@ export default {
         formData.append("totalText", res.data.totalText);
         formData.append("totalSinIgv", res.data.totalSinIgv);
         formData.append("porcentajeIgv", res.data.porcentajeIgv);
+        formData.append("medioPago", res.data.medioPago);
         axios
           .post(
-            "http://localhost/testcpe/api_cpe/ReceiveInformation.php",
+             this.facturadorUrl,
             formData
           )
           .then((res) => {

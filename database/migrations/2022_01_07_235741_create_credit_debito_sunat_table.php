@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDocumentoElectronicosTable extends Migration
+class CreateCreditDebitoSunatTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class CreateDocumentoElectronicosTable extends Migration
      */
     public function up()
     {
-        Schema::create('documentos_electronicos', function (Blueprint $table) {
+        Schema::create('credito_debito_sunat', function (Blueprint $table) {
             $table->id();
+            $table->integer('venta_id')->unsigned()->nullable();
+            $table->foreign('venta_id')->references('id')->on('ventas');
             $table->text('serie');
             $table->integer('correlativo')->nullable();
             $table->text('tipo');
-            $table->decimal('total', 11,2);
-            $table->text('qr')->nullable();
             $table->integer('estado')->nullable();
-            $table->integer('estado_pdf')->nullable();
             $table->text('sucursal');
             $table->timestamps();
         });
@@ -34,6 +33,6 @@ class CreateDocumentoElectronicosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('documento_electronicos');
+        Schema::dropIfExists('credit_debito_sunat');
     }
 }

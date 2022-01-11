@@ -21,7 +21,7 @@
               </td>
               <td>{{ item.total }}</td>
               <td>
-                <button @click="abrirDocument(item)" class="btn btn-danger">
+                <button @click="abrirDocument(item)" class="btn btn-danger" v-if="item.estado_pdf">
                   <i class="fas fa-file-pdf"></i>
                 </button>
               </td>

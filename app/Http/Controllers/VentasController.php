@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Movimientos;
 use App\credito_payments;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\SunatController;
 
 
 class VentasController extends Controller
@@ -67,7 +68,7 @@ class VentasController extends Controller
          ];
     }
     public function listdetalles($nrof,$sucursal){
-        return detalle_venta::select('detalle_venta.id','products.barra','products.codigo','products.nompro','detalle_venta.precio','detalle_venta.descuento','detalle_venta.cantidad','detalle_venta.nrof','detalle_venta.sucursal')
+        return detalle_venta::select('detalle_venta.id','products.barra','products.codigo','products.nompro','detalle_venta.precio','detalle_venta.descuento','detalle_venta.cantidad','detalle_venta.nrof','detalle_venta.sucursal','products.marca')
         ->join('products','detalle_venta.barra_detalles','products.barra')
         ->where('detalle_venta.nrof',$nrof)
         ->get();
@@ -191,8 +192,8 @@ class VentasController extends Controller
         return $data[0]->serie;
     }
     public function docSunat(Request $request){
-        $doc = "";
-        $cod = "";
+        $doc = null;
+        $cod = null;
         if($request->tipo_v == "factura"){
            $doc = "01";
            $cod = "01-F001";
@@ -236,13 +237,17 @@ class VentasController extends Controller
         }
         return back();
     }
-    public function anularfactura($id,$nrof,$sucursal){
-        $venta = ventas::find($id);
+    public function anularfactura(Request $request){
+        $venta = ventas::find($request->id);
         $venta->anulado = "1";
         $venta->total_v = "0";
         $venta->save();
-        $detalle = detalle_venta::where('nrof',$nrof)->where('sucursal',$sucursal)
-        ->delete();
+        detalle_venta::where('nrof',$request->nrof)->where('sucursal',$request->sucursal)->delete();
+        $this->subir_stock_venta($request);
+    }
+    public function notaCredito(Request $request){
+        $objeto = new SunatController();
+        return $objeto->generarNotaCredito($request);
     }
     public function estado_pago(Request $request, $id){
         $ventas = ventas::find($id);
@@ -257,7 +262,7 @@ class VentasController extends Controller
         return back();
     }
     public function subir_stock_venta(Request $request){
-        foreach($request['ArrayAnular'] as $value){
+        foreach($request['productos'] as $value){
             $almacen = almacen::where('barra_almacen',$value['barra'])
             ->where('sucursal',$value['sucursal'])->first();
             $stock = almacen::find($almacen->id);

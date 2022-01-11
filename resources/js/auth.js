@@ -80,7 +80,13 @@ module.exports = {
         },
         user_compras(){
             return compras.content;
-        }
+        },
+        facturadorUrl(){
+            return "http://181.224.250.87:88/api_cpe/ReceiveInformation.php";
+        },
+        facturadorFile(){
+            return "http://181.224.250.87:88/api_cpe/";
+        },
     },
     methods:{
         no_permisos(){

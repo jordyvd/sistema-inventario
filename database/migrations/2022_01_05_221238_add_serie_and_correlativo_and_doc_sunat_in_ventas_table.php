@@ -17,6 +17,7 @@ class AddSerieAndCorrelativoAndDocSunatInVentasTable extends Migration
             $table->text('serie')->nullable()->after('id');
             $table->integer('correlativo')->nullable()->after('id');
             $table->text('doc_sunat')->nullable()->after('id');
+            $table->text('anulado_cod')->nullable()->after('nrof');
         });
     }
 

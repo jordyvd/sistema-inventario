@@ -53,7 +53,7 @@ Route::post('/bajarstock_nota/{sucursal}','NotasController@bajarstock_nota');
 Route::post('/generar_venta','VentasController@generar_venta');
 Route::post('/detalle_venta','VentasController@detalle_venta');
 Route::post('/modificaracumulado/{id}','VentasController@modificaracumulado');
-Route::get('/anularfactura/{id}/{nrof}/{sucursal}','VentasController@anularfactura');
+Route::post('/anularfactura','VentasController@anularfactura');
 Route::post('/cambiar_estado_ventas/{id}','VentasController@cambiar_estado');
 Route::post('/estado_pago/{id}','VentasController@estado_pago');
 Route::post('/subir_stock_venta','VentasController@subir_stock_venta');
