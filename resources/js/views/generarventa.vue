@@ -788,19 +788,14 @@ export default {
         formData.append("totalSinIgv", res.data.totalSinIgv);
         formData.append("porcentajeIgv", res.data.porcentajeIgv);
         formData.append("medioPago", res.data.medioPago);
-        axios
-          .post(
-             this.facturadorUrl,
-            formData
-          )
-          .then((res) => {
-            this.openDocumento(res.data.code);
-            this.generar_nuevo_numer_f();
-            this.vaciar_datos();
-            this.eliminar_productos();
-            this.editarDocumento(res.data);
-            document.getElementById("clickButtonSpinner").click();
-          });
+        axios.post(this.facturadorUrl, formData).then((res) => {
+          this.openDocumento(res.data.code);
+          this.generar_nuevo_numer_f();
+          this.vaciar_datos();
+          this.eliminar_productos();
+          this.editarDocumento(res.data);
+          document.getElementById("clickButtonSpinner").click();
+        });
       });
     },
     eliminar_productos() {

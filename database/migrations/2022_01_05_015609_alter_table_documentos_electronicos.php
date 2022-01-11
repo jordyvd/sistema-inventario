@@ -14,7 +14,7 @@ class AlterTableDocumentosElectronicos extends Migration
      */
     public function up()
     {
-        DB::select('ALTER TABLE documentos_electronicos CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
+       // DB::select('ALTER TABLE documentos_electronicos CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
     }
 
     /**
