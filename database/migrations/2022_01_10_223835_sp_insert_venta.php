@@ -28,7 +28,8 @@ class SpInsertVenta extends Migration
             in sucursal_p text,
             in cod_sucursal_p text,
             in usuario_p text, 
-            in xmayor_p int)
+            in xmayor_p int,
+            in fecha_p date, in created_at_p datetime)
             begin
                 if(tipo_v_p != \"ticked\") then
                     set @correlativo = (select v.correlativo from ventas v where v.doc_sunat = doc_sunat_p order by v.id desc limit 1); 

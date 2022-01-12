@@ -683,7 +683,7 @@ export default {
         usuario: this.user_name,
         xmayor: 0,
         cliente: this.cliente,
-
+        documento: this.tipo_v,
         productos: this.agregados,
         condicion:
           this.producto.estado == "1"
@@ -713,18 +713,20 @@ export default {
             axios
               .post("/generar_venta", params)
               .then((res) => {
+                console.log(res.data);
                 if (this.tipo_v != "ticked") {
-                  this.generarDocumento(res.data);
-                } else {
-                  this.generar_nuevo_numer_f();
-                  this.vaciar_datos();
-                  this.eliminar_productos();
-                  document.getElementById("clickButtonSpinner").click();
+                  this.openDocumento(res.data);
+                  //this.editarDocumento(res.data);
                 }
+                this.generar_nuevo_numer_f();
+                this.vaciar_datos();
+                this.eliminar_productos();
+                document.getElementById("clickButtonSpinner").click();
               })
               .catch((error) => {
                 this.spinner_table = false;
                 swal("ERROR", "comprobar conexión", "info");
+                document.getElementById("clickButtonSpinner").click();
               });
           }
         }
@@ -762,42 +764,42 @@ export default {
     //     this.generarDocumento();
     //   });
     // },
-    generarDocumento(serie) {
-      const params = {
-        code: serie,
-        nrof: this.producto.numfactura,
-        cliente: this.cliente,
-        productos: this.agregados,
-        condicion: this.producto.estado,
-        documento: this.tipo_v,
-        sucursal: this.user_sucursal,
-      };
-      axios.post("/api/generarDocumento", params).then((res) => {
-        let formData = new FormData();
-        formData.append("emisor", JSON.stringify(res.data.emisor));
-        formData.append("cliente", JSON.stringify(res.data.cliente));
-        formData.append("tipoDocumento", res.data.tipoDocumento);
-        formData.append("code", res.data.code);
-        formData.append("codeInterno", res.data.codeInterno);
-        formData.append("productos", JSON.stringify(res.data.productos));
-        formData.append("fecha", res.data.fecha);
-        formData.append("fechaPdf", res.data.fechaPdf);
-        formData.append("igv", res.data.igv);
-        formData.append("total", res.data.total);
-        formData.append("totalText", res.data.totalText);
-        formData.append("totalSinIgv", res.data.totalSinIgv);
-        formData.append("porcentajeIgv", res.data.porcentajeIgv);
-        formData.append("medioPago", res.data.medioPago);
-        axios.post(this.facturadorUrl, formData).then((res) => {
-          this.openDocumento(res.data.code);
-          this.generar_nuevo_numer_f();
-          this.vaciar_datos();
-          this.eliminar_productos();
-          this.editarDocumento(res.data);
-          document.getElementById("clickButtonSpinner").click();
-        });
-      });
-    },
+    // generarDocumento(serie) {
+    //   const params = {
+    //     code: serie,
+    //     nrof: this.producto.numfactura,
+    //     cliente: this.cliente,
+    //     productos: this.agregados,
+    //     condicion: this.producto.estado,
+    //     documento: this.tipo_v,
+    //     sucursal: this.user_sucursal,
+    //   };
+    //   axios.post("/api/generarDocumento", params).then((res) => {
+    //     let formData = new FormData();
+    //     formData.append("emisor", JSON.stringify(res.data.emisor));
+    //     formData.append("cliente", JSON.stringify(res.data.cliente));
+    //     formData.append("tipoDocumento", res.data.tipoDocumento);
+    //     formData.append("code", res.data.code);
+    //     formData.append("codeInterno", res.data.codeInterno);
+    //     formData.append("productos", JSON.stringify(res.data.productos));
+    //     formData.append("fecha", res.data.fecha);
+    //     formData.append("fechaPdf", res.data.fechaPdf);
+    //     formData.append("igv", res.data.igv);
+    //     formData.append("total", res.data.total);
+    //     formData.append("totalText", res.data.totalText);
+    //     formData.append("totalSinIgv", res.data.totalSinIgv);
+    //     formData.append("porcentajeIgv", res.data.porcentajeIgv);
+    //     formData.append("medioPago", res.data.medioPago);
+    //     axios.post(this.facturadorUrl, formData).then((res) => {
+    //       this.openDocumento(res.data.code);
+    //       this.generar_nuevo_numer_f();
+    //       this.vaciar_datos();
+    //       this.eliminar_productos();
+    //       this.editarDocumento(res.data);
+    //       document.getElementById("clickButtonSpinner").click();
+    //     });
+    //   });
+    // },
     eliminar_productos() {
       this.agregados = [];
       localStorage.setItem("agregado_venta", JSON.stringify(this.agregados));

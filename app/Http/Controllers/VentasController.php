@@ -170,7 +170,7 @@ class VentasController extends Controller
     }
     public function generar_venta(Request $request){
         $doc = $this->docSunat($request);
-        $procedure = "call insert_venta(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $procedure = "call insert_venta(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $parameter = [
             $doc['doc'],
             $doc['cod'],
@@ -185,11 +185,16 @@ class VentasController extends Controller
             $request->sucursal,
             $request->cod_sucursal,
             $request->usuario,
-            $request->xmayor
+            $request->xmayor,
+            date('Y-m-d'),
+            date("Y-m-d h:i:s")
         ];
         $this->detalleVenta($request);
         $data = DB::select($procedure, $parameter);
-        return $data[0]->serie;
+        if($request->tipo_v != "ticked"){
+            $objeto = new SunatController();
+            return $objeto->generarDocumento($request, $data[0]->serie);
+        }
     }
     public function docSunat(Request $request){
         $doc = null;
@@ -235,7 +240,7 @@ class VentasController extends Controller
             $movimiento->sucursal = $value['sucursal'];
             $movimiento->save();
         }
-        return back();
+       // return back();
     }
     public function anularfactura(Request $request){
         $venta = ventas::find($request->id);

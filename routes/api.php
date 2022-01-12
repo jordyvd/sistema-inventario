@@ -104,3 +104,5 @@ Route::post('/consumirApi','SunatController@facturar');
 Route::post('/editar-documento','SunatController@EditarDocumento');
 Route::post('/listar-documentos','SunatController@listarDocumentos');
 Route::post('/editar-credito','SunatController@EditarCredito');
+Route::post('/enviar-comprobante','SunatController@enviarComprobantes');
+Route::post('/enviar-comprobante-masivo','SunatController@enviarComprobantesMasivo');

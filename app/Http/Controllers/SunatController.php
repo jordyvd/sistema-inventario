@@ -7,8 +7,16 @@ use GuzzleHttp\Client;
 use Luecano\NumeroALetras\NumeroALetras;
 use Illuminate\Support\Facades\DB;
 
+
+
 class SunatController extends Controller
 {
+    public $data = [];
+
+    public $count = 0;
+
+    public $api = "http://181.224.250.87:88/api_cpe/ReceiveInformation.php";
+
     public function getRuc($number){
         $token = '';
 
@@ -134,6 +142,7 @@ class SunatController extends Controller
                     "numeroDocumento" => $venta->ruc_dni_v,
                     "tipoDocumento" => $venta->doc_sunat == "03" ? "1" : "6",
                ],
+               "operacion" => "anular",
                "code" => $venta->code,
                "tipoDocumento" => "07",
                "anular" => $request->serie,
@@ -180,7 +189,7 @@ class SunatController extends Controller
         ];
         DB::statement($procedure, $parameter);
     }
-    public function generarDocumento(Request $request){
+    public function generarDocumento(Request $request, $serie){
         $productos = [];
         $igv = 0;
         $total = 0;
@@ -219,13 +228,13 @@ class SunatController extends Controller
         $formatter = new NumeroALetras();
         $totalText = $formatter->toInvoice($total, 2, 'SOLES');
         $parameter = [
-               "emisor" => [
+               "emisor" => json_encode([
                     "ruc" => "10405163131",
                     "nombre" => "CAMONES MARCELO YOMAR WALTER",
                     "direccion" => $dataSucursal['direccion'],
                     "telefono" => $dataSucursal['telefono'],
-               ],
-               "cliente" => [
+               ]),
+               "cliente" => json_encode([
                     "nombre" => $request->cliente['nombre'],
                     "numeroDocumento" => $request->cliente['numeroDocumento'],
                     "tipoDocumento" => $request->cliente['tipoDocumento'],
@@ -238,11 +247,12 @@ class SunatController extends Controller
                     "zonaCodigo" => $request->cliente['zonaCodigo'],
                     "zonaTipo" => $request->cliente['zonaTipo'],
                     "ubigeo" => $request->cliente['ubigeo']
-               ],
-               "code" => $request->code,
+               ]),
+               "operacion" => "firmar",
+               "code" => $serie,
                "codeInterno" => $request->nrof,
                "tipoDocumento" => $codigoTypoDocumento['codigo'],
-               "productos" => $productos,
+               "productos" => json_encode($productos),
                "fecha" => date("Y-m-d h:i:s a"),
                "fechaPdf" => date("d-m-Y h:i:s a"),
                "igv" => str_replace(",","", number_format($igv, 2)),
@@ -252,8 +262,25 @@ class SunatController extends Controller
                "porcentajeIgv" => 18,
                "medioPago" => $request->condicion == 0 ? "Credito" : "Contado",
         ];
-        $this->guardarDocumento($request, $parameter);
-        return $parameter;
+        return $this->sendSunat($request, $parameter);
+    }
+    public function sendSunat($request, $parameter){   
+        $postdata = http_build_query(
+            array(
+                $parameter
+            )
+        );
+        $opts = array('http' =>
+            array(
+                'method' => 'POST',
+                'header' => 'Content-type: application/x-www-form-urlencoded',
+                'content' => $postdata
+            )
+        );
+        $context = stream_context_create($opts);
+        $result = file_get_contents($this->api, false, $context);
+        $res [] = json_decode($result);
+        return $this->guardarDocumento($request, $parameter, $res[0]);
     }
     public function codigoTypoDocumentoF(Request $request){
         $codigo = "";
@@ -291,38 +318,104 @@ class SunatController extends Controller
             "telefono" => $telefono
         ];
     }
-    public function guardarDocumento(Request $request, $par){
-       $explode = explode("-", $request['code']);
-       $procedure = "call insert_documento_electronico(?,?,?,?,?,?,?)";
+    public function guardarDocumento(Request $request, $par, $result){
+       $explode = explode("-", $par['code']);
+       $procedure = "call insert_documento_electronico(?,?,?,?,?,?,?,?)";
        $parameter = [
             $request->sucursal,
             $par['code'],
             $explode[0],
             $par['total'],
+            $result->qr,
             null,
-            null,
-            null
+            1,
+            date("Y-m-d h:i:s")
        ];
        DB::statement($procedure, $parameter);
+       return $par['code'];
     } 
-    public function EditarDocumento(Request $request){
-        $mensaje = $request['sunat']['mensaje'];
-        $procedure = "call update_documento_electronico(?,?,?,?,?,?)";
+    public function listarDocumentos(Request $request){
+        $procedure = "call listar_documentos(?,?)";
         $parameter = [
-            $request['code'],
-            $request['qr'],
-            $request['sunat']['estado'],
-            1,
-            $mensaje['msj_sunat'],
-            $mensaje['cod_sunat']
+            $request->sucursal,
+            date('Y-m-d'),
+        ];
+        return DB::select($procedure, $parameter);
+    }
+
+    // ***** ENVIAR A SUNAT *******
+    public function enviarComprobantes(Request $request){
+        $parameter = [
+            "emisor" => json_encode([
+                 "ruc" => "10405163131",
+                 "nombre" => "CAMONES MARCELO YOMAR WALTER",
+            ]),
+            "operacion" => "enviarSunat",
+            "code" => $request['serie'],
+        ];
+        
+        $postdata = http_build_query(
+            array(
+                $parameter
+            )
+        );
+        $opts = array('http' =>
+            array(
+                'method' => 'POST',
+                'header' => 'Content-type: application/x-www-form-urlencoded',
+                'content' => $postdata
+            )
+        );
+        $context = stream_context_create($opts);
+        $result = file_get_contents($this->api, false, $context);
+        $res [] = json_decode($result);
+        $mensaje [] = $res[0]->mensaje;
+        $this->EditarDocumento($request, $res[0], $mensaje[0]);
+    }
+    public function EditarDocumento(Request $request, $res, $mensaje){
+        $procedure = "call update_documento_electronico(?,?,?,?,?)";
+        $parameter = [
+            $request['serie'],
+            $res->estado,
+            $mensaje->msj_sunat, 
+            $mensaje->cod_sunat,
+            date("Y-m-d h:i:s")
         ];
         DB::statement($procedure, $parameter);
     }
-    public function listarDocumentos(Request $request){
-        $procedure = "call listar_documentos(?)";
-        $parameter = [
-            $request->sucursal,
-        ];
-        return DB::select($procedure, $parameter);
+    public function enviarComprobantesMasivo(Request $request){
+        foreach($request->documentos as $value){
+            if($value['estado'] === null){
+                $this->data[] = $value;
+            }
+        }
+        $this->count = count($this->data);
+        if($this->count > 0){
+            $this->recursiveEnvio();
+            return "Enviados correctamente";
+        }else{
+            return "no hay pendientes";
+        }
+    }
+    public function recursiveEnvio(){
+        if($this->count > 0){
+            $parameter = [
+                "serie" => $this->data[0]['serie'],
+            ];
+            $request = new Request(
+              $parameter 
+            );
+            $this->enviarComprobantes($request);
+            $this->eliminarEnviado();
+            sleep(10);
+            $this->recursiveEnvio();
+        }else{
+            return "Enviados correctamente";
+        }
+    }
+    public function eliminarEnviado(){
+       unset($this->data[0]);
+       $this->data = array_values($this->data);
+       $this->count = count($this->data);
     }
 }

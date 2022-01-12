@@ -362,30 +362,34 @@ export default {
       this.listar(page);
     },
     anular_factura_items(item, index) {
-      swal({
-        text: "¿estás seguro?",
-        icon: "error",
-        buttons: ["no", "sí"],
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          document.getElementById("clickButtonSpinner").click();
-          let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
-          axios
-            .get(url)
-            .then((res) => {
-              //  this.detalles = res.data;
-              // const params = { ArrayAnular: this.detalles };
-              // axios.post("/subir_stock_venta", paramsA).then((res) => {
-              //   Vue.$toast.info("producto actualizado");
-              // });
-              this.anular_factura(item, index, res.data);
-            })
-            .catch((error) => {
-              swal("ERROR", "comprobar conexión", "info");
-            });
-        }
-      });
+      if (item.doc_sunat != null) {
+        swal("", "no es posible anular esta venta", "info");
+      } else {
+        swal({
+          text: "¿estás seguro?",
+          icon: "error",
+          buttons: ["no", "sí"],
+          dangerMode: true,
+        }).then((willDelete) => {
+          if (willDelete) {
+            document.getElementById("clickButtonSpinner").click();
+            let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
+            axios
+              .get(url)
+              .then((res) => {
+                //  this.detalles = res.data;
+                // const params = { ArrayAnular: this.detalles };
+                // axios.post("/subir_stock_venta", paramsA).then((res) => {
+                //   Vue.$toast.info("producto actualizado");
+                // });
+                this.anular_factura(item, index, res.data);
+              })
+              .catch((error) => {
+                swal("ERROR", "comprobar conexión", "info");
+              });
+          }
+        });
+      }
     },
     anular_factura(item, index, productos) {
       const params = {
@@ -420,17 +424,12 @@ export default {
         formData.append("totalText", res.data.totalText);
         formData.append("totalSinIgv", res.data.totalSinIgv);
         formData.append("porcentajeIgv", res.data.porcentajeIgv);
-        axios
-          .post(
-            this.facturadorUrl,
-            formData
-          )
-          .then((res) => {
-            this.editarCredito(res.data);
-            this.listar(this.page);
-            document.getElementById("clickButtonSpinner").click();
-            swal("", "enviado a la sunat", "info");
-          });
+        axios.post(this.facturadorUrl, formData).then((res) => {
+          this.editarCredito(res.data);
+          this.listar(this.page);
+          document.getElementById("clickButtonSpinner").click();
+          swal("", "enviado a la sunat", "info");
+        });
       });
     },
     buscar() {
