@@ -213,7 +213,7 @@
                       <i class="fas fa-edit"></i>
                     </button>
                   </td>
-                    <td>
+                  <td>
                     <i class="fas fa-file-invoice-dollar"></i>
                   </td>
                   <td>
@@ -381,17 +381,21 @@ export default {
         this.spinner_details = false;
       });
     },
-    anular_factura(item, index) {
-      let url =
-        "/anularfactura/" +
-        item.id +
-        "/" +
-        item.cod_sucursal +
-        "/" +
-        this.user_sucursal;
-      axios.get(url).then((res) => {
+    anular_factura(item, index, productos) {
+      const params = {
+        productos: productos,
+        id: item.id,
+        nrof: item.cod_sucursal,
+        sucursal: this.user_sucursal,
+        serie: item.serie,
+      };
+      axios.post("/anularfactura", params).then((res) => {
         this.ventas.splice(index, 1);
-        this.listar();
+        if (item.doc_sunat != null) {
+          this.generarNotaCredito(params);
+        } else {
+          document.getElementById("clickButtonSpinner").click();
+        }
       });
     },
     changePage(page) {
@@ -431,7 +435,7 @@ export default {
           Vue.$toast.success("actualizando información...");
           const params = {
             monto: parseFloat(value) + parseFloat(item.estado_pago),
-            mount:value,
+            mount: value,
           };
           axios
             .post("/estado_pago/" + item.id, params)
@@ -466,29 +470,34 @@ export default {
       }
     },
     anular_factura_items(item, index) {
-      swal({
-        text: "¿estás seguro?",
-        icon: "error",
-        buttons: ["no", "sí"],
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
-          axios
-            .get(url)
-            .then((res) => {
-              this.detalles = res.data;
-              const paramsA = { ArrayAnular: this.detalles };
-              axios.post("/subir_stock_venta/", paramsA).then((res) => {
-                Vue.$toast.info("producto actualizado");
+      if (item.doc_sunat != null) {
+        swal("", "no es posible anular esta venta", "info");
+      } else {
+        swal({
+          text: "¿estás seguro?",
+          icon: "error",
+          buttons: ["no", "sí"],
+          dangerMode: true,
+        }).then((willDelete) => {
+          if (willDelete) {
+            document.getElementById("clickButtonSpinner").click();
+            let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
+            axios
+              .get(url)
+              .then((res) => {
+                // this.detalles = res.data;
+                // const paramsA = { ArrayAnular: this.detalles };
+                // axios.post("/subir_stock_venta/", paramsA).then((res) => {
+                //   Vue.$toast.info("producto actualizado");
+                // });
+                this.anular_factura(item, index, res.data);
+              })
+              .catch((error) => {
+                swal("ERROR", "comprobar conexión", "info");
               });
-              this.anular_factura(item, index);
-            })
-            .catch((error) => {
-              swal("ERROR", "comprobar conexión", "info");
-            });
-        }
-      });
+          }
+        });
+      }
     },
   },
   computed: {
