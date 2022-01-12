@@ -16,10 +16,10 @@ class SpInsertDocumentoElectronico extends Migration
         $procedure = "
         CREATE PROCEDURE insert_documento_electronico(
             in sucursal_p text, in serie_p text, in tipo_p text, in total_p decimal(11,2), 
-            in qr_p text,in estado_p int,in estado_pdf_p int)
+            in qr_p text,in estado_p int,in estado_pdf_p int, in fecha_p datetime)
         begin
                 insert into documentos_electronicos(sucursal,serie, tipo, total, qr, estado, estado_pdf, created_at) 
-                values(sucursal_p,serie_p, tipo_p,total_p, qr_p,estado_p, estado_pdf_p, now());
+                values(sucursal_p,serie_p, tipo_p,total_p, qr_p,estado_p, estado_pdf_p, fecha_p);
         END";
         DB::unprepared('DROP PROCEDURE IF EXISTS insert_documento_electronico');
         DB::unprepared($procedure);

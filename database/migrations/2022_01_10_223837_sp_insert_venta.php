@@ -41,7 +41,7 @@ class SpInsertVenta extends Migration
                 end if;
                 insert into ventas(doc_sunat, correlativo, serie, nrof, estado,estado_pago, tipo_v,total_v, total_ganancia, ruc_dni_v, nombre_cliente, sucursal, cod_sucursal,
                 usuario,anulado,fecha,fecha_t,xmayor,created_at,updated_at) values(doc_sunat_p,@correlativo,@serie,nrof_p,estado_p,estado_pago_p,tipo_v_p,total_v_p,total_ganancia_p,ruc_dni_v_p,
-                nombre_cliente_p,sucursal_p, cod_sucursal_p,usuario_p,0,curdate(), now(), xmayor_p,now(),now());
+                nombre_cliente_p,sucursal_p, cod_sucursal_p,usuario_p,0,fecha_p, created_at_p, xmayor_p,created_at_p,created_at_p);
                 select @serie serie;
             END";
         DB::unprepared('DROP PROCEDURE IF EXISTS insert_venta');
