@@ -20,7 +20,7 @@ export default {
     },
     openDocumento(pdf) {
       let url =
-      this.facturadorFile + "pdf2/10405163131-" + pdf + ".pdf";
+      this.facturadorFile + "pdf/10405163131-" + pdf + ".pdf";
       let params = "width= 400";
       params += ", height=" + screen.height;
       params += ", top=0, left=500";
