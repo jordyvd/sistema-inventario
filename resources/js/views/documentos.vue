@@ -22,7 +22,7 @@
               <td v-if="user_sucursal == 'huaral'">
                 <button
                   class="btn btn-primary"
-                  v-if="item.estado == null"
+                  v-if="item.estado == null || item.estado == 0"
                   @click="enviarComprobante(item)"
                 >
                   <i class="fas fa-share"></i> enviar

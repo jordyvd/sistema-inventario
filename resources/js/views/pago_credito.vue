@@ -388,14 +388,11 @@ export default {
         nrof: item.cod_sucursal,
         sucursal: this.user_sucursal,
         serie: item.serie,
+        d_sunat: item.doc_sunat != null ? 1 : 0,
       };
       axios.post("/anularfactura", params).then((res) => {
         this.ventas.splice(index, 1);
-        if (item.doc_sunat != null) {
-          this.generarNotaCredito(params);
-        } else {
-          document.getElementById("clickButtonSpinner").click();
-        }
+        document.getElementById("clickButtonSpinner").click();
       });
     },
     changePage(page) {
@@ -403,7 +400,11 @@ export default {
       this.listar(page);
     },
     imprimir(item) {
-      Full_W_P(item);
+       if (item.doc_sunat != null) {
+        this.openDocumento(item.serie);
+      } else {
+        Full_W_P(item);
+      }
     },
     cambiarestado(item) {
       if (item.estado_pago === item.total_v) {
@@ -470,34 +471,30 @@ export default {
       }
     },
     anular_factura_items(item, index) {
-      if (item.doc_sunat != null) {
-        swal("", "no es posible anular esta venta", "info");
-      } else {
-        swal({
-          text: "¿estás seguro?",
-          icon: "error",
-          buttons: ["no", "sí"],
-          dangerMode: true,
-        }).then((willDelete) => {
-          if (willDelete) {
-            document.getElementById("clickButtonSpinner").click();
-            let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
-            axios
-              .get(url)
-              .then((res) => {
-                // this.detalles = res.data;
-                // const paramsA = { ArrayAnular: this.detalles };
-                // axios.post("/subir_stock_venta/", paramsA).then((res) => {
-                //   Vue.$toast.info("producto actualizado");
-                // });
-                this.anular_factura(item, index, res.data);
-              })
-              .catch((error) => {
-                swal("ERROR", "comprobar conexión", "info");
-              });
-          }
-        });
-      }
+      swal({
+        text: "¿estás seguro?",
+        icon: "error",
+        buttons: ["no", "sí"],
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          document.getElementById("clickButtonSpinner").click();
+          let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
+          axios
+            .get(url)
+            .then((res) => {
+              // this.detalles = res.data;
+              // const paramsA = { ArrayAnular: this.detalles };
+              // axios.post("/subir_stock_venta/", paramsA).then((res) => {
+              //   Vue.$toast.info("producto actualizado");
+              // });
+              this.anular_factura(item, index, res.data);
+            })
+            .catch((error) => {
+              swal("ERROR", "comprobar conexión", "info");
+            });
+        }
+      });
     },
   },
   computed: {

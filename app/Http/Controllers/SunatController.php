@@ -437,7 +437,7 @@ class SunatController extends Controller
             );
             $this->enviarComprobantes($request);
             $this->eliminarEnviado();
-            sleep(10);
+            sleep(6);
             $this->recursiveEnvio();
         }else{
             return "Enviados correctamente";

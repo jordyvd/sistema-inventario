@@ -355,41 +355,41 @@ export default {
         });
     },
     imprimir(item) {
-      Full_W_P(item);
+       if (item.doc_sunat != null) {
+        this.openDocumento(item.serie);
+      } else {
+        Full_W_P(item);
+      }
     },
     changePage(page) {
       this.pagination.current_page = page;
       this.listar(page);
     },
     anular_factura_items(item, index) {
-      if (item.doc_sunat != null) {
-        swal("", "no es posible anular esta venta", "info");
-      } else {
-        swal({
-          text: "¿estás seguro?",
-          icon: "error",
-          buttons: ["no", "sí"],
-          dangerMode: true,
-        }).then((willDelete) => {
-          if (willDelete) {
-            document.getElementById("clickButtonSpinner").click();
-            let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
-            axios
-              .get(url)
-              .then((res) => {
-                //  this.detalles = res.data;
-                // const params = { ArrayAnular: this.detalles };
-                // axios.post("/subir_stock_venta", paramsA).then((res) => {
-                //   Vue.$toast.info("producto actualizado");
-                // });
-                this.anular_factura(item, index, res.data);
-              })
-              .catch((error) => {
-                swal("ERROR", "comprobar conexión", "info");
-              });
-          }
-        });
-      }
+      swal({
+        text: "¿estás seguro?",
+        icon: "error",
+        buttons: ["no", "sí"],
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          document.getElementById("clickButtonSpinner").click();
+          let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
+          axios
+            .get(url)
+            .then((res) => {
+              //  this.detalles = res.data;
+              // const params = { ArrayAnular: this.detalles };
+              // axios.post("/subir_stock_venta", paramsA).then((res) => {
+              //   Vue.$toast.info("producto actualizado");
+              // });
+              this.anular_factura(item, index, res.data);
+            })
+            .catch((error) => {
+              swal("ERROR", "comprobar conexión", "info");
+            });
+        }
+      });
     },
     anular_factura(item, index, productos) {
       const params = {
