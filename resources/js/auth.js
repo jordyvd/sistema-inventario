@@ -85,8 +85,8 @@ module.exports = {
             return "http://181.224.250.87:88/api_cpe/ReceiveInformation.php";
         },
         facturadorFile(){
-           // return "http://181.224.250.87:88/api_cpe/";
-            return "http://localhost/FacturadorSunat/api_cpe/";
+           return "http://181.224.250.87:88/api_cpe/";
+           //return "http://localhost/FacturadorSunat/api_cpe/";
         },
     },
     methods:{
