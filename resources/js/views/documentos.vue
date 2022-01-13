@@ -1,14 +1,15 @@
 <template>
   <div class="container">
     <div class="row">
-      <button class="btn btn-primary" @click="envioMasivo()">
+      <button class="btn btn-primary" @click="envioMasivo()" style="margin:5px" v-if="user_sucursal == 'huaral'">
         <i class="fas fa-share"></i> enviar pendientes
       </button>
+      <input type="date" v-model="fecha" class="input-search" style="margin:5px" @change="listar()">
       <div class="table-scroll">
         <table class="table">
           <thead>
             <tr>
-              <th scope="col"></th>
+              <th scope="col" v-if="user_sucursal == 'huaral'"></th>
               <th scope="col">serie</th>
               <th scope="col">estado</th>
               <th scope="col">total</th>
@@ -18,7 +19,7 @@
           </thead>
           <tbody v-for="(item, index) in documentos" :key="index">
             <tr>
-              <td>
+              <td v-if="user_sucursal == 'huaral'">
                 <button
                   class="btn btn-primary"
                   v-if="item.estado == null"
@@ -61,6 +62,7 @@ export default {
   data() {
     return {
       documentos: [],
+      fecha: null,
     };
   },
   created() {
@@ -70,6 +72,7 @@ export default {
     listar() {
       const params = {
         sucursal: this.user_sucursal,
+        fecha: this.fecha,
       };
       axios.post("/api/listar-documentos", params).then((res) => {
         this.documentos = res.data;
@@ -90,7 +93,7 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           document.getElementById("clickButtonSpinner").click();
-          const params = { serie: item.serie };
+          const params = { serie: item.serie,tipo: item.tipo };
           axios.post("/api/enviar-comprobante", params).then((res) => {
             swal("", "comprobante enviado", "success");
             this.listar();
@@ -113,6 +116,9 @@ export default {
             swal("", res.data, "info");
             this.listar();
             document.getElementById("clickButtonSpinner").click();
+          }).catch((error) =>{
+              swal("", "algo salio mal, vuelvo a intentar", "error");
+              this.listar();
           });
         }
       });

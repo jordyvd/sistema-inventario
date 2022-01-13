@@ -390,6 +390,7 @@ export default {
       spinner: false,
       isActive: true,
       spinnerSystem: false,
+      documentos: [],
     };
   },
   computed: {
@@ -420,10 +421,51 @@ export default {
         buttons: ["no", "sí"],
       }).then((willDelete) => {
         if (willDelete) {
-          axios.post("/cerrar").then((response) => {
-            location.reload();
-          });
+          if (this.user_sucursal != "huaral") {
+            this.logout();
+          } else {
+            this.listarDocumentos();
+          }
         }
+      });
+    },
+    listarDocumentos() {
+      document.getElementById("clickButtonSpinner").click();
+      const params = {
+        sucursal: this.user_sucursal,
+      };
+      axios.post("/api/listar-documentos", params).then((res) => {
+        let array = res.data;
+        let contador = 0;
+        array.forEach((element) => {
+          if (element.estado == null) {
+            contador++;
+          }
+        });
+        if (contador > 0) {
+          swal({
+            title: "HEY! "+this.user_name,
+            text: "hay comprobantes pendientes",
+            icon: "error",
+            buttons: "aceptar",
+            dangerMode: false,
+            closeOnClickOutside: false,
+            closeOnEsc: false,
+            allowOutsideClick: false,
+          }).then((willDelete) => {
+            if (willDelete) {
+             this.$router.push('documentos');
+            }
+          });
+        } else {
+          this.logout();
+        }
+        document.getElementById("clickButtonSpinner").click();
+      });
+    },
+    logout() {
+      axios.post("/cerrar").then((response) => {
+        location.reload();
       });
     },
     backud() {

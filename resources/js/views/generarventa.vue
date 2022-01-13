@@ -713,7 +713,6 @@ export default {
             axios
               .post("/generar_venta", params)
               .then((res) => {
-                console.log(res.data);
                 if (this.tipo_v != "ticked") {
                   this.openDocumento(res.data);
                   //this.editarDocumento(res.data);

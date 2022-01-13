@@ -355,16 +355,17 @@ export default {
         });
     },
     imprimir(item) {
-      Full_W_P(item);
+      if (item.doc_sunat != null) {
+        this.openDocumento(item.serie);
+      } else {
+        Full_W_P(item);
+      }
     },
     changePage(page) {
       this.pagination.current_page = page;
       this.listar(page);
     },
     anular_factura_items(item, index) {
-      if (item.doc_sunat != null) {
-        swal("", "no es posible anular esta venta", "info");
-      } else {
         swal({
           text: "¿estás seguro?",
           icon: "error",
@@ -389,7 +390,6 @@ export default {
               });
           }
         });
-      }
     },
     anular_factura(item, index, productos) {
       const params = {
@@ -398,38 +398,11 @@ export default {
         nrof: item.cod_sucursal,
         sucursal: this.user_sucursal,
         serie: item.serie,
+        d_sunat: item.doc_sunat != null ? 1 : 0,
       };
       axios.post("/anularfactura", params).then((res) => {
         this.ventas.splice(index, 1);
-        if (item.doc_sunat != null) {
-          this.generarNotaCredito(params);
-        } else {
-          document.getElementById("clickButtonSpinner").click();
-        }
-      });
-    },
-    generarNotaCredito(params) {
-      axios.post("/api/generarNotaCredito", params).then((res) => {
-        let formData = new FormData();
-        formData.append("emisor", JSON.stringify(res.data.emisor));
-        formData.append("cliente", JSON.stringify(res.data.cliente));
-        formData.append("tipoDocumento", res.data.tipoDocumento);
-        formData.append("code", res.data.code);
-        formData.append("anular", res.data.anular);
-        formData.append("productos", JSON.stringify(res.data.productos));
-        formData.append("fecha", res.data.fecha);
-        formData.append("fechaPdf", res.data.fechaPdf);
-        formData.append("igv", res.data.igv);
-        formData.append("total", res.data.total);
-        formData.append("totalText", res.data.totalText);
-        formData.append("totalSinIgv", res.data.totalSinIgv);
-        formData.append("porcentajeIgv", res.data.porcentajeIgv);
-        axios.post(this.facturadorUrl, formData).then((res) => {
-          this.editarCredito(res.data);
-          this.listar(this.page);
-          document.getElementById("clickButtonSpinner").click();
-          swal("", "enviado a la sunat", "info");
-        });
+        document.getElementById("clickButtonSpinner").click();
       });
     },
     buscar() {

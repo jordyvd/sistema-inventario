@@ -15,7 +15,9 @@ class SunatController extends Controller
 
     public $count = 0;
 
-    public $api = "http://181.224.250.87:88/api_cpe/ReceiveInformation.php";
+    //public $api = "http://181.224.250.87:88/api_cpe/ReceiveInformation.php";
+
+    public $api = "http://localhost/FacturadorSunat/api_cpe/ReceiveInformation.php"; //local
 
     public function getRuc($number){
         $token = '';
@@ -131,22 +133,22 @@ class SunatController extends Controller
         $formatter = new NumeroALetras();
         $totalText = $formatter->toInvoice($total, 2, 'SOLES');
         $parameter = [
-               "emisor" => [
+               "emisor" => json_encode([
                     "ruc" => "10405163131",
                     "nombre" => "CAMONES MARCELO YOMAR WALTER",
                     "direccion" => $dataSucursal['direccion'],
                     "telefono" => "937522124",
-               ],
-               "cliente" => [
+               ]),
+               "cliente" => json_encode([
                     "nombre" => $venta->nombre_cliente,
                     "numeroDocumento" => $venta->ruc_dni_v,
                     "tipoDocumento" => $venta->doc_sunat == "03" ? "1" : "6",
-               ],
-               "operacion" => "anular",
+               ]),
+               "operacion" => "firmar",
                "code" => $venta->code,
                "tipoDocumento" => "07",
                "anular" => $request->serie,
-               "productos" => $productos,
+               "productos" => json_encode($productos),
                "fecha" => date("Y-m-d h:i:s a"),
                "fechaPdf" => date("d-m-Y h:i:s a"),
                "igv" => str_replace(",","", number_format($igv, 2)),
@@ -156,11 +158,28 @@ class SunatController extends Controller
                "porcentajeIgv" => 18,
         ];
         $this->guardarCredito($request, $parameter, $venta);
-        return $parameter;
+        return $this->firmarNotaCredito($parameter);
+    }
+    public function firmarNotaCredito($parameter){
+        $postdata = http_build_query(
+            array(
+                $parameter
+            )
+        );
+        $opts = array('http' =>
+            array(
+                'method' => 'POST',
+                'header' => 'Content-type: application/x-www-form-urlencoded',
+                'content' => $postdata
+            )
+        );
+        $context = stream_context_create($opts);
+        $result = file_get_contents($this->api, false, $context);
+        return $result;
     }
     public function guardarCredito(Request $request, $param, $venta){
         $explode = explode("-", $venta->code);
-        $procedure = "call insertar_credito(?,?,?,?,?,?,?,?)";
+        $procedure = "call insertar_credito(?,?,?,?,?,?,?,?,?)";
         $parameter = [
             $request->id, // id venta
             $venta->code,
@@ -169,23 +188,24 @@ class SunatController extends Controller
             null,
             $request->sucursal,
             null,
-            null
+            null,
+            date("Y-m-d h:i:s")
         ];
         DB::statement($procedure, $parameter);
     }
-    public function editarCredito(Request $request){
-        $mensaje = $request['sunat']['mensaje'];
-        $explode = explode("-", $request['anular']);
-        $procedure = "call insertar_credito(?,?,?,?,?,?,?,?)";
+    public function editarCredito(Request $request, $res, $mensaje){
+        //$explode = explode("-", $request['anular']);
+        $procedure = "call insertar_credito(?,?,?,?,?,?,?,?,?)";
         $parameter = [
             null,
-            $request->code,
+            $request['serie'],
             null,
             null,
-            $request['sunat']['estado'],
+            $res->estado,
             null,
-            $mensaje['msj_sunat'],
-            $mensaje['cod_sunat']
+            $mensaje->msj_sunat,
+            $mensaje->cod_sunat,
+            date("Y-m-d h:i:s")
         ];
         DB::statement($procedure, $parameter);
     }
@@ -335,12 +355,17 @@ class SunatController extends Controller
        return $par['code'];
     } 
     public function listarDocumentos(Request $request){
+        $date = $request->fecha == null ? date('Y-m-d') : $request->fecha;
         $procedure = "call listar_documentos(?,?)";
         $parameter = [
             $request->sucursal,
-            date('Y-m-d'),
+            $date,
         ];
-        return DB::select($procedure, $parameter);
+        $data = DB::select($procedure, $parameter);
+        usort($data, function ($a, $b) {
+            return strcmp($a->created_at, $b->created_at);
+        });
+        return $data;
     }
 
     // ***** ENVIAR A SUNAT *******
@@ -370,7 +395,11 @@ class SunatController extends Controller
         $result = file_get_contents($this->api, false, $context);
         $res [] = json_decode($result);
         $mensaje [] = $res[0]->mensaje;
-        $this->EditarDocumento($request, $res[0], $mensaje[0]);
+        if($request['tipo'] == 1){
+            $this->EditarDocumento($request, $res[0], $mensaje[0]);
+        }else{
+             $this->editarCredito($request, $res[0], $mensaje[0]);
+        }
     }
     public function EditarDocumento(Request $request, $res, $mensaje){
         $procedure = "call update_documento_electronico(?,?,?,?,?)";
@@ -401,6 +430,7 @@ class SunatController extends Controller
         if($this->count > 0){
             $parameter = [
                 "serie" => $this->data[0]['serie'],
+                "tipo" => $this->data[0]['tipo'],
             ];
             $request = new Request(
               $parameter 
