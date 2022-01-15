@@ -41,7 +41,7 @@ export default {
     },
     openXmlFe(xml) {
       let url =
-      this.facturadorFile +  "xml/10405163131-" + xml + ".xml";
+      this.facturadorFile +  "xml/10405163131-" + xml + ".XML";
       let params = "width= "+screen.width;
       params += ", height=" + screen.height;
       params += ", top=0, left=500";

@@ -82,10 +82,10 @@ module.exports = {
             return compras.content;
         },
         facturadorUrl(){
-            return "http://181.224.250.87:88/api_cpe/ReceiveInformation.php";
+            return "http://facturadorgiomar.site/api_cpe/ReceiveInformation.php";
         },
         facturadorFile(){
-           return "http://181.224.250.87:88/api_cpe/";
+           return "http://facturadorgiomar.site/api_cpe/";
            //return "http://localhost/FacturadorSunat/api_cpe/";
         },
     },

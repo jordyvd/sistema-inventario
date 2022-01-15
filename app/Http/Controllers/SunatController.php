@@ -15,7 +15,7 @@ class SunatController extends Controller
 
     public $count = 0;
 
-    public $api = "http://181.224.250.87:88/api_cpe/ReceiveInformation.php"; //pro
+    public $api = "http://facturadorgiomar.site/api_cpe/ReceiveInformation.php"; //pro
 
     //public $api = "http://localhost/FacturadorSunat/api_cpe/ReceiveInformation.php"; //local
 
