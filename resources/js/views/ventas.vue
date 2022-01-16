@@ -198,7 +198,7 @@
                   <td>
                     <button
                       class="text-danger"
-                      @click="anular_factura_items(item, index)"
+                      @click="confimacionAnular(item, index)"
                     >
                       <i class="fas fa-ban"></i>
                     </button>
@@ -365,35 +365,21 @@ export default {
       this.pagination.current_page = page;
       this.listar(page);
     },
-    anular_factura_items(item, index) {
-        swal({
-          text: "¿estás seguro?",
-          icon: "error",
-          buttons: ["no", "sí"],
-          dangerMode: true,
-        }).then((willDelete) => {
-          if (willDelete) {
-            document.getElementById("clickButtonSpinner").click();
-            let url = `/api/listdetalles/${item.cod_sucursal}/${this.user_sucursal}`;
-            axios
-              .get(url)
-              .then((res) => {
-                //  this.detalles = res.data;
-                // const params = { ArrayAnular: this.detalles };
-                // axios.post("/subir_stock_venta", paramsA).then((res) => {
-                //   Vue.$toast.info("producto actualizado");
-                // });
-                this.anular_factura(item, index, res.data);
-              })
-              .catch((error) => {
-                swal("ERROR", "comprobar conexión", "info");
-              });
-          }
-        });
+    confimacionAnular(item, index) {
+      swal({
+        text: "¿estás seguro?",
+        icon: "error",
+        buttons: ["no", "sí"],
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.anularVenta(item, index);
+        }
+      });
     },
-    anular_factura(item, index, productos) {
+    anularVenta(item, index) {
+      document.getElementById("clickButtonSpinner").click();
       const params = {
-        productos: productos,
         id: item.id,
         nrof: item.cod_sucursal,
         sucursal: this.user_sucursal,

@@ -56,7 +56,6 @@ Route::post('/modificaracumulado/{id}','VentasController@modificaracumulado');
 Route::post('/anularfactura','VentasController@anularfactura');
 Route::post('/cambiar_estado_ventas/{id}','VentasController@cambiar_estado');
 Route::post('/estado_pago/{id}','VentasController@estado_pago');
-Route::post('/subir_stock_venta','VentasController@subir_stock_venta');
 // **** MARCAS *****
 Route::get('/deletemarca/{id}','SystemController@deletemarca');
 Route::post('/editarmarca/{id}','SystemController@editarmarca');

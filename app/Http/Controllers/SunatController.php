@@ -92,7 +92,7 @@ class SunatController extends Controller
         $data = DB::select($procedure, $parameter);
         return $data[0];
     }
-    public function generarNotaCredito(Request $request){
+    public function generarNotaCredito(Request $request, $productos_p){
         $productos = [];
         $igv = 0;
         $total = 0;
@@ -102,7 +102,7 @@ class SunatController extends Controller
         $explodeAnular = explode("-", $request->serie);
         $venta = $this->getVenta($request, $explodeAnular[0]);
 
-        foreach($request['productos'] as $producto){
+        foreach($productos_p as $producto){
              
               $descuento = $producto['descuento'] / $producto['cantidad'];
 
@@ -363,7 +363,7 @@ class SunatController extends Controller
         ];
         $data = DB::select($procedure, $parameter);
         usort($data, function ($a, $b) {
-            return strcmp($a->created_at, $b->created_at);
+            return strcmp($b->created_at, $a->created_at);
         });
         return $data;
     }
@@ -395,7 +395,7 @@ class SunatController extends Controller
         $result = file_get_contents($this->api, false, $context);
         $res [] = json_decode($result);
         $mensaje [] = $res[0]->mensaje;
-        if($request['tipo'] == 1){
+        if($request['tipo'] != 7){
             $this->EditarDocumento($request, $res[0], $mensaje[0]);
         }else{
              $this->editarCredito($request, $res[0], $mensaje[0]);
@@ -419,6 +419,9 @@ class SunatController extends Controller
             }
         }
         $this->count = count($this->data);
+        usort($this->data, function ($a, $b) {
+            return strcmp($a['tipo'], $b['tipo']);
+        });
         if($this->count > 0){
             $this->recursiveEnvio();
             return "Enviados correctamente";

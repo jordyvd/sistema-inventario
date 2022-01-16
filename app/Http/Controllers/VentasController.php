@@ -247,19 +247,16 @@ class VentasController extends Controller
         $venta->anulado = "1";
         $venta->total_v = "0";
         $venta->save();
+        $productos = $this->listdetalles($request->nrof, $request->sucursal);
         detalle_venta::where('nrof',$request->nrof)->where('sucursal',$request->sucursal)->delete();
-        $this->subir_stock_venta($request);
+        $this->subir_stock_venta($productos);
         if($request->d_sunat == 1){
             $objeto = new SunatController();
-            return $objeto->generarNotaCredito($request);
+            return $objeto->generarNotaCredito($request, $productos);
         }else{
             return back();
         }
     }
-    // public function notaCredito(Request $request){
-    //     $objeto = new SunatController();
-    //     return $objeto->generarNotaCredito($request);
-    // }
     public function estado_pago(Request $request, $id){
         $ventas = ventas::find($id);
         $ventas->estado_pago = $request->monto;
@@ -272,8 +269,8 @@ class VentasController extends Controller
         $ventas->save();
         return back();
     }
-    public function subir_stock_venta(Request $request){
-        foreach($request['productos'] as $value){
+    public function subir_stock_venta($productos){
+        foreach($productos as $value){
             $almacen = almacen::where('barra_almacen',$value['barra'])
             ->where('sucursal',$value['sucursal'])->first();
             $stock = almacen::find($almacen->id);
