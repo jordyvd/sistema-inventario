@@ -13,7 +13,6 @@ use App\credito_payments;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\SunatController;
 
-
 class VentasController extends Controller
 {
     public function nuevaventa($sucursal){

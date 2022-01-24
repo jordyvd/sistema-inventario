@@ -122,22 +122,22 @@ $medidaTicket = 180;
         <p>RUC: 10405163131</p>
         <p><?php foreach($datos['venta'] as $venta) {
             if($venta['sucursal'] == "huaral"){
-                echo "Calle Morales Bermúdez # 340 y 342";
+                echo "Calle Morales Bermúdez # 340 y 342, Huaral";
             }else if($venta['sucursal'] == "lima-abancay"){
-                echo "Av. Abancay # 368 Int. 1090 - Galería La Casona";
+                echo "Av. Abancay # 368 Int. 1090 - Galería La Casona, Lima";
             }else if($venta['sucursal'] == "barranca"){
-                echo "JR. Castilla 148";
+                echo "JR. Castilla 148, Barranca";
             }
         } ?></p>
         <p>Teléfono: 
         <?php 
             foreach($datos['venta'] as $venta) {
                 if($venta['sucursal'] == "huaral"){
-                    echo "5845067";
+                    echo "6049611";
                 }else if($venta['sucursal'] == "lima-abancay"){
                     echo "937522124";
                 }else if($venta['sucursal'] == "barranca"){
-                    echo "5984852";
+                    echo "2289229";
                 }
             }
         ?> </p>
