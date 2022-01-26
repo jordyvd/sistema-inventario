@@ -30,7 +30,11 @@ class SpInsertVenta extends Migration
             in usuario_p text, 
             in xmayor_p int,
             in fecha_p date, in created_at_p datetime)
+
             begin
+            set @venta = (select count(*) from ventas v where v.nrof = nrof_p and v.sucursal = sucursal_p);
+            if(@venta = 0) then
+            /***********/
                 if(tipo_v_p != \"ticked\") then
                     set @correlativo = (select v.correlativo from ventas v where v.doc_sunat = doc_sunat_p order by v.id desc limit 1); 
                     set @correlativo = (if(@correlativo is null, 1, @correlativo + 1));
@@ -43,7 +47,11 @@ class SpInsertVenta extends Migration
                 usuario,anulado,fecha,fecha_t,xmayor,created_at,updated_at) values(doc_sunat_p,@correlativo,@serie,nrof_p,estado_p,estado_pago_p,tipo_v_p,total_v_p,total_ganancia_p,ruc_dni_v_p,
                 nombre_cliente_p,sucursal_p, cod_sucursal_p,usuario_p,0,fecha_p, created_at_p, xmayor_p,created_at_p,created_at_p);
                 select @serie serie;
-            END";
+            /***********/
+                else 
+                select 0 serie;
+             end if;
+             END";
         DB::unprepared('DROP PROCEDURE IF EXISTS insert_venta');
         DB::unprepared($procedure);
     }

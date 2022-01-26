@@ -188,11 +188,15 @@ class VentasController extends Controller
             date('Y-m-d'),
             date("Y-m-d h:i:s")
         ];
-        $this->detalleVenta($request);
         $data = DB::select($procedure, $parameter);
-        if($request->tipo_v != "ticked"){
-            $objeto = new SunatController();
-            return $objeto->generarDocumento($request, $data[0]->serie);
+        if($data[0]->serie !== 0) {
+            $this->detalleVenta($request);
+            if($request->tipo_v != "ticked"){
+                $objeto = new SunatController();
+                return $objeto->generarDocumento($request, $data[0]->serie);
+            }
+        }else{
+            return back();
         }
     }
     public function docSunat(Request $request){
