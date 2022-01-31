@@ -50,7 +50,7 @@
        </div>
     @endif
     <!-- importante -->
-       <script src="{{ mix('/js/app.js') }}"></script>
+       <script src="{{ asset('js/app.js') }}"></script>
        <script src="{{asset('js/jquery.js')}}"></script>
        <script src="{{asset('js/main.js')}}"></script>
        <script src="{{asset('js/poper.js')}}"></script>

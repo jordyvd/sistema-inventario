@@ -291,11 +291,15 @@ class VentasController extends Controller
         $caja->ingresos_salidas_create($request);
     }
     public function getPaymentsCredit(Request $request){
-        $procedure = 'select *, curdate() curdate_date, false input_update from creditos_payments where credito_id = ? order by created_at desc';
+        $procedure = 'select *, false input_update from creditos_payments where credito_id = ? order by created_at desc';
         $parameter = [
              $request['id']
         ];
-        return DB::select($procedure, $parameter);
+        $data = DB::select($procedure, $parameter);
+        return [
+            "data" => $data,
+             "curdate_date" => date('Y-m-d')
+        ];
     }
     public function updateMontoPagoCredit(Request $request){
         $procedure = "call update_monto_pago_credit(?,?,?)";

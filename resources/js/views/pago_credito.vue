@@ -463,6 +463,7 @@ export default {
         caja: 1,
       },
       item: {},
+      curdateDate: null,
     };
   },
   created() {
@@ -617,7 +618,8 @@ export default {
       this.nrof = item.cod_sucursal;
       const params = { id: item.id };
       axios.post("/api/get-payments-credit", params).then((res) => {
-        this.payments = res.data;
+        this.payments = res.data.data;
+        this.curdateDate = res.data.curdate_date;
         this.clickSpinner();
       });
     },
@@ -669,7 +671,7 @@ export default {
       this.pago.caja = null;
     },
     mostrarEditMonto(item) {
-      if (item.curdate_date == moment(item.created_at).format("YYYY-MM-DD") && item.edit_user == null) {
+      if (this.curdateDate == moment(item.created_at).format("YYYY-MM-DD") && item.edit_user == null) {
         return true;
       } else {
         return false;
