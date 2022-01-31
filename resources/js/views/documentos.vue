@@ -5,7 +5,7 @@
         class="btn btn-primary"
         @click="envioMasivo()"
         style="margin: 5px"
-        v-if="user_sucursal == 'huaral'"
+        v-if="user_id == 1"
       >
         <i class="fas fa-share"></i> enviar pendientes
       </button>
@@ -20,9 +20,10 @@
         <table class="table">
           <thead>
             <tr>
+              <th scope="col" v-if="user_id == 1">enviar</th>
               <th scope="col">serie</th>
               <th scope="col">documento</th>
-              <th scope="col">estado</th>
+              <th scope="col" v-if="user_id == 1">estado</th>
               <th scope="col">afectado</th>
               <th scope="col">pdf</th>
               <th scope="col">xml</th>
@@ -30,9 +31,10 @@
           </thead>
           <tbody v-for="(item, index) in documentos" :key="index">
             <tr>
+              <td v-if="user_id == 1"><button class="btn btn-primary" @click="enviarComprobante(item)"><i class="fas fa-share"></i></button></td>
               <td>{{ item.serie }}</td>
               <td>{{ tipoDocumento(item.tipo) }}</td>
-              <td>
+              <td v-if="user_id == 1">
                 <p v-if="item.estado == null" class="text-warning">pendiente</p>
                 <p v-else-if="item.estado == 1" class="text-success">enviado</p>
                 <p v-else class="text-danger">envio fallido</p>

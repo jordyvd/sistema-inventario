@@ -63,6 +63,7 @@ class HomeController extends Controller
         $date->condicion = $request->condicion;
         $date->fecha = date('Y-m-d');
         $date->sucursal = $request->sucursal;
+        $date->credit_id = $request->credit_id;
         $date->save();
     }
     public function listaringresos_salidas(Request $request,$sucursal,$fecha){

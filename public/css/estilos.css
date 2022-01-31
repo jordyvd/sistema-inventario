@@ -711,3 +711,6 @@ debemos poner definir este valor.
       position: absolute;
       text-align: center;
   }
+  .filter-img{
+    filter: grayscale(100%);
+  }

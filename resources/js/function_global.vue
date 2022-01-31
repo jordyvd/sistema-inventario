@@ -65,6 +65,9 @@ export default {
     },
     editarCredito(params){
         axios.post('/api/editar-credito', params);
+    },
+    clickSpinner(){
+      document.getElementById("clickButtonSpinner").click();
     }
   },
 };

@@ -421,11 +421,7 @@ export default {
         buttons: ["no", "sí"],
       }).then((willDelete) => {
         if (willDelete) {
-          if (this.user_sucursal != "huaral") {
             this.logout();
-          } else {
-            this.listarDocumentos();
-          }
         }
       });
     },

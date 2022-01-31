@@ -153,9 +153,8 @@
                   <th scope="col">pagado</th>
                   <th scope="col">documento</th>
                   <th scope="col">fecha</th>
-                  <th scope="col">editar</th>
-                  <th scope="col">pagos</th>
                   <th scope="col">print</th>
+                  <th scope="col">pagos</th>
                   <th scope="col">anular</th>
                 </tr>
               </thead>
@@ -175,12 +174,22 @@
                   <td v-if="item.nombre_cliente === null" class="text-danger">
                     <i class="fas fa-user-times"></i>
                   </td>
-                  <td v-else>{{ item.nombre_cliente }}</td>
+                  <td v-else>
+                    <p
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      :title="item.nombre_cliente"
+                    >
+                      {{ cortarNombre(item.nombre_cliente) }}
+                    </p>
+                  </td>
                   <td>
                     {{ parseFloat(item.estado_pago).toFixed(2) }}
                     <button
                       class="text-dark"
-                      @click="estado_pago_edit(item)"
+                      data-toggle="modal"
+                      data-target="#modalAgregarPago"
+                      @click="openModalAgregarPago(item)"
                       title="sumar monto"
                     >
                       <i class="fas fa-piggy-bank"></i>
@@ -206,20 +215,25 @@
                   </td>
                   <td>{{ item.fecha }}</td>
                   <td>
-                    <button
-                      class="text-dark"
-                      @click="editarmonto_acumulado(item)"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </button>
-                  </td>
-                  <td>
-                    <i class="fas fa-file-invoice-dollar"></i>
-                  </td>
-                  <td>
                     <button class="text-daek" @click="imprimir(item)">
                       <img src="images/printer.png" class="text-icon" alt="" />
                     </button>
+                  </td>
+                  <td>
+                    <button
+                      @click="getPaymentsCredit(item)"
+                      data-toggle="modal"
+                      data-target="#modalPagos"
+                      v-if="parseFloat(item.estado_pago) > 0"
+                    >
+                      <img src="images/wallet.png" class="text-icon" alt="" />
+                    </button>
+                    <img
+                      v-else
+                      src="images/wallet.png"
+                      class="text-icon filter-img"
+                      alt=""
+                    />
                   </td>
                   <td>
                     <button
@@ -274,9 +288,141 @@
         </div>
       </div>
     </div>
+    <!-- ************* modal pagos ************* -->
+    <div
+      class="modal fade"
+      id="modalPagos"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content border-modal">
+          <div class="modal-header">
+            <h5 class="modal-title text-system" id="exampleModalLabel">
+              {{ nrof }}
+            </h5>
+            <button
+              type="button"
+              class="close"
+              id="modalPagosClose"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered">
+              <thead class="tbl-text-white">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Monto</th>
+                  <th scope="col">Descripcion</th>
+                  <th scope="col">Caja</th>
+                  <th scope="col">Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in payments" :key="index">
+                  <th scope="row">{{ index + 1 }}</th>
+                  <td v-if="item.input_update">
+                    <form @submit.prevent="editarMontoPago(item)">
+                      <input
+                        type="search"
+                        class="form-control"
+                        v-model="item.monto"
+                      />
+                    </form>
+                    <i
+                      class="fas fa-times cursor-pointer"
+                      @click="item.input_update = false"
+                    ></i>
+                  </td>
+                  <td v-else>
+                    {{ item.monto }}
+                    <i
+                      class="fas fa-edit cursor-pointer"
+                      v-if="mostrarEditMonto(item)"
+                      @click="item.input_update = true"
+                    ></i>
+                  </td>
+                  <td>{{ item.descripcion }}</td>
+                  <td>
+                    <p v-if="item.caja == 1">Si</p>
+                    <p v-else>No</p>
+                  </td>
+                  <td>{{ formatFecha(item.created_at) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ************ modal agregar pago ************** -->
+    <div
+      class="modal fade"
+      id="modalAgregarPago"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content border-modal">
+          <div class="modal-header">
+            <h5 class="modal-title text-system" id="exampleModalLabel">
+              {{ nrof }}
+            </h5>
+            <button
+              type="button"
+              class="close"
+              id="cerrarPagoCredit"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="agregarPagoCredit">
+              <div class="form-group">
+                <label>Monto</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="pago.monto"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Descripción</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="pago.descripcion"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Caja</label>
+                <select class="form-control" v-model="pago.caja" required>
+                  <option value="1">Si</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-system">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
@@ -310,6 +456,13 @@ export default {
         fecha: "",
       },
       ruc_dni_cli: "",
+      payments: [],
+      pago: {
+        monto: null,
+        descripcion: null,
+        caja: 1,
+      },
+      item: {},
     };
   },
   created() {
@@ -372,6 +525,7 @@ export default {
       });
     },
     detalle_venta(item) {
+      this.clickSpinner();
       this.spinner_details = true;
       this.nrof = item.cod_sucursal;
       this.total = item.total_v;
@@ -379,6 +533,7 @@ export default {
       axios.get(url).then((res) => {
         this.detalles = res.data;
         this.spinner_details = false;
+        this.clickSpinner();
       });
     },
     changePage(page) {
@@ -393,7 +548,7 @@ export default {
       }
     },
     cambiarestado(item) {
-      if (item.estado_pago === item.total_v) {
+      if (parseFloat(item.estado_pago) >= parseFloat(item.total_v)) {
         Vue.$toast.success("actualizando información...");
         axios
           .post("/cambiar_estado_ventas/" + item.id)
@@ -412,32 +567,6 @@ export default {
         });
       }
     },
-    estado_pago_edit(item) {
-      swal("agregar monto", {
-        content: "input",
-        buttons: "agregar",
-      }).then((value) => {
-        if (value > 0) {
-          //**** AGREGAR MONTO ****
-          Vue.$toast.success("actualizando información...");
-          const params = {
-            monto: parseFloat(value) + parseFloat(item.estado_pago),
-            mount: value,
-          };
-          axios
-            .post("/estado_pago/" + item.id, params)
-            .then((res) => {
-              this.listar();
-            })
-            .catch((error) => {
-              swal("ERROR", "comprobar conexión", "info");
-            });
-          //***** FIN *****
-        } else {
-          Vue.$toast.error("monto incorrecto");
-        }
-      });
-    },
     confimacionAnular(item, index) {
       swal({
         text: "¿estás seguro?",
@@ -451,7 +580,7 @@ export default {
       });
     },
     anularVenta(item, index) {
-      document.getElementById("clickButtonSpinner").click();
+      this.clickSpinner();
       const params = {
         id: item.id,
         nrof: item.cod_sucursal,
@@ -461,7 +590,7 @@ export default {
       };
       axios.post("/anularfactura", params).then((res) => {
         this.ventas.splice(index, 1);
-        document.getElementById("clickButtonSpinner").click();
+        this.clickSpinner();
       });
     },
     buscar() {
@@ -481,6 +610,85 @@ export default {
           this.loading_table = false;
         });
       }
+    },
+    getPaymentsCredit(item) {
+      this.clickSpinner();
+      this.item = item;
+      this.nrof = item.cod_sucursal;
+      const params = { id: item.id };
+      axios.post("/api/get-payments-credit", params).then((res) => {
+        this.payments = res.data;
+        this.clickSpinner();
+      });
+    },
+    cortarNombre(nombre) {
+      if (nombre.length > 18) {
+        return nombre.slice(0, 18) + "...";
+      } else {
+        return nombre;
+      }
+    },
+    formatFecha(fecha) {
+      return moment(fecha).format("DD-MM-YYYY h:mm:ss a");
+    },
+    openModalAgregarPago(item) {
+      this.nrof = item.cod_sucursal;
+      this.item = item;
+    },
+    agregarPagoCredit() {
+      this.clickSpinner();
+      document.getElementById("cerrarPagoCredit").click();
+      const params = {
+        acumulado:
+          parseFloat(this.pago.monto) + parseFloat(this.item.estado_pago),
+        monto: this.pago.monto,
+        descripcion: this.pago.descripcion,
+        caja: this.pago.caja,
+        id: this.item.id,
+        user_id: this.user_id,
+        sucursal: this.user_sucursal,
+        nrof: this.nrof
+      };
+      axios
+        .post("api/agregar-pago-credit", params)
+        .then((res) => {
+          this.listar();
+          Vue.$toast.success("Guardado");
+          this.limpiarFormPago();
+          this.clickSpinner();
+        })
+        .catch((error) => {
+          swal("ERROR", "comprobar conexión", "info");
+          this.limpiarFormPago();
+          this.clickSpinner();
+        });
+    },
+    limpiarFormPago() {
+      this.pago.monto = null;
+      this.pago.descripcion = null;
+      this.pago.caja = null;
+    },
+    mostrarEditMonto(item) {
+      if (item.curdate_date == moment(item.created_at).format("YYYY-MM-DD") && item.edit_user == null) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    editarMontoPago(item) {
+      this.clickSpinner();
+      document.getElementById("modalPagosClose").click();
+      const params = {
+        id: item.id,
+        monto: item.monto,
+        user_id: this.user_id,
+        venta_id: this.item.id,
+      };
+      axios.post("/api/update-monto-pago-credit", params).then((res) => {
+        item.input_update = false;
+        this.clickSpinner();
+        this.item.estado_pago = res.data;
+      });
     },
   },
   computed: {
@@ -502,3 +710,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+.w-input {
+  width: 100px !important;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+</style>

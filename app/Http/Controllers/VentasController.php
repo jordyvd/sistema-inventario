@@ -12,6 +12,7 @@ use App\Movimientos;
 use App\credito_payments;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\SunatController;
+use App\Http\Controllers\HomeController;
 
 class VentasController extends Controller
 {
@@ -162,10 +163,6 @@ class VentasController extends Controller
         $venta = ventas::find($id);
         $venta->estado_pago = $request->acumulado;
         $venta->save();
-        $tracking = new credito_payments;
-        $tracking->monto = $request->mount;
-        $tracking->created_by =  Auth::user()->id;
-        $tracking->save();
     }
     public function generar_venta(Request $request){
         $doc = $this->docSunat($request);
@@ -260,11 +257,69 @@ class VentasController extends Controller
             return back();
         }
     }
-    public function estado_pago(Request $request, $id){
-        $ventas = ventas::find($id);
-        $ventas->estado_pago = $request->monto;
+    public function agregarPagoCredit(Request $request){
+        $ventas = ventas::find($request->id);
+        $ventas->estado_pago = $request->acumulado;
         $ventas->save();
-        return back();
+        $this->insertPaymentCredito($request);
+    }
+    public function insertPaymentCredito(Request $request){
+        $procedure = "call insertar_pago_credito(?,?,?,?,?,?)";
+        $parameter = [
+           $request->id,
+           $request->monto,
+           $request->descripcion,
+           $request->caja,
+           $request->user_id,
+           date('Y-m-d H:i:s')
+        ];
+        $id = DB::select($procedure, $parameter);
+        $params_caja = [
+            "descripcion" =>  $request->descripcion . " (".$request->nrof. ")",
+            "monto" =>  $request->monto,
+            "condicion" => "ingreso",
+            "sucursal" => $request->sucursal,
+            "credit_id" => $id[0]->id,
+        ];
+        $params = new Request($params_caja);
+        if($request->caja == 1){
+            $this->insertarCaja($params);
+        }
+    }
+    public function insertarCaja(Request $request){
+        $caja = new HomeController();
+        $caja->ingresos_salidas_create($request);
+    }
+    public function getPaymentsCredit(Request $request){
+        $procedure = 'select *, curdate() curdate_date, false input_update from creditos_payments where credito_id = ? order by created_at desc';
+        $parameter = [
+             $request['id']
+        ];
+        return DB::select($procedure, $parameter);
+    }
+    public function updateMontoPagoCredit(Request $request){
+        $procedure = "call update_monto_pago_credit(?,?,?)";
+        $parameter = [
+            $request->monto,
+            $request->user_id,
+            $request->id
+        ];
+        DB::select($procedure, $parameter);
+        return $this->updateAcumuladoCredit($request);
+    }
+    public function updateAcumuladoCredit(Request $request){
+        $acumulado = 0;
+        $pagos = DB::select("select cp.monto from creditos_payments cp where cp.credito_id = ?", [$request->venta_id]);
+        foreach($pagos as $value){
+            $acumulado += $value->monto;
+        }
+        $procedure = "update ventas set estado_pago = ? where id = ?";
+        $parameter = [
+            $acumulado,
+            $request->venta_id
+        ];
+        DB::select($procedure, $parameter);
+        return $acumulado;
     }
     public function cambiar_estado(Request $request,$id){
         $ventas = ventas::find($id);

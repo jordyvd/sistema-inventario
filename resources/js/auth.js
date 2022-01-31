@@ -26,6 +26,9 @@ module.exports = {
         }
     },
     computed: {
+        user_id() {
+            return user_id.content;
+        },
         user_name() {
             return user_name.content;
         },

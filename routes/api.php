@@ -54,6 +54,9 @@ Route::get('/search_ventas/{search}/{sucursal}/{estado}','VentasController@searc
 Route::get('/search_ventasmayor/{search}/{sucursal}/{estado}','VentasController@search_ventasmayor');
 Route::get('/buscarclienteventa/{cliente}','VentasController@buscarclienteventa');
 Route::get('/llenar_listaV/{nrof}','VentasController@llenar_listaV');
+Route::post('/get-payments-credit','VentasController@getPaymentsCredit');
+Route::post('/agregar-pago-credit','VentasController@agregarPagoCredit');
+Route::post('/update-monto-pago-credit','VentasController@updateMontoPagoCredit');
 // *********** BUSCAR REGISTROS ************
 Route::get('/buscaralmacen/{condicion}/{search}','ScannerController@buscaralmacen');
 Route::get('/buscarclientes/{search}','ScannerController@buscarclientes');
