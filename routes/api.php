@@ -109,4 +109,3 @@ Route::post('/listar-documentos','SunatController@listarDocumentos');
 Route::post('/editar-credito','SunatController@EditarCredito');
 Route::post('/enviar-comprobante','SunatController@enviarComprobantes');
 Route::post('/enviar-comprobante-masivo','SunatController@enviarComprobantesMasivo');
-Route::post('/listar-documentos-enviar','SunatController@listarDocumentosEnviar');

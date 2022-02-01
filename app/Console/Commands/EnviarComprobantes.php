@@ -11,9 +11,6 @@ use GuzzleHttp\Client;
 
 class EnviarComprobantes extends Command
 {
-   
-    //public $api = "http://127.0.0.1:8000/api/listar-documentos-enviar";
-    public $api = "http://facturadorgiomar.site/api/listar-documentos-enviar";
 
     protected $signature = 'enviar:comprobantes';
 
@@ -33,22 +30,10 @@ class EnviarComprobantes extends Command
     {
         parent::__construct();
     }
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
-        $opts = array('http' =>
-        array(
-            'method' => 'POST',
-            'header' => 'Content-type: application/x-www-form-urlencoded'
-        )
-       );
-        $context = stream_context_create($opts);
-        $result = file_get_contents($this->api, false, $context);
+        $objeto = new SunatController();
+        return $objeto->listarDocumentosEnviar();
         // $text = "[".date('H:i:s'). "]: Hola mundo";
         // Storage::append("archivo.txt", $data);
     }
