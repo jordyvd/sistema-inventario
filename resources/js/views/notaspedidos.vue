@@ -218,7 +218,13 @@
                     <td>{{ item.cantidad }}</td>
                     <td>{{ item.descuento }}</td>
                     <td>
-                      {{ item.cantidad }}
+                      {{
+                       ( parseFloat(
+                          parseFloat(item.precio_com) *
+                            parseFloat(item.cantidad) -
+                            parseFloat(item.descuento)
+                        )).toFixed(2)
+                      }}
                     </td>
                   </tr>
                 </tbody>
@@ -280,7 +286,13 @@
                     <td>{{ item.cantidad }}</td>
                     <td>{{ item.descuento }}</td>
                     <td>
-                      {{ item.cantidad }}
+                      {{
+                       ( parseFloat(
+                          parseFloat(item.precio_com) *
+                            parseFloat(item.cantidad) -
+                            parseFloat(item.descuento)
+                        )).toFixed(2)
+                      }}
                     </td>
                   </tr>
                 </tbody>
@@ -400,11 +412,13 @@ export default {
       axios.post("/cambiarestado_nota/" + this.id_nota).then((res) => {});
     },
     agregarproductos() {
-      const params = { ArrayDate: this.detalles};
-      axios.post("/subirstock_nota/" + this.user_sucursal, params).then((res) => {
-        Vue.$toast.info("finalizado");
-        this.listar();
-      });
+      const params = { ArrayDate: this.detalles };
+      axios
+        .post("/subirstock_nota/" + this.user_sucursal, params)
+        .then((res) => {
+          Vue.$toast.info("finalizado");
+          this.listar();
+        });
     },
     eliminar_nota(item) {
       swal({
@@ -431,7 +445,7 @@ export default {
           cod_nota: item.codigo_nota,
         };
         axios
-          .post("/bajarstock_nota/" + this.user_sucursal,paramsB)
+          .post("/bajarstock_nota/" + this.user_sucursal, paramsB)
           .then((res) => {
             Vue.$toast.info("enviado");
           });

@@ -180,6 +180,7 @@
                       <td>{{ item.codigo }}</td>
                       <td>{{ item.nompro }}</td>
                       <td>{{ item.marca }}</td>
+                      <td>{{ item.cantidad }}</td>
                       <td>{{ parseFloat(item.precio_venta).toFixed(2) }}</td>
                     </tr>
                   </tbody>
