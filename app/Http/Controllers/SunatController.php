@@ -7,8 +7,6 @@ use GuzzleHttp\Client;
 use Luecano\NumeroALetras\NumeroALetras;
 use Illuminate\Support\Facades\DB;
 
-
-
 class SunatController extends Controller
 {
     public $data = [];
@@ -413,14 +411,16 @@ class SunatController extends Controller
         DB::statement($procedure, $parameter);
     }
     public function enviarComprobantesMasivo(Request $request){
+        $array = [];
         foreach($request->documentos as $value){
-            if($value['estado'] === null){
-                $this->data[] = $value;
+            if($value->estado === null){
+                $array[] = $value;
             }
         }
+        $this->data = array_values($array);
         $this->count = count($this->data);
         usort($this->data, function ($a, $b) {
-            return strcmp($a['tipo'], $b['tipo']);
+            return strcmp($a->tipo, $b->tipo);
         });
         if($this->count > 0){
             $this->recursiveEnvio();
@@ -432,8 +432,8 @@ class SunatController extends Controller
     public function recursiveEnvio(){
         if($this->count > 0){
             $parameter = [
-                "serie" => $this->data[0]['serie'],
-                "tipo" => $this->data[0]['tipo'],
+                "serie" => $this->data[0]->serie,
+                "tipo" => $this->data[0]->tipo,
             ];
             $request = new Request(
               $parameter 
@@ -451,4 +451,22 @@ class SunatController extends Controller
        $this->data = array_values($this->data);
        $this->count = count($this->data);
     }
+    public function listarDocumentosEnviar(){
+        $procedure = "call listar_documentos(?,?)";
+        $parameter = [
+            "huaral",
+            date('Y-m-d'),
+        ];
+        $data = DB::select($procedure, $parameter);
+        usort($data, function ($a, $b) {
+            return strcmp($b->created_at, $a->created_at);
+        });
+        $params = [
+            "documentos" => $data
+        ];
+        $request = new Request($params);
+        return $this->enviarComprobantesMasivo($request);
+        //echo json_encode("sas");
+    }
+
 }
