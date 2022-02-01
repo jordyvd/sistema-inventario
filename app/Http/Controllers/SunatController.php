@@ -452,10 +452,12 @@ class SunatController extends Controller
        $this->count = count($this->data);
     }
     public function listarDocumentosEnviar(){
+        $date_now = date('Y-m-d');
+        $date = strtotime('-1 day', strtotime($date_now));
         $procedure = "call listar_documentos(?,?)";
         $parameter = [
             "huaral",
-            date('Y-m-d'),
+            date('Y-m-d', $date)
         ];
         $data = DB::select($procedure, $parameter);
         usort($data, function ($a, $b) {
@@ -465,8 +467,9 @@ class SunatController extends Controller
             "documentos" => $data
         ];
         $request = new Request($params);
-        return $this->enviarComprobantesMasivo($request);
-        //echo json_encode("sas");
+        if(count($data) > 0){
+           $this->enviarComprobantesMasivo($request);
+        }
     }
 
 }
