@@ -33,7 +33,8 @@ class EnviarComprobantes extends Command
     public function handle()
     {
         $objeto = new SunatController();
-        return $objeto->listarDocumentosEnviar();
+        $objeto->listarDocumentosEnviar();
+        $this->info('comprobantes enviados');
         // $text = "[".date('H:i:s'). "]: Hola mundo";
         // Storage::append("archivo.txt", $data);
     }
