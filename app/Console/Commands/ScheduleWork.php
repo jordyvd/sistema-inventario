@@ -40,7 +40,7 @@ class ScheduleWork extends Command
     {
         $this->info('Schedule worker started successfully.');
         while (true) {
-            if ( date("Y-m-d H:i:s") == date("Y-m-d")." 22:40:00") {
+            if ( date("Y-m-d H:i:s") == date("Y-m-d")." 22:36:00") {
                 $this->call('test:command');
             }
             sleep(1);
