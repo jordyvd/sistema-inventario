@@ -3,23 +3,22 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Carbon\Carbon;
 
-class ScheduleWork extends Command
+class ScheduleSunat extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'schedule:work';
+    protected $signature = 'schedule:sunat';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'crone en laravel';
+    protected $description = 'cron sunat';
 
     /**
      * Create a new command instance.
@@ -40,8 +39,8 @@ class ScheduleWork extends Command
     {
         $this->info('Schedule worker started successfully.');
         while (true) {
-            if ( date("Y-m-d H:i:s") == date("Y-m-d")." 22:36:00") {
-                $this->call('test:command');
+            if ( date("Y-m-d H:i:s") == date("Y-m-d")." 00:30:00") {
+                $this->call('enviar:comprobantes');
             }
             sleep(1);
         }
