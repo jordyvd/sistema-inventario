@@ -86,8 +86,12 @@
               <select class="custom-select" v-model="tipo_v">
                 <option value disabled>seleccionar...</option>
                 <option value="ticked">ticked</option>
-                <option value="boleta">boleta</option>
-                <option value="factura">factura</option>
+                <option value="boleta" :disabled="disabledComprobante == 2">
+                  boleta
+                </option>
+                <option value="factura" :disabled="disabledComprobante == 3">
+                  factura
+                </option>
               </select>
             </div>
           </div>
@@ -171,6 +175,14 @@
             title="llenar"
           >
             <i class="fas fa-fill-drip"></i>
+          </button>
+          <button
+            class="btn btn-system float-rigth"
+            title="agregar descripcion"
+            data-toggle="modal"
+            data-target="#modalDescripcion"
+          >
+            <i class="fas fa-plus"></i>
           </button>
           <button class="btn text-secondary">
             <b><i class="fas fa-list"></i> lista de productos</b>
@@ -487,8 +499,48 @@
                   v-model="cliente.distrito"
                 />
               </div>
-              <button type="submit" class="btn btn-primary">Guardar</button>
             </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ********** agregar descripcion *************** -->
+    <div
+      class="modal fade"
+      id="modalDescripcion"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content border-modal modal-colo-p">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Descripcion</h5>
+            <button
+              type="button"
+              class="close"
+              id="cerrarModalDescripcion"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <input
+                type="search"
+                v-model="venta.descripcion"
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div class="modal-footer" style="justify-content: center!important;">
+            <div style="width: 60%;">
+             <button type="button" class="form-control btn btn-system" @click="generar_venta()">
+                <i class="fas fa-piggy-bank"></i> guardar
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -529,6 +581,9 @@ export default {
         estado: "",
         img: "default.png",
       },
+      venta: {
+        descripcion: null,
+      },
       condicion: "barra",
       barra_result: "",
       spinner_modal: false,
@@ -541,6 +596,7 @@ export default {
       cotizacion: [],
       numeroSunat: null,
       serieSunat: null,
+      disabledComprobante: null,
     };
   },
   created() {
@@ -682,6 +738,7 @@ export default {
           "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
         usuario: this.user_name,
         xmayor: 0,
+        descripcion: this.venta.descripcion,
         cliente: this.cliente,
         documento: this.tipo_v,
         productos: this.agregados,
@@ -703,12 +760,18 @@ export default {
           if (
             this.producto.estado.trim() === "" ||
             this.tipo_v.trim() === "" ||
-            this.agregados.length < 1 ||
+            this.agregados.length < 1
+          ) {
+            Vue.$toast.error("completar datos");
+          } else if (
+            this.tipo_v != "ticked" &&
             this.producto.nom_cliente.trim() === ""
           ) {
             Vue.$toast.error("completar datos");
+            return;
           } else {
             this.spinner_table = true;
+            document.getElementById('cerrarModalDescripcion').click();
             document.getElementById("clickButtonSpinner").click();
             axios
               .post("/generar_venta", params)
@@ -747,6 +810,7 @@ export default {
     vaciar_datos() {
       this.$data.producto.ruc_dni = "";
       this.$data.producto.nom_cliente = "";
+      this.$data.venta.descripcion = "";
     },
     // agregarventa_detalles() {
     //   const params = {
@@ -859,7 +923,8 @@ export default {
       axios.get("/api/dni/" + numero).then((res) => {
         this.producto.nom_cliente = res.data.nombre;
         this.cliente = res.data;
-        this.tipo_v = "boleta";
+        //this.tipo_v = "boleta";
+        this.disabledComprobante = 3;
         document.getElementById("clickButtonSpinner").click();
         if (this.cliente.numeroDocumento == null) {
           swal("ERROR", "no se encontro un cliente", "error");
@@ -871,7 +936,8 @@ export default {
       axios.get("/api/ruc/" + +numero).then((res) => {
         this.producto.nom_cliente = res.data.nombre;
         this.cliente = res.data;
-        this.tipo_v = "factura";
+        //this.tipo_v = "factura";
+        this.disabledComprobante = 2;
         document.getElementById("clickButtonSpinner").click();
         if (this.cliente.numeroDocumento == null) {
           swal("ERROR", "no se encontro un cliente", "error");

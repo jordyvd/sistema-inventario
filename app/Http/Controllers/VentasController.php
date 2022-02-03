@@ -166,7 +166,7 @@ class VentasController extends Controller
     }
     public function generar_venta(Request $request){
         $doc = $this->docSunat($request);
-        $procedure = "call insert_venta(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $procedure = "call insert_venta(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $parameter = [
             $doc['doc'],
             $doc['cod'],
@@ -182,6 +182,7 @@ class VentasController extends Controller
             $request->cod_sucursal,
             $request->usuario,
             $request->xmayor,
+            $request->descripcion,
             date('Y-m-d'),
             date("Y-m-d h:i:s")
         ];

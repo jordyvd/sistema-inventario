@@ -15,12 +15,11 @@ export default {
         // localStorage.setItem("sucursalStorage", JSON.stringify(res.data.sucursal.data));
       });
     },
-    preloader(){
-       document.getElementById("clickButtonSpinner").click();
+    preloader() {
+      document.getElementById("clickButtonSpinner").click();
     },
     openDocumento(pdf) {
-      let url =
-      this.facturadorFile + "pdf/10405163131-" + pdf + ".pdf";
+      let url = this.facturadorFile + "pdf/10405163131-" + pdf + ".pdf";
       let params = "width= 400";
       params += ", height=" + screen.height;
       params += ", top=0, left=500";
@@ -40,9 +39,8 @@ export default {
       return false;
     },
     openXmlFe(xml) {
-      let url =
-      this.facturadorFile +  "xml/10405163131-" + xml + ".XML";
-      let params = "width= "+screen.width;
+      let url = this.facturadorFile + "xml/10405163131-" + xml + ".XML";
+      let params = "width= " + screen.width;
       params += ", height=" + screen.height;
       params += ", top=0, left=500";
       params += ", fullscreen=yes";
@@ -60,15 +58,24 @@ export default {
       }
       return false;
     },
-    editarDocumento(params){
-        axios.post('/api/editar-documento', params);
+    editarDocumento(params) {
+      axios.post("/api/editar-documento", params);
     },
-    editarCredito(params){
-        axios.post('/api/editar-credito', params);
+    editarCredito(params) {
+      axios.post("/api/editar-credito", params);
     },
-    clickSpinner(){
+    clickSpinner() {
       document.getElementById("clickButtonSpinner").click();
-    }
+    },
+    cortarTexto(text, maximo) {
+      if (text == null) {
+        return "--";
+      } else if (text.length > maximo) {
+        return text.slice(0, 10) + "...";
+      } else {
+        return text;
+      }
+    },
   },
 };
 </script>

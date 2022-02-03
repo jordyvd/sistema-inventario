@@ -6,8 +6,8 @@ function enviarInfoSunat(params) {
             'nombre': params.nombre,
             'total_pagar': '74.34',
             'total_letras': $("#result_precio_texto").val(),
-            'num_venta':'F001-0000001',
-            'documento':'factura',
+            'num_venta': 'F001-0000001',
+            'documento': 'factura',
         }
     }).then(function (res) {
         console.log(res);
@@ -31,16 +31,16 @@ $(document).ready(function () {
 })
 function Full_W_P(item) {
     let $fecha = "";
-    if(item.fecha_t === "" || item.fecha_t === null){
+    if (item.fecha_t === "" || item.fecha_t === null) {
         $fecha = item.fecha;
-    }else{
+    } else {
         $fecha = item.fecha_t;
     }
     // let url = "http://localhost/printticked/print_pdf.php?codigo="+item.cod_sucursal + "&cliente="+item.nombre_cliente +"&fecha="+$fecha;
-    let url = "imprimirticked/"+item.cod_sucursal;
-   // params  = 'width='+screen.width;
+    let url = "imprimirticked/" + item.cod_sucursal;
+    // params  = 'width='+screen.width;
     params = 'width= 400';
-    params += ', height='+screen.height;
+    params += ', height=' + screen.height;
     params += ', top=0, left=500'
     params += ', fullscreen=yes';
     params += ', directories=no';
@@ -50,12 +50,12 @@ function Full_W_P(item) {
     params += ', scrollbars=no';
     params += ', status=no';
     params += ', toolbar=no';
-   
-   
-    newwin=window.open(url,'FullWindowAll', params);
-    if (window.focus) {newwin.focus()}
+
+
+    newwin = window.open(url, 'FullWindowAll', params);
+    if (window.focus) { newwin.focus() }
     return false;
-   }
+}
 // ***** solo numero *****
 $(".solonumero").keydown(function (event) {
     //alert(event.keyCode);
@@ -64,14 +64,13 @@ $(".solonumero").keydown(function (event) {
     }
 });
 // ********* click derecho *********
-$(document).ready(function(){
-    $("#table-productos").mousedown(function(e){
+$(document).ready(function () {
+    $("#table-productos").mousedown(function (e) {
         //1: izquierda, 2: medio/ruleta, 3: derecho
-         if(e.which == 3) 
-             {
-                $("#modal_kardex").click();
-             }
-     });
+        if (e.which == 3) {
+            $("#modal_kardex").click();
+        }
+    });
 });
 
 $(document).keypress(function (e) {
@@ -138,5 +137,9 @@ $(document).ready(function () {
 
         return false;
     });
+
 });
+// $(document).ready(function () {
+//     $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+// });
 

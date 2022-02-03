@@ -39,7 +39,7 @@ class ScheduleSunat extends Command
     {
         $this->info('Schedule worker started successfully.');
         while (true) {
-            if ( date("Y-m-d H:i:s") == date("Y-m-d")." 00:30:00") {
+            if ( date("Y-m-d H:i:s") == date("Y-m-d")." 02:30:00") {
                 $this->call('enviar:comprobantes');
             }
             sleep(1);

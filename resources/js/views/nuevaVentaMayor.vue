@@ -157,13 +157,6 @@
           >
             <i class="fas fa-broom"></i>
           </button>
-          <!-- <button
-            class="btn btn-system float-rigth"
-            title="cotizar"
-            @click="cotizar"
-          >
-            <i class="fas fa-print"></i>
-          </button> -->
           <button
             class="btn btn-system float-rigth"
             data-toggle="modal"
@@ -171,6 +164,14 @@
             title="llenar"
           >
             <i class="fas fa-fill-drip"></i>
+          </button>
+          <button
+            class="btn btn-system float-rigth"
+            title="agregar descripcion"
+            data-toggle="modal"
+            data-target="#modalDescripcion"
+          >
+            <i class="fas fa-plus"></i>
           </button>
           <button class="btn text-secondary">
             <b><i class="fas fa-list"></i> lista de productos</b>
@@ -493,6 +494,47 @@
         </div>
       </div>
     </div>
+    <!-- ********** agregar descripcion *************** -->
+    <div
+      class="modal fade"
+      id="modalDescripcion"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content border-modal modal-colo-p">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Descripcion</h5>
+            <button
+              type="button"
+              class="close"
+              id="cerrarModalDescripcion"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <input
+                type="search"
+                v-model="venta.descripcion"
+                class="form-control"
+              />
+            </div>
+          </div>
+           <div class="modal-footer" style="justify-content: center!important;">
+            <div style="width: 60%;">
+             <button type="button" class="form-control btn btn-system" @click="generar_venta()">
+                <i class="fas fa-piggy-bank"></i> guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -528,6 +570,9 @@ export default {
         cantidad: "",
         estado: "",
         img: "default.png",
+      },
+      venta: {
+        descripcion: null,
       },
       condicion: "barra",
       barra_result: "",
@@ -680,6 +725,7 @@ export default {
           "V00" + this.user_id_sucursal + "-" + this.producto.numfactura,
         usuario: this.user_name,
         xmayor: 1,
+        descripcion: this.venta.descripcion,
         cliente: this.cliente,
         documento: this.tipo_v,
         productos: this.agregados,
@@ -701,12 +747,18 @@ export default {
           if (
             this.producto.estado.trim() === "" ||
             this.tipo_v.trim() === "" ||
-            this.agregados.length < 1 ||
+            this.agregados.length < 1
+          ) {
+            Vue.$toast.error("completar datos");
+          } else if (
+            this.tipo_v != "ticked" &&
             this.producto.nom_cliente.trim() === ""
           ) {
             Vue.$toast.error("completar datos");
+            return;
           } else {
             this.spinner_table = true;
+            document.getElementById('cerrarModalDescripcion').click();
             document.getElementById("clickButtonSpinner").click();
             axios
               .post("/generar_venta", params)
@@ -745,6 +797,7 @@ export default {
     vaciar_datos() {
       this.$data.producto.ruc_dni = "";
       this.$data.producto.nom_cliente = "";
+      this.$data.venta.descripcion = "";
     },
     editarDocumento(params) {
       axios.post("/api/editar-documento", params);

@@ -148,6 +148,7 @@
                   <th scope="col">#</th>
                   <th scope="col">nro</th>
                   <th scope="col">cliente</th>
+                  <th scope="col">descripcion</th>
                   <th scope="col">acumulado</th>
                   <th scope="col">total a pagar</th>
                   <th scope="col">pagado</th>
@@ -172,7 +173,7 @@
                     </button>
                   </td>
                   <td v-if="item.nombre_cliente === null" class="text-danger">
-                    <i class="fas fa-user-times"></i>
+                    --
                   </td>
                   <td v-else>
                     <p
@@ -180,7 +181,16 @@
                       data-placement="top"
                       :title="item.nombre_cliente"
                     >
-                      {{ cortarNombre(item.nombre_cliente) }}
+                      {{ cortarTexto(item.nombre_cliente, 18) }}
+                    </p>
+                  </td>
+                  <td>
+                    <p
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      :title="item.descripcion"
+                    >
+                      {{ cortarTexto(item.descripcion, 10) }}
                     </p>
                   </td>
                   <td>
@@ -649,7 +659,7 @@ export default {
         id: this.item.id,
         user_id: this.user_id,
         sucursal: this.user_sucursal,
-        nrof: this.nrof
+        nrof: this.nrof,
       };
       axios
         .post("api/agregar-pago-credit", params)
@@ -671,7 +681,10 @@ export default {
       this.pago.caja = null;
     },
     mostrarEditMonto(item) {
-      if (this.curdateDate == moment(item.created_at).format("YYYY-MM-DD") && item.edit_user == null) {
+      if (
+        this.curdateDate == moment(item.created_at).format("YYYY-MM-DD") &&
+        item.edit_user == null
+      ) {
         return true;
       } else {
         return false;

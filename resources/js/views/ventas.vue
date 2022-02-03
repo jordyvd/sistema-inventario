@@ -154,6 +154,7 @@
                   <th scope="col">#</th>
                   <th scope="col">nro</th>
                   <th scope="col">cliente</th>
+                  <th scope="col">descripcion</th>
                   <th scope="col">total</th>
                   <th scope="col">condición</th>
                   <th scope="col">documento</th>
@@ -176,9 +177,26 @@
                     </button>
                   </td>
                   <td v-if="item.nombre_cliente === null" class="text-danger">
-                    <i class="fas fa-user-times"></i>
+                    --
                   </td>
-                  <td v-else>{{ item.nombre_cliente }}</td>
+                  <td v-else>
+                    <p
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      :title="item.nombre_cliente"
+                    >
+                      {{ cortarTexto(item.nombre_cliente, 18) }}
+                    </p>
+                  </td>
+                  <td>
+                    <p
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      :title="item.descripcion"
+                    >
+                      {{ cortarTexto(item.descripcion, 10) }}
+                    </p>
+                  </td>
                   <td>{{ parseFloat(item.total_v).toFixed(2) }}</td>
                   <td v-if="item.estado > 0" class="text-success">efectivo</td>
                   <td v-else>
