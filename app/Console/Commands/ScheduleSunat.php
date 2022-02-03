@@ -37,7 +37,7 @@ class ScheduleSunat extends Command
      */
     public function handle()
     {
-        $this->info('Schedule worker started successfully.');
+        $this->info('inicio de horario envio comprobantes sunat.');
         while (true) {
             if ( date("Y-m-d H:i:s") == date("Y-m-d")." 02:30:00") {
                 $this->call('enviar:comprobantes');
