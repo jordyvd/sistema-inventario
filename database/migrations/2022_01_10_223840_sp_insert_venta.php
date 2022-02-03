@@ -14,7 +14,7 @@ class SpInsertVenta extends Migration
     public function up()
     {
         $procedure = "
-        CREATE PROCEDURE insert_venta(
+        CREATE PROCEDURE insert_venta(            
             in doc_sunat_p text,
             in cod_p text,
             in nrof_p text, 
@@ -35,12 +35,12 @@ begin
             set @venta = (select count(*) from ventas v where v.nrof = nrof_p and v.sucursal = sucursal_p);
             if(@venta = 0) then
             /***********/
-            set @correlativo = (select v.correlativo from ventas v where v.doc_sunat = doc_sunat_p order by v.id desc limit 1); 
-            set @correlativo = (if(@correlativo is null, 1, @correlativo + 1));
-            if(tipo_v_p != \"ticked\") then
-                    else 
-                    set @correlativo = null;
+                if(tipo_v_p != \"ticked\") then
+                    set @correlativo = (select v.correlativo from ventas v where v.doc_sunat = doc_sunat_p order by v.id desc limit 1); 
+                    set @correlativo = (if(@correlativo is null, 1, @correlativo + 1));
                     set @serie = (select concat(cod_p,\"-\",LPAD(@correlativo,8,'0')));
+                else 
+                    set @correlativo = null;
                     set @serie = null;
                 end if;
                 insert into ventas(doc_sunat, correlativo, serie, nrof, estado,estado_pago, tipo_v,total_v, total_ganancia, ruc_dni_v, nombre_cliente, sucursal, cod_sucursal,
