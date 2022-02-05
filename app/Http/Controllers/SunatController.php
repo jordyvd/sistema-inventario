@@ -354,10 +354,12 @@ class SunatController extends Controller
     } 
     public function listarDocumentos(Request $request){
         $date = $request->fecha == null ? date('Y-m-d') : $request->fecha;
-        $procedure = "call listar_documentos(?,?)";
+        $date_end = $request->fecha_end == null ? date('Y-m-d') : $request->fecha_end;
+        $procedure = "call listar_documentos(?,?,?)";
         $parameter = [
             $request->sucursal,
             $date,
+            $date_end
         ];
         $data = DB::select($procedure, $parameter);
         usort($data, function ($a, $b) {

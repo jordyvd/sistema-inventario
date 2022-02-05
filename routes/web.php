@@ -81,3 +81,4 @@ Route::post('/ingresos_salidas_create','HomeController@ingresos_salidas_create')
 Route::post('/agregar_salida','SalidaProductController@agregar_salida');
 Route::post('/detalle_product','SalidaProductController@detalle_product');
 Route::post('/bajarstockSalida','SalidaProductController@bajarstockSalida');
+Route::get('/descargar-pdf','DownloadsControler@downloadZip');

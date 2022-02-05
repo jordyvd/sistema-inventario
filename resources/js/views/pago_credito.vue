@@ -331,6 +331,7 @@
                   <th scope="col">Descripcion</th>
                   <th scope="col">Caja</th>
                   <th scope="col">Fecha</th>
+                  <th scope="col">Eliminar</th>
                 </tr>
               </thead>
               <tbody>
@@ -363,6 +364,11 @@
                     <p v-else>No</p>
                   </td>
                   <td>{{ formatFecha(item.created_at) }}</td>
+                  <td>
+                    <button @click="eliminarPago(item)">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -404,6 +410,13 @@
                   v-model="pago.monto"
                   required
                 />
+              </div>
+              <div class="form-group">
+                <label>Condicion</label>
+                <select class="form-control" v-model="pago.condicion" required>
+                  <option value="1">Efectico</option>
+                  <option value="2">Tranferencia</option>
+                </select>
               </div>
               <div class="form-group">
                 <label>Descripción</label>
@@ -471,6 +484,7 @@ export default {
         monto: null,
         descripcion: null,
         caja: 1,
+        condicion: null,
       },
       item: {},
       curdateDate: null,
@@ -654,6 +668,7 @@ export default {
         acumulado:
           parseFloat(this.pago.monto) + parseFloat(this.item.estado_pago),
         monto: this.pago.monto,
+        condicion: this.pago.condicion,
         descripcion: this.pago.descripcion,
         caja: this.pago.caja,
         id: this.item.id,
@@ -678,7 +693,7 @@ export default {
     limpiarFormPago() {
       this.pago.monto = null;
       this.pago.descripcion = null;
-      this.pago.caja = null;
+      this.pago.caja = "1";
     },
     mostrarEditMonto(item) {
       if (
@@ -703,6 +718,25 @@ export default {
         item.input_update = false;
         this.clickSpinner();
         this.item.estado_pago = res.data;
+      });
+    },
+    eliminarPago(item) {
+      swal({
+        text: "¿estás seguro?",
+        icon: "error",
+        buttons: ["no", "sí"],
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.clickSpinner();
+          document.getElementById("modalPagosClose").click();
+          axios
+            .post("/api/eliminar-pago-credito/" + this.user_id, item)
+            .then((res) => {
+              this.clickSpinner();
+              this.item.estado_pago = res.data;
+            });
+        }
       });
     },
   },

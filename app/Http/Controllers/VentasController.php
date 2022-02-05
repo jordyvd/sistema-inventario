@@ -7,12 +7,12 @@ use App\ventas;
 use App\almacen;
 use App\detalle_venta;
 use App\cliente;
-use Illuminate\Support\Facades\Auth;
 use App\Movimientos;
 use App\credito_payments;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\SunatController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 
 class VentasController extends Controller
 {
@@ -265,10 +265,11 @@ class VentasController extends Controller
         $this->insertPaymentCredito($request);
     }
     public function insertPaymentCredito(Request $request){
-        $procedure = "call insertar_pago_credito(?,?,?,?,?,?)";
+        $procedure = "call insertar_pago_credito(?,?,?,?,?,?,?)";
         $parameter = [
            $request->id,
            $request->monto,
+           $request->condicion,
            $request->descripcion,
            $request->caja,
            $request->user_id,
@@ -292,7 +293,7 @@ class VentasController extends Controller
         $caja->ingresos_salidas_create($request);
     }
     public function getPaymentsCredit(Request $request){
-        $procedure = 'select *, false input_update from creditos_payments where credito_id = ? order by created_at desc';
+        $procedure = 'select *, false input_update from creditos_payments where credito_id = ? and deleted_at is null order by created_at desc';
         $parameter = [
              $request['id']
         ];
@@ -314,7 +315,7 @@ class VentasController extends Controller
     }
     public function updateAcumuladoCredit(Request $request){
         $acumulado = 0;
-        $pagos = DB::select("select cp.monto from creditos_payments cp where cp.credito_id = ?", [$request->venta_id]);
+        $pagos = DB::select("select cp.monto from creditos_payments cp where cp.credito_id = ? and deleted_at is null", [$request->venta_id]);
         foreach($pagos as $value){
             $acumulado += $value->monto;
         }
@@ -362,5 +363,21 @@ class VentasController extends Controller
         ->join('products','detalle_venta.barra_detalles','products.barra')
         ->where('detalle_venta.nrof',trim($nrof))
         ->get();
+    }
+    public function eliminarPagoCredito(Request $request,$user_id){
+        DB::select('update creditos_payments set deleted_at = ?, user_delete = ? where id = ?', [date('Y-m-d H:m:s'), $user_id , $request->id]);
+        DB::select('delete from ingresos_salidas where credit_id = ?',[$request->id]);
+        $acumulado = 0;
+        $pagos = DB::select("select cp.monto from creditos_payments cp where cp.credito_id = ? and deleted_at is null", [$request->credito_id]);
+        foreach($pagos as $value){
+            $acumulado += $value->monto;
+        }
+        $procedure = "update ventas set estado_pago = ? where id = ?";
+        $parameter = [
+            $acumulado,
+            $request->credito_id
+        ];
+        DB::select($procedure, $parameter);
+        return $acumulado;
     }
 }

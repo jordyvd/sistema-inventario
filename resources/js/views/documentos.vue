@@ -16,6 +16,20 @@
         style="margin: 5px"
         @change="refrescar()"
       />
+      <input
+        type="date"
+        v-model="fecha_end"
+        class="input-search"
+        style="margin: 5px"
+        @change="refrescar()"
+      />
+      <button
+        class="btn btn-success"
+        @click="exportExcel()"
+        style="margin: 5px"
+      >
+        <i class="fas fa-download"></i> Exportar
+      </button>
       <div class="table-scroll">
         <table class="table">
           <thead>
@@ -25,13 +39,21 @@
               <th scope="col">documento</th>
               <th scope="col" v-if="user_id == 1">estado</th>
               <th scope="col">afectado</th>
+              <th scope="col">total</th>
               <th scope="col">pdf</th>
               <th scope="col">xml</th>
             </tr>
           </thead>
           <tbody v-for="(item, index) in documentos" :key="index">
             <tr>
-              <td v-if="user_id == 1"><button class="btn btn-primary" @click="enviarComprobante(item)"><i class="fas fa-share"></i></button></td>
+              <td v-if="user_id == 1">
+                <button
+                  class="btn btn-primary"
+                  @click="enviarComprobante(item)"
+                >
+                  <i class="fas fa-share"></i>
+                </button>
+              </td>
               <td>{{ item.serie }}</td>
               <td>{{ tipoDocumento(item.tipo) }}</td>
               <td v-if="user_id == 1">
@@ -39,8 +61,8 @@
                 <p v-else-if="item.estado == 1" class="text-success">enviado</p>
                 <p v-else class="text-danger">envio fallido</p>
               </td>
-              <td v-if="item.afectado">{{ item.afectado }}</td>
-              <td v-else>--</td>
+              <td>{{ item.afectado }}</td>
+              <td>{{ item.total }}</td>
               <td v-if="item.estado_pdf">
                 <button
                   @click="abrirDocument(item)"
@@ -64,11 +86,13 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
       documentos: [],
       fecha: null,
+      fecha_end: null,
     };
   },
   created() {
@@ -79,6 +103,7 @@ export default {
       const params = {
         sucursal: this.user_sucursal,
         fecha: this.fecha,
+        fecha_end: this.fecha_end,
       };
       axios.post("/api/listar-documentos", params).then((res) => {
         this.documentos = res.data;
@@ -89,6 +114,7 @@ export default {
       const params = {
         sucursal: this.user_sucursal,
         fecha: this.fecha,
+        fecha_end: this.fecha_end,
       };
       axios.post("/api/listar-documentos", params).then((res) => {
         this.documentos = res.data;
@@ -151,6 +177,38 @@ export default {
       } else if (tipo == 7) {
         return "nota de credito";
       }
+    },
+    exportExcel() {
+      this.clickSpinner();
+      const params = {
+        documentos: this.documentos,
+        fecha: this.fecha,
+        fecha_end: this.fecha_end,
+      };
+      axios
+        .post("/api/exportar-documentos", params, { responseType: "blob" })
+        .then((response) => {
+          this.forceFileDownload(response);
+          this.clickSpinner();
+        })
+        .catch(() => console.log("error occured"));
+    },
+    forceFileDownload(response) {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      let fecha =
+        this.fecha != null ? this.fecha : moment().format("YYYY-MM-DD");
+      let fecha_end =
+        this.fecha_end != null ? this.fecha_end : moment().format("YYYY-MM-DD");
+      let namefile =
+        "FE_" +
+        moment(fecha).format("DD-MM-YYYY") +
+        "_" +
+        moment(fecha_end).format("DD-MM-YYYY");
+      link.setAttribute("download", namefile + ".xlsx");
+      document.body.appendChild(link);
+      link.click();
     },
   },
 };

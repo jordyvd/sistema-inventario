@@ -109,20 +109,45 @@ class HomeController extends Controller
         ->first();
        }
     }
-    public function montosalidas($sucursal,$fecha){
-        if($fecha==="1"){
-         return ingresos_salidas::select(DB::raw('sum(monto) as total_salidas'))
-         ->where('fecha',date('Y-m-d'))
-         ->where('sucursal',$sucursal)
-         ->where('condicion','salida')
-         ->first();
-        }else{
-         return ingresos_salidas::select(DB::raw('sum(monto) as total_salidas'))
-         ->where('fecha',$fecha)
-         ->where('sucursal',$sucursal)
-         ->where('condicion','salida')
-         ->first();
+    public function montoCajaEfectivo(Request $request){
+        $date = $request->fecha === "1" ? date('Y-m-d') : $request->fecha;
+        $procedure = "call get_monto_caja_efectivo(?,?)";
+        $parameter = [
+            $request->sucursal,
+            $date
+        ];
+        $data = DB::select($procedure, $parameter);
+        $ingreso = 0;
+        $salida = 0;
+        foreach($data as $value){
+            if($value->condicion == "salida"){
+                $salida += $value->monto;
+            }else{
+                if($value->condicion_cp !== 2)
+                {
+                    $ingreso += $value->monto;
+                }
+            }
         }
+        return [
+            "ingreso" => $ingreso,
+            "salida" => $salida,
+        ];
+    }
+    public function montosalidas($sucursal,$fecha){
+        // if($fecha==="1"){
+        //  return ingresos_salidas::select(DB::raw('sum(monto) as total_salidas'))
+        //  ->where('fecha',date('Y-m-d'))
+        //  ->where('sucursal',$sucursal)
+        //  ->where('condicion','salida')
+        //  ->first();
+        // }else{
+        //  return ingresos_salidas::select(DB::raw('sum(monto) as total_salidas'))
+        //  ->where('fecha',$fecha)
+        //  ->where('sucursal',$sucursal)
+        //  ->where('condicion','salida')
+        //  ->first();
+        // }
     }
     public function total_caja($sucursal,$fecha){
         if($fecha==="1"){
@@ -140,27 +165,18 @@ class HomeController extends Controller
         }
     }
     public function caja_trasnferencia($sucursal,$fecha){
-        if($fecha === "1"){
-            return ventas::select(DB::raw('sum(total_v) as total_ventas'))
-            ->where('sucursal',$sucursal)
-            ->where('estado','!=','1')
-            ->where('estado','!=','0')
-            ->where('estado','!=','credito')
-            ->where('estado','!=','cambio')
-            ->where('estado','!=','cancelado')
-            ->where('fecha',date('Y-m-d'))
-            ->first();
-        }else{
-            return ventas::select(DB::raw('sum(total_v) as total_ventas'))
-            ->where('sucursal',$sucursal)
-            ->where('estado','!=','1')
-            ->where('estado','!=','0')
-            ->where('estado','!=','credito')
-            ->where('estado','!=','cambio')
-            ->where('estado','!=','cancelado')
-            ->where('fecha',$fecha)
-            ->first();
+        $date = $fecha === "1" ? date('Y-m-d') : $fecha;
+        $procedure = "call get_caja_transfarencias(?,?)";
+        $parameter = [
+            $sucursal,
+            $date
+        ];
+        $data = DB::select($procedure, $parameter);
+        $total = 0;
+        foreach($data as $value){
+            $total += $value->total_ventas;
         }
+        return ["total_ventas" => $total] ;
     }
     public function descripsea($search,$sucursal,$fecha){
         if($fecha === "1"){

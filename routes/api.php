@@ -21,6 +21,7 @@ Route::get('/montoingresa/{sucursal}/{fecha}','HomeController@montoingresa');
 Route::get('/montosalidas/{sucursal}/{fecha}','HomeController@montosalidas');
 Route::get('/total_caja/{sucursal}/{fecha}','HomeController@total_caja');
 Route::get('/caja_trasnferencia/{sucursal}/{fecha}','HomeController@caja_trasnferencia');
+Route::post('/monto-caja-efectivo','HomeController@montoCajaEfectivo');
 // *****  FIN HOME *****
 Route::get('/productoslista','SystemController@index');
 Route::get('/listmarca','SystemController@listmarca');
@@ -57,6 +58,7 @@ Route::get('/llenar_listaV/{nrof}','VentasController@llenar_listaV');
 Route::post('/get-payments-credit','VentasController@getPaymentsCredit');
 Route::post('/agregar-pago-credit','VentasController@agregarPagoCredit');
 Route::post('/update-monto-pago-credit','VentasController@updateMontoPagoCredit');
+Route::post('/eliminar-pago-credito/{user_id}','VentasController@eliminarPagoCredito');
 // *********** BUSCAR REGISTROS ************
 Route::get('/buscaralmacen/{condicion}/{search}','ScannerController@buscaralmacen');
 Route::get('/buscarclientes/{search}','ScannerController@buscarclientes');
@@ -109,3 +111,6 @@ Route::post('/listar-documentos','SunatController@listarDocumentos');
 Route::post('/editar-credito','SunatController@EditarCredito');
 Route::post('/enviar-comprobante','SunatController@enviarComprobantes');
 Route::post('/enviar-comprobante-masivo','SunatController@enviarComprobantesMasivo');
+Route::get('/descargar-pdf','DownloadsController@downloadZip');
+Route::post('/exportar-documentos','DownloadsController@exportarDocumentos');
+

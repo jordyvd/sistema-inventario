@@ -211,13 +211,17 @@
               <li class="list-group-item">
                 ingresos a caja:
                 <span class="badge badge-xl bg-menu text-white"
-                  >S/. {{ parseFloat(monto_ingresa.total_ingresos).toFixed(2) }}</span
+                  >S/.
+                  {{
+                    parseFloat(monto_ingresa.total_ingresos).toFixed(2)
+                  }}</span
                 >
               </li>
               <li class="list-group-item">
                 salidas de caja:
                 <span class="badge badge-xl bg-menu text-white"
-                  >S/. {{ parseFloat(monto_salida.total_salidas).toFixed(2) }}</span
+                  >S/.
+                  {{ parseFloat(monto_salida.total_salidas).toFixed(2) }}</span
                 >
               </li>
               <li class="list-group-item">
@@ -227,26 +231,27 @@
                 >
               </li>
               <!-- ****************** PAGO BANCARIO ********************* -->
-              <li class="list-group-item" v-if="caja_creditos_api.total_ventas < 1">
+              <li
+                class="list-group-item"
+                v-if="caja_creditos_api.total_ventas < 1"
+              >
                 ventas - pagos bancarios:
-                <span class="badge badge-xl bg-menu text-white"
-                  >S/. 0.00</span
-                >
+                <span class="badge badge-xl bg-menu text-white">S/. 0.00</span>
               </li>
               <li class="list-group-item" v-else>
                 ventas - pagos bancarios:
                 <span class="badge badge-xl bg-menu text-white"
-                  >S/. {{ parseFloat(caja_creditos_api.total_ventas).toFixed(2) }}</span
+                  >S/.
+                  {{
+                    parseFloat(caja_creditos_api.total_ventas).toFixed(2)
+                  }}</span
                 >
               </li>
               <!-- ****************** PAGO BANCARIO ********************* -->
               <li class="list-group-item">
                 total general:
                 <span class="badge badge-xl bg-menu text-white"
-                  >S/.
-                  {{
-                    total_general.toFixed(2)
-                  }}</span
+                  >S/. {{ total_general.toFixed(2) }}</span
                 >
               </li>
             </ul>
@@ -328,8 +333,9 @@ export default {
       });
     },
     masinfo() {
-      this.total_ingresos();
-      this.total_salidas();
+      // this.total_ingresos();
+      // this.total_salidas();
+      this.getMontoCajaEfectivo();
       this.total_caja();
       this.transferencia();
     },
@@ -406,6 +412,13 @@ export default {
         this.calculando = false;
       });
     },
+    getMontoCajaEfectivo() {
+      const params = { sucursal: this.user_sucursal, fecha: this.fecha };
+      axios.post("/api/monto-caja-efectivo", params).then((res) => {
+        this.monto_salida.total_salidas = res.data.salida;
+        this.monto_ingresa.total_ingresos = res.data.ingreso;
+      });
+    },
     buscar_descr() {
       if (this.descripsea.trim() === "") {
         Vue.$toast.error("campo vacío");
@@ -413,7 +426,12 @@ export default {
         this.spinner = true;
         axios
           .get(
-            "/api/descripsea/" + this.descripsea + "/" + this.seleccion_sucursal+"/"+this.fecha
+            "/api/descripsea/" +
+              this.descripsea +
+              "/" +
+              this.seleccion_sucursal +
+              "/" +
+              this.fecha
           )
           .then((res) => {
             this.ingresos_salidas = res.data.datos.data;
