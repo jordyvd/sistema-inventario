@@ -413,7 +413,7 @@ export default {
       });
     },
     getMontoCajaEfectivo() {
-      const params = { sucursal: this.user_sucursal, fecha: this.fecha };
+      const params = { sucursal: this.seleccion_sucursal, fecha: this.fecha };
       axios.post("/api/monto-caja-efectivo", params).then((res) => {
         this.monto_salida.total_salidas = res.data.salida;
         this.monto_ingresa.total_ingresos = res.data.ingreso;
