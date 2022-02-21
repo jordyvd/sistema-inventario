@@ -30,6 +30,9 @@
       >
         <i class="fas fa-download"></i> Exportar
       </button>
+      <div class="alert border" role="alert" style="margin: 5px;background:transparent!important">
+        TOTAL: {{totalDocumentos}}
+      </div>
       <div class="table-scroll">
         <table class="table">
           <thead>
@@ -209,6 +212,16 @@ export default {
       link.setAttribute("download", namefile + ".xlsx");
       document.body.appendChild(link);
       link.click();
+    },
+  },
+  computed: {
+    totalDocumentos() {
+      let array = this.documentos;
+      let total = 0;
+      array.forEach((element) => {
+        total += element.total;
+      });
+      return total;
     },
   },
 };
