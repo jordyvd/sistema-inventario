@@ -30,8 +30,12 @@
       >
         <i class="fas fa-download"></i> Exportar
       </button>
-      <div class="alert border" role="alert" style="margin: 5px;background:transparent!important">
-        TOTAL: {{totalDocumentos}}
+      <div
+        class="alert border"
+        role="alert"
+        style="margin: 5px; background: transparent !important"
+      >
+        TOTAL: {{ totalDocumentos }}
       </div>
       <div class="table-scroll">
         <table class="table">
@@ -219,7 +223,14 @@ export default {
       let array = this.documentos;
       let total = 0;
       array.forEach((element) => {
-        total += element.total;
+        if (element.tipo != 7) {
+          total += parseFloat(element.total);
+        }
+      });
+      array.forEach((element) => {
+        if (element.tipo == 7) {
+          total - parseFloat(element.total);
+        }
       });
       return total;
     },
