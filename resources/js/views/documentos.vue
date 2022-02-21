@@ -227,12 +227,13 @@ export default {
           total += parseFloat(element.total);
         }
       });
+      let anulado = 0;
       array.forEach((element) => {
         if (element.tipo == 7) {
-          total - parseFloat(element.total);
+          anulado += parseFloat(element.total);
         }
       });
-      return total;
+      return parseFloat(total) - parseFloat(anulado);
     },
   },
 };
