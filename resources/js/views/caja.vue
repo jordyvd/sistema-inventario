@@ -233,7 +233,7 @@
               <!-- ****************** PAGO BANCARIO ********************* -->
               <li
                 class="list-group-item"
-                v-if="caja_creditos_api.total_ventas < 1"
+                v-if="transferencia < 1"
               >
                 ventas - pagos bancarios:
                 <span class="badge badge-xl bg-menu text-white">S/. 0.00</span>
@@ -243,7 +243,7 @@
                 <span class="badge badge-xl bg-menu text-white"
                   >S/.
                   {{
-                    parseFloat(caja_creditos_api.total_ventas).toFixed(2)
+                    parseFloat(transferencia).toFixed(2)
                   }}</span
                 >
               </li>
@@ -283,7 +283,7 @@ export default {
       descripsea: "",
       seleccion_sucursal: "seleccionar...",
       sucursal: [],
-      caja_creditos_api: 0,
+      transferencia: 0,
     };
   },
   created() {
@@ -336,30 +336,30 @@ export default {
       // this.total_ingresos();
       // this.total_salidas();
       this.getMontoCajaEfectivo();
-      this.total_caja();
-      this.transferencia();
+      //this.total_caja();
+     // this.transferencia();
     },
-    total_caja() {
-      let url = "/api/total_caja/" + this.seleccion_sucursal + "/" + this.fecha;
-      axios.get(url).then((res) => {
-        this.calculo_caja = res.data;
-        if (this.calculo_caja.total_venta === null) {
-          this.ventas_double = 0;
-        } else {
-          this.ventas_double = this.calculo_caja.total_venta;
-        }
-        this.cargando = false;
-      });
-    },
-    transferencia() {
-      let url =
-        "/api/caja_trasnferencia/" + this.seleccion_sucursal + "/" + this.fecha;
-      axios.get(url).then((res) => {
-        if (res.data != null) {
-          this.caja_creditos_api = res.data;
-        }
-      });
-    },
+    // total_caja() {
+    //   let url = "/api/total_caja/" + this.seleccion_sucursal + "/" + this.fecha;
+    //   axios.get(url).then((res) => {
+    //     this.calculo_caja = res.data;
+    //     if (this.calculo_caja.total_venta === null) {
+    //       this.ventas_double = 0;
+    //     } else {
+    //       this.ventas_double = this.calculo_caja.total_venta;
+    //     }
+    //     this.cargando = false;
+    //   });
+    // },
+    // transferencia() {
+    //   let url =
+    //     "/api/caja_trasnferencia/" + this.seleccion_sucursal + "/" + this.fecha;
+    //   axios.get(url).then((res) => {
+    //     if (res.data != null) {
+    //       this.transferencia = res.data;
+    //     }
+    //   });
+    // },
     eliminar(item, index) {
       swal({
         text: "¿estás seguro?",
@@ -379,44 +379,47 @@ export default {
       this.$data.fecha = "1";
       this.$data.descripsea = "";
       this.listar();
-      this.total_ingresos();
-      this.total_salidas();
+     // this.total_ingresos();
+     // this.total_salidas();
     },
     limpiar_form() {
       this.$data.datos.descripcion = "";
       this.$data.datos.monto = "";
       this.$data.condicion = "";
     },
-    total_ingresos() {
-      let url =
-        "/api/montoingresa/" + this.seleccion_sucursal + "/" + this.fecha;
-      axios.get(url).then((res) => {
-        if (res.data.total_ingresos === null) {
-          this.monto_ingresa.total_ingresos = 0;
-        } else {
-          this.monto_ingresa = res.data;
-        }
-      });
-    },
-    total_salidas() {
-      this.calculando = true;
-      let url2 =
-        "/api/montosalidas/" + this.seleccion_sucursal + "/" + this.fecha;
-      axios.get(url2).then((res) => {
-        // this.monto_salida = res.data;
-        if (res.data.total_salidas === null) {
-          this.monto_salida.total_salidas = 0;
-        } else {
-          this.monto_salida = res.data;
-        }
-        this.calculando = false;
-      });
-    },
+    // total_ingresos() {
+    //   let url =
+    //     "/api/montoingresa/" + this.seleccion_sucursal + "/" + this.fecha;
+    //   axios.get(url).then((res) => {
+    //     if (res.data.total_ingresos === null) {
+    //       this.monto_ingresa.total_ingresos = 0;
+    //     } else {
+    //       this.monto_ingresa = res.data;
+    //     }
+    //   });
+    // },
+    // total_salidas() {
+    //   this.calculando = true;
+    //   let url2 =
+    //     "/api/montosalidas/" + this.seleccion_sucursal + "/" + this.fecha;
+    //   axios.get(url2).then((res) => {
+    //     // this.monto_salida = res.data;
+    //     if (res.data.total_salidas === null) {
+    //       this.monto_salida.total_salidas = 0;
+    //     } else {
+    //       this.monto_salida = res.data;
+    //     }
+    //     this.calculando = false;
+    //   });
+    // },
     getMontoCajaEfectivo() {
       const params = { sucursal: this.seleccion_sucursal, fecha: this.fecha };
       axios.post("/api/monto-caja-efectivo", params).then((res) => {
         this.monto_salida.total_salidas = res.data.salida;
         this.monto_ingresa.total_ingresos = res.data.ingreso;
+        this.transferencia = res.data.transferencia;
+        this.ventas_double = res.data.ventas;
+        this.cargando = false;
       });
     },
     buscar_descr() {
