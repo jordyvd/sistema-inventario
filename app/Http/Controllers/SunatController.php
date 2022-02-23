@@ -456,7 +456,7 @@ class SunatController extends Controller
     public function listarDocumentosEnviar(){
         $date_now = date('Y-m-d');
         $date = strtotime('-1 day', strtotime($date_now));
-        $procedure = "call listar_documentos(?,?)";
+        $procedure = "call listar_documentos(?,?,?)";
         $parameter = [
             "huaral",
             date('Y-m-d', $date),
