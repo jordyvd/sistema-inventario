@@ -231,20 +231,14 @@
                 >
               </li>
               <!-- ****************** PAGO BANCARIO ********************* -->
-              <li
-                class="list-group-item"
-                v-if="transferencia < 1"
-              >
+              <li class="list-group-item" v-if="transferencia < 1">
                 ventas - pagos bancarios:
                 <span class="badge badge-xl bg-menu text-white">S/. 0.00</span>
               </li>
               <li class="list-group-item" v-else>
                 ventas - pagos bancarios:
                 <span class="badge badge-xl bg-menu text-white"
-                  >S/.
-                  {{
-                    parseFloat(transferencia).toFixed(2)
-                  }}</span
+                  >S/. {{ parseFloat(transferencia).toFixed(2) }}</span
                 >
               </li>
               <!-- ****************** PAGO BANCARIO ********************* -->
@@ -337,7 +331,7 @@ export default {
       // this.total_salidas();
       this.getMontoCajaEfectivo();
       //this.total_caja();
-     // this.transferencia();
+      // this.transferencia();
     },
     // total_caja() {
     //   let url = "/api/total_caja/" + this.seleccion_sucursal + "/" + this.fecha;
@@ -379,8 +373,8 @@ export default {
       this.$data.fecha = "1";
       this.$data.descripsea = "";
       this.listar();
-     // this.total_ingresos();
-     // this.total_salidas();
+      // this.total_ingresos();
+      // this.total_salidas();
     },
     limpiar_form() {
       this.$data.datos.descripcion = "";
@@ -413,6 +407,7 @@ export default {
     //   });
     // },
     getMontoCajaEfectivo() {
+      this.cargando = true;
       const params = { sucursal: this.seleccion_sucursal, fecha: this.fecha };
       axios.post("/api/monto-caja-efectivo", params).then((res) => {
         this.monto_salida.total_salidas = res.data.salida;
