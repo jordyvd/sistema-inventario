@@ -469,7 +469,7 @@ class SunatController extends Controller
         $params = [
             "documentos" => $data
         ];
-        return $data;
+        return ["data" => $data];
         $request = new Request($params);
         if(count($data) > 0){
            $this->enviarComprobantesMasivo($request);
