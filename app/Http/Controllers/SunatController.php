@@ -459,7 +459,8 @@ class SunatController extends Controller
         $procedure = "call listar_documentos(?,?)";
         $parameter = [
             "huaral",
-            date('Y-m-d', $date)
+            date('Y-m-d', $date),
+            date('Y-m-d', $date),
         ];
         $data = DB::select($procedure, $parameter);
         usort($data, function ($a, $b) {
