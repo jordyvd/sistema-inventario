@@ -463,6 +463,7 @@ class SunatController extends Controller
             date('Y-m-d', $date),
         ];
         $data = DB::select($procedure, $parameter);
+        return $data;
         usort($data, function ($a, $b) {
             return strcmp($b->created_at, $a->created_at);
         });
