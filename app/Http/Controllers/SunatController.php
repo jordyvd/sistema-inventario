@@ -424,7 +424,7 @@ class SunatController extends Controller
         usort($this->data, function ($a, $b) {
             return strcmp($a->tipo, $b->tipo);
         });
-        return $data;
+        return $array;
         if($this->count > 0){
             $this->recursiveEnvio();
             return "Enviados correctamente";
