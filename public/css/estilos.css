@@ -714,3 +714,8 @@ debemos poner definir este valor.
   .filter-img{
     filter: grayscale(100%);
   }
+  .page-item.active .page-link { 
+    background: var(--color-principal)!important;
+    color: white!important;
+    border: var(--color-principal)!important;
+  }

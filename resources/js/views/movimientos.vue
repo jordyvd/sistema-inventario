@@ -39,11 +39,11 @@
             {{ item.nombre }}
           </option>
         </select>
-        <button class="button" @click="listar">
+        <button class="button" @click="listar(dataPaginacion.currentPage)">
           <i class="fas fa-search"></i> Buscar
         </button>
         <button class="button" @click="exportarExcel">
-          <i class="far fa-file-excel"></i> Exportar 
+          <i class="far fa-file-excel"></i> Exportar
         </button>
       </div>
       <div class="centrar" v-if="spinner">cargando...</div>
@@ -70,8 +70,8 @@
               <td>{{ item.marca }}</td>
               <td>{{ parseFloat(item.precio).toFixed(2) }}</td>
               <td>{{ item.cantidad }}</td>
-              <td title="en proceso..."> -- </td>
-              <!-- <td>{{ item.condicion }}</td> -->
+              <td v-if="item.descuento != null">{{ parseFloat(item.descuento).toFixed(2) }}</td>
+              <td v-else>--</td>
               <td v-if="item.condicion == 'salida'">--</td>
               <td v-else>{{ item.condicion }}</td>
               <td>{{ item.fecha }}</td>
@@ -80,39 +80,52 @@
           </tbody>
         </table>
       </div>
-      <nav>
+      <nav aria-label="Page navigation example" v-if="dataPaginacion.cantidad > 0">
         <ul class="pagination">
-          <li v-if="pagination.current_page > 1" class="page-item">
+          <li class="page-item" :disabled="dataPaginacion.currentPage == 1">
             <a
-              href="#"
-              @click.prevent="changePage(pagination.current_page - 1)"
+              class="page-link"
+              :class="dataPaginacion.currentPage == 1 ? '' : 'cursor'"
+              @click="
+                dataPaginacion.currentPage == 1
+                  ? ''
+                  : listar(dataPaginacion.currentPage - 1)
+              "
+              aria-label="Previous"
             >
-              <span>
-                <b>Atras</b>
-              </span>
+              <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
           <li
-            class="page-item"
-            v-for="(page, index) in pagesNumber"
-            v-bind:class="[page == isActived ? 'active_pagination' : '']"
+            v-for="(item, index) in dataPaginacion.cantidad"
             :key="index"
-          >
-            <a href @click.prevent="changePage(page)">
-              <b>{{ page }}</b>
-            </a>
-          </li>
-          <li
             class="page-item"
-            v-if="pagination.current_page < pagination.last_page"
+            :class="index + 1 == dataPaginacion.currentPage ? 'active' : ''"
           >
             <a
-              href="#"
-              @click.prevent="changePage(pagination.current_page + 1)"
+              class="page-link cursor"
+              @click="listar(index + 1)"
+              v-if="paginador(index + 1)"
             >
-              <span>
-                <b>Siguiente</b>
-              </span>
+              {{ index + 1 }}
+            </a>
+          </li>
+          <li class="page-item">
+            <a
+              class="page-link"
+              :class="
+                dataPaginacion.currentPage == dataPaginacion.cantidad
+                  ? ''
+                  : 'cursor'
+              "
+              @click="
+                dataPaginacion.currentPage == dataPaginacion.cantidad
+                  ? ''
+                  : listar(dataPaginacion.currentPage + 1)
+              "
+              aria-label="Next"
+            >
+              <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
         </ul>
@@ -128,15 +141,21 @@ export default {
       spinner: false,
       movimiento: [],
       fechas: {
-        desde: "000-00-00",
-        hasta: "000-00-00",
+        desde: null,
+        hasta: null,
+      },
+      dataPaginacion: {
+        perpage: 10,
+        cantidad: 0,
+        limitPagina: 4,
+        currentPage: 1,
       },
       condicion: "venta",
       sucursal: [],
       sucursal_item: "",
       cantidades: [],
       cantidad_mov: "todo",
-      exportar:[],
+      exportar: [],
     };
   },
   created() {
@@ -145,42 +164,27 @@ export default {
       this.sucursal_item = this.user_sucursal;
       this.listar(1);
     });
-    let i = 1;
-    for (i; i < 101; i++) {
-      this.cantidades.push({
-        num: i,
-      });
-    }
   },
   methods: {
     listar(page) {
-      if (
-        this.fechas.desde.trim() === "" ||
-        this.fechas.hasta.trim() === "" ||
-        this.condicion.trim() === ""
-      ) {
-        Vue.$toast.error("completar todos los campos");
-      } else {
-        this.spinner = true;
-        let url =
-          "/api/listado_movimiento/" +
-          this.fechas.desde +
-          "/" +
-          this.fechas.hasta +
-          "/" +
-          this.condicion +
-          "/" +
-          this.sucursal_item +
-          "/" +
-          this.cantidad_mov +
-          "?page=" +
-          page;
-        axios.get(url).then((res) => {
-          this.movimiento = res.data.movimiento.data;
-          this.pagination = res.data.paginate;
-          this.spinner = false;
-        });
-      }
+      this.clickSpinner();
+      const params = {
+        desde: this.fechas.desde,
+        hasta: this.fechas.hasta,
+        tipo: this.condicion,
+        sucursal: this.sucursal_item,
+        cantidad: this.cantidad_mov,
+        page: page,
+      };
+      let url = "/api/listado_movimiento";
+      axios.post(url, params).then((res) => {
+        this.movimiento = res.data.data;
+        this.dataPaginacion.cantidad = res.data.paginas;
+        this.dataPaginacion.currentPage = page;
+        this.dataPaginacion.perpage = res.data.perpage;
+        console.log(this.dataPaginacion);
+        this.clickSpinner();
+      });
     },
     exportarExcel() {
       if (this.movimiento.length < 1) {
@@ -199,16 +203,32 @@ export default {
           console.log(res.data);
           let data = XLSX.utils.json_to_sheet(res.data);
           const workbook = XLSX.utils.book_new();
-          const filename = this.sucursal_item +"-"+this.condicion;
+          const filename = this.sucursal_item + "-" + this.condicion;
           XLSX.utils.book_append_sheet(workbook, data, filename);
           XLSX.writeFile(workbook, `${filename}.xlsx`);
         });
       }
     },
-    changePage(page) {
-      this.pagination.current_page = page;
-      this.listar(page);
+    paginador(page) {
+      if (
+        page >= this.dataPaginacion.currentPage &&
+        page <=
+          this.dataPaginacion.limitPagina + this.dataPaginacion.currentPage
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 };
 </script>
+<style>
+.cursor {
+  cursor: pointer;
+}
+.active-pag {
+  background: #ad1103 !important;
+  color: white !important;
+}
+</style>

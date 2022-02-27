@@ -91,35 +91,22 @@ class SystemController extends Controller
             'roles' => $roles
         ];
     }
-    public function list_movimiento(Request $request,$desde,$hasta,$tipo,$sucursal){
-        if($desde === "000-00-00" || $hasta === "000-00-00"){
-            $movimiento = Movimientos::select('products.nompro','products.marca','movimientos.precio','movimientos.cantidad','movimientos.fecha','movimientos.condicion','movimientos.detalle','movimientos.sucursal','movimientos.nro_documento')
-            ->join('products','movimientos.barra_mov','products.barra')
-            ->where('movimientos.fecha',date('Y-m-d'))
-            ->where('movimientos.tipo',$tipo)
-            ->where('movimientos.sucursal',$sucursal)
-            ->orderBy('products.nompro')
-            ->paginate(12);
-        }else{
-            $movimiento = Movimientos::select('products.nompro','products.marca','movimientos.precio','movimientos.cantidad','movimientos.fecha','movimientos.condicion','movimientos.detalle','movimientos.sucursal','movimientos.nro_documento')
-            ->join('products','movimientos.barra_mov','products.barra')
-            ->whereBetween('movimientos.fecha',[$desde,$hasta])
-            ->where('movimientos.tipo',$tipo)
-            ->where('movimientos.sucursal',$sucursal)
-            ->orderBy('products.nompro')
-            ->paginate(12);
-        }
-        return [
-            'paginate' => [
-                'total'        => $movimiento->total(),
-                'current_page' => $movimiento->currentPage(),
-                'per_page'     => $movimiento->perPage(),
-                'last_page'    => $movimiento->lastPage(),
-                'from'         => $movimiento->firstItem(),
-                'to'           => $movimiento->lastPage(),
-            ],
-            'movimiento' => $movimiento
+    public function list_movimiento(Request $request){
+        $procedure = "call get_movimientos(?,?,?,?,?,?)";
+        $parameter = [
+            $request->desde == null ? date('Y-m-d') : $request->desde,
+            $request->hasta == null ? date('Y-m-d') : $request->hasta,
+            $request->tipo,
+            $request->sucursal,
+            $request->page,
+            10
         ];
+        $data = DB::select($procedure, $parameter);
+        $count = 0;
+        if(count($data)){
+            $count = $data[0]->count;
+        }
+        return ["data" => $data, "count" => $count, "perpage" => 10, "paginas" => round($count / 10)];
     }
     public function exportarmovimiento($desde,$hasta,$tipo,$sucursal){
         if($desde === "000-00-00" || $hasta === "000-00-00"){

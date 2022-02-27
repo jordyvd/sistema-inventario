@@ -76,6 +76,7 @@ export default {
         return text;
       }
     },
+    paginacion(data) {},
   },
 };
 </script>

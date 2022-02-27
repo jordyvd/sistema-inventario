@@ -42,7 +42,7 @@ Route::get('/escanearventa/{condicion}/{scan}/{almacen}','ScannerController@esca
 Route::get('/nrof/{sucursal}','VentasController@nuevaventa');
 Route::get('/bajostock/{sucursal}','SystemController@bajostock');
 Route::get('/exportar_excel/{marca}/{sucursal}','SystemController@exportar_excel');
-Route::get('/listado_movimiento/{desde}/{hasta}/{cond}/{sucursal}/{cantidad}','SystemController@list_movimiento');
+Route::post('/listado_movimiento','SystemController@list_movimiento');
 Route::get('/list_kardex/{desde}/{hasta}/{cond}/{sucursal}/{barra}','SystemController@kardex');
 Route::get('/exportar_movimiento/{desde}/{hasta}/{cond}/{sucursal}','SystemController@exportarmovimiento');
 // VENTAS 
