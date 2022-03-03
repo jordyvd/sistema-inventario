@@ -187,8 +187,14 @@ export default {
     },
     exportExcel() {
       this.clickSpinner();
+      let lista = [];
+      this.documentos.forEach((element) => {
+        if (element.estado == 1) {
+          lista.push(element);
+        }
+      });
       const params = {
-        documentos: this.documentos,
+        documentos: lista,
         fecha: this.fecha,
         fecha_end: this.fecha_end,
       };

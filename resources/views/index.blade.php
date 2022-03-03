@@ -50,7 +50,7 @@
        </div>
     @endif
     <!-- importante -->
-       <script src="{{ asset('js/app.js?version=2022-02-26-12:30:00')}}"></script>
+       <script src="{{ asset('js/app.js?version=2022-03-03-12:30:00')}}"></script>
        <!-- <script src="{{ asset('js/app.js') }}"></script> -->
        <script src="{{asset('js/jquery.js')}}"></script>
        <script src="{{asset('js/main.js')}}"></script>
