@@ -233,6 +233,7 @@ class VentasController extends Controller
             $movimiento->nro_documento = $request['cod_sucursal'];
             $movimiento->barra_mov = $value['barra'];
             $movimiento->precio = $value['precio'];
+            $movimiento->descuento = $value['descuento'];
             $movimiento->condicion = $request->condicion;
             $movimiento->fecha = date('Y-m-d');
             $movimiento->detalle = "vendido";
@@ -345,6 +346,7 @@ class VentasController extends Controller
             $movimiento->nro_documento = $value['nrof'];
             $movimiento->barra_mov = $value['barra'];
             $movimiento->precio = $almacen->precio_venta;
+            $movimiento->descuento = $value['descuento'];
             $movimiento->condicion = "anulado";
             $movimiento->fecha = date('Y-m-d');
             $movimiento->detalle = "anulado";
