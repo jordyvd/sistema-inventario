@@ -327,33 +327,8 @@ export default {
       });
     },
     masinfo() {
-      // this.total_ingresos();
-      // this.total_salidas();
       this.getMontoCajaEfectivo();
-      //this.total_caja();
-      // this.transferencia();
     },
-    // total_caja() {
-    //   let url = "/api/total_caja/" + this.seleccion_sucursal + "/" + this.fecha;
-    //   axios.get(url).then((res) => {
-    //     this.calculo_caja = res.data;
-    //     if (this.calculo_caja.total_venta === null) {
-    //       this.ventas_double = 0;
-    //     } else {
-    //       this.ventas_double = this.calculo_caja.total_venta;
-    //     }
-    //     this.cargando = false;
-    //   });
-    // },
-    // transferencia() {
-    //   let url =
-    //     "/api/caja_trasnferencia/" + this.seleccion_sucursal + "/" + this.fecha;
-    //   axios.get(url).then((res) => {
-    //     if (res.data != null) {
-    //       this.transferencia = res.data;
-    //     }
-    //   });
-    // },
     eliminar(item, index) {
       swal({
         text: "¿estás seguro?",
@@ -373,39 +348,12 @@ export default {
       this.$data.fecha = "1";
       this.$data.descripsea = "";
       this.listar();
-      // this.total_ingresos();
-      // this.total_salidas();
     },
     limpiar_form() {
       this.$data.datos.descripcion = "";
       this.$data.datos.monto = "";
       this.$data.condicion = "";
     },
-    // total_ingresos() {
-    //   let url =
-    //     "/api/montoingresa/" + this.seleccion_sucursal + "/" + this.fecha;
-    //   axios.get(url).then((res) => {
-    //     if (res.data.total_ingresos === null) {
-    //       this.monto_ingresa.total_ingresos = 0;
-    //     } else {
-    //       this.monto_ingresa = res.data;
-    //     }
-    //   });
-    // },
-    // total_salidas() {
-    //   this.calculando = true;
-    //   let url2 =
-    //     "/api/montosalidas/" + this.seleccion_sucursal + "/" + this.fecha;
-    //   axios.get(url2).then((res) => {
-    //     // this.monto_salida = res.data;
-    //     if (res.data.total_salidas === null) {
-    //       this.monto_salida.total_salidas = 0;
-    //     } else {
-    //       this.monto_salida = res.data;
-    //     }
-    //     this.calculando = false;
-    //   });
-    // },
     getMontoCajaEfectivo() {
       this.cargando = true;
       const params = { sucursal: this.seleccion_sucursal, fecha: this.fecha };
@@ -457,9 +405,6 @@ export default {
         parseFloat(this.monto_salida.total_salidas)
       );
     },
-    //  monto_ingresa.total_ingresos +
-    //                 ventas_double -
-    //                 monto_salida.total_salidas
   },
 };
 </script>

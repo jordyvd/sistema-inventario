@@ -90,25 +90,12 @@ class HomeController extends Controller
             'datos' => $datos
          ];
     }
+
     public function deleteingreso_salida($id){
        $dato = ingresos_salidas::where('id',$id);
        $dato->delete();
     }
-    public function montoingresa($sucursal,$fecha){
-       if($fecha==="1"){
-        return ingresos_salidas::select(DB::raw('sum(monto) as total_ingresos'))
-        ->where('fecha',date('Y-m-d'))
-        ->where('sucursal',$sucursal)
-        ->where('condicion','ingreso')
-        ->first();
-       }else{
-        return ingresos_salidas::select(DB::raw('sum(monto) as total_ingresos'))
-        ->where('fecha',$fecha)
-        ->where('sucursal',$sucursal)
-        ->where('condicion','ingreso')
-        ->first();
-       }
-    }
+
     public function montoCajaEfectivo(Request $request){
         $total_tranferencia = $this->cajaTrasnferencia($request);
         $date = $request->fecha === "1" ? date('Y-m-d') : $request->fecha;
@@ -135,7 +122,7 @@ class HomeController extends Controller
             "ingreso" => $ingreso,
             "salida" => $salida,
             "transferencia" => $total_tranferencia,
-            "ventas" => $total_ventas["total_venta"] != null ? $total_ventas["total_venta"] : 0,
+            "ventas" => $total_ventas["total_venta"],
         ];
     }
     public function cajaTrasnferencia(Request $request){
@@ -152,35 +139,21 @@ class HomeController extends Controller
         }
         return $total;
     }
-    public function montosalidas($sucursal,$fecha){
-        // if($fecha==="1"){
-        //  return ingresos_salidas::select(DB::raw('sum(monto) as total_salidas'))
-        //  ->where('fecha',date('Y-m-d'))
-        //  ->where('sucursal',$sucursal)
-        //  ->where('condicion','salida')
-        //  ->first();
-        // }else{
-        //  return ingresos_salidas::select(DB::raw('sum(monto) as total_salidas'))
-        //  ->where('fecha',$fecha)
-        //  ->where('sucursal',$sucursal)
-        //  ->where('condicion','salida')
-        //  ->first();
-        // }
-    }
     public function total_caja($sucursal,$fecha){
-        if($fecha==="1"){
-            return ventas::select(DB::raw('sum(total_v) as total_venta'))
-            ->where('sucursal',$sucursal)
-            ->where('estado',1)
-            ->where('fecha',date('Y-m-d'))
-            ->first();
-        }else{
-            return ventas::select(DB::raw('sum(total_v) as total_venta'))
-            ->where('fecha',$fecha)
-            ->where('sucursal',$sucursal)
-            ->where('estado',1)
-            ->first();
+        $statement = "call total_venta_dia(?,?)";
+        $parameter = [
+            $fecha == 1 ? null : $fecha,
+            $sucursal
+        ];
+        $data = DB::select($statement, $parameter);
+        if(count($data) > 0){
+            return [
+               "total_venta" => $data[0]->total_venta
+            ];
         }
+        return [
+            "total_venta" => 0
+         ];
     }
     public function descripsea($search,$sucursal,$fecha){
         if($fecha === "1"){
