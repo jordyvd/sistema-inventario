@@ -22,7 +22,7 @@ class SpGetMovimientos extends Migration
     
         set npage = perpage*(npage-1);
         
-            select m.descuento descuento, p.nompro , p.marca, m.precio , m.cantidad , m.fecha, m.condicion , m.detalle,m.sucursal,m.nro_documento, @count count
+            select m.descuento descuento, p.nompro , p.marca, m.precio , m.cantidad , m.fecha,  if(m.tipo = 'compra', m.detalle, m.condicion) condicion , m.detalle,m.sucursal,m.nro_documento, @count count
             from movimientos m 
             join products p on m.barra_mov = p.barra
             where m.sucursal = sucursal_p and m.tipo = tipo_p and m.fecha between desde_p and hasta_p 
