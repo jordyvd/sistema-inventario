@@ -99,7 +99,7 @@ class HomeController extends Controller
     public function montoCajaEfectivo(Request $request){
         $total_tranferencia = $this->cajaTrasnferencia($request);
         $date = $request->fecha == null ? date('Y-m-d') : $request->fecha;
-        $total_ventas = $this->total_caja($request->sucursal, $request->fecha);
+        $total_ventas = $this->total_caja($request->sucursal, $date);
         $procedure = "call get_monto_caja_efectivo(?,?)";
         $parameter = [
             $request->sucursal,
@@ -126,7 +126,7 @@ class HomeController extends Controller
         ];
     }
     public function cajaTrasnferencia(Request $request){
-        $date = $request->fecha === "1" ? date('Y-m-d') : $request->fecha;
+        $date = $request->fecha == null ? date('Y-m-d') : $request->fecha;
         $procedure = "call get_caja_transfarencias(?,?)";
         $parameter = [
             $request->sucursal,
