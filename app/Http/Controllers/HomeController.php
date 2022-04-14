@@ -67,7 +67,7 @@ class HomeController extends Controller
         $date->save();
     }
     public function listaringresos_salidas(Request $request,$sucursal,$fecha){
-        if($fecha === "1"){
+        if($fecha == null){
             $datos = ingresos_salidas::where('sucursal',$sucursal)
             ->where('fecha',date('Y-m-d'))
             ->orderBy('id','DESC')
