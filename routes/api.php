@@ -13,7 +13,7 @@ Route::get('/contar_ventas/{sucursal}','HomeController@index');
 Route::get('/total_venta_actual/{sucursal}','HomeController@total_venta_actual');
 Route::get('/total_pendientes/{sucursal}','HomeController@total_pendientes');
 Route::get('/total_agotados/{sucursal}','HomeController@total_agotados');
-Route::get('/listaringresos_salidas/{sucursal}/{fecha}','HomeController@listaringresos_salidas');
+Route::post('/listaringresos_salidas','HomeController@listaringresos_salidas');
 Route::get('/descripsea/{search}/{sucursal}/{fecha}','HomeController@descripsea');
 Route::get('/total_salida/{sucursal}','HomeController@total_salida');
 Route::get('/total_ingresos/{sucursal}','HomeController@total_ingresos');

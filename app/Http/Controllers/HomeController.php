@@ -66,15 +66,15 @@ class HomeController extends Controller
         $date->credit_id = $request->credit_id;
         $date->save();
     }
-    public function listaringresos_salidas(Request $request,$sucursal,$fecha){
-        if($fecha == null){
-            $datos = ingresos_salidas::where('sucursal',$sucursal)
+    public function listaringresos_salidas(Request $request){
+        if($request->fecha == null){
+            $datos = ingresos_salidas::where('sucursal',$request->sucursal)
             ->where('fecha',date('Y-m-d'))
             ->orderBy('id','DESC')
             ->paginate('8');
         }else{
-            $datos = ingresos_salidas::where('sucursal',$sucursal)
-            ->where('fecha',$fecha)
+            $datos = ingresos_salidas::where('sucursal',$request->sucursal)
+            ->where('fecha',$request->fecha)
             ->orderBy('id','DESC')
             ->paginate('8');
         }

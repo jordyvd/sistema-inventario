@@ -282,7 +282,7 @@ export default {
   },
   created() {
     this.seleccion_sucursal = this.user_sucursal;
-    this.listar();
+    this.listar(1);
     axios.get("/api/listsucursal").then((res) => {
       this.sucursal = res.data.sucursal.data;
     });
@@ -304,7 +304,7 @@ export default {
           sucursal: this.seleccion_sucursal,
         };
         axios.post("/ingresos_salidas_create", params).then((res) => {
-          this.listar();
+          this.listar(1);
           this.limpiar_form();
           this.boton = true;
         });
@@ -313,14 +313,11 @@ export default {
     listar(page) {
       this.spinner = true;
       this.cargando = true;
+      const params = {fecha: this.fecha, sucursal: this.seleccion_sucursal};
       let url =
-        "/api/listaringresos_salidas/" +
-        this.seleccion_sucursal +
-        "/" +
-        this.fecha +
-        "?page=" +
+        "/api/listaringresos_salidas?page=" +
         page;
-      axios.get(url).then((res) => {
+      axios.post(url, params).then((res) => {
         this.ingresos_salidas = res.data.datos.data;
         this.pagination = res.data.paginate;
         this.spinner = false;
