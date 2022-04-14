@@ -267,7 +267,7 @@ export default {
         monto: "",
       },
       spinner: false,
-      fecha: "1",
+      fecha: null,
       monto_ingresa: [],
       monto_salida: [],
       calculando: true,
