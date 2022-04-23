@@ -160,6 +160,7 @@
                   <th scope="col">documento</th>
                   <th scope="col">fecha</th>
                   <th scope="col">print</th>
+                  <th scope="col">archivos</th>
                   <th scope="col">anular</th>
                 </tr>
               </thead>
@@ -215,6 +216,16 @@
                   </td>
                   <td>
                     <button
+                      class="text-dark"
+                      data-toggle="modal"
+                      data-target="#modalFile"
+                      @click="getFile(item)"
+                    >
+                      <img src="images/folder.png" class="text-icon" alt="" />
+                    </button>
+                  </td>
+                  <td>
+                    <button
                       class="text-danger"
                       @click="confimacionAnular(item, index)"
                     >
@@ -266,6 +277,75 @@
         </div>
       </div>
     </div>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="modalFile"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content border-modal">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              {{ itemVenta.cod_sucursal }}
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- IMAGEN -->
+            <img
+              :src="foto"
+              class="img-product"
+              width="250"
+              v-if="venta.imagen == null"
+              @click="abrirCarpeta"
+              alt
+            />
+            <br />
+            <form
+              @submit.prevent="guardarImagen()"
+              enctype="multipart/form-data"
+            >
+              <figure>
+                <img
+                  width="150"
+                  :src="imagen"
+                  v-if="venta.imagen != null"
+                  @click="abrirCarpeta"
+                  class="img-product"
+                />
+              </figure>
+              <input
+                type="file"
+                name="file"
+                id="carpeta"
+                accept="image/png,image/jpeg"
+                @change="obtenerimagen"
+                hidden
+              />
+              <br />
+              <button
+                class="btn btn-danger img-product"
+                type="submit"
+                :disabled="buttonLoading"
+                v-if="venta.imagen != null"
+              >
+                Guardar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -277,6 +357,10 @@ export default {
       detalle_id_venta: [],
       search: "",
       detalles: [],
+      buttonLoading: false,
+      itemVenta: {
+        cod_sucursal: null,
+      },
       nrof: "",
       page: "",
       total: "",
@@ -293,6 +377,10 @@ export default {
       da_factura: "",
       sucursal_seleccionado: "",
       cliente_detalle: [],
+      imagenVer: "",
+      foto: "images/upload.png",
+      seleccionado: false,
+      venta: { imagen: null },
       cliente: {
         telefono: "",
         direccion: "",
@@ -313,6 +401,22 @@ export default {
     });
   },
   methods: {
+    obtenerimagen(e) {
+      let file = e.target.files[0];
+      this.venta.imagen = file;
+      this.cargarimagen(file);
+    },
+    cargarimagen(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagenVer = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    abrirCarpeta() {
+      this.seleccionado = true;
+      document.getElementById("carpeta").click();
+    },
     listar(page) {
       this.loading_table = true;
       this.page = page;
@@ -427,8 +531,33 @@ export default {
         });
       }
     },
+    guardarImagen() {
+      this.preloader();
+      this.buttonLoading = true;
+      let formData = new FormData();
+      formData.append("imagen", this.venta.imagen);
+      formData.append("venta_id", this.itemVenta.id);
+      axios.post("/api/insert-file-venta", formData).then((res) => {
+        this.venta.imagen = null;
+        this.buttonLoading = false;
+        this.preloader();
+        Vue.$toast.success("Guardado");
+      });
+    },
+    getFile(item) {
+      this.preloader();
+      this.itemVenta = item;
+      this.venta.imagen = null;
+      axios.post("/api/get-file-venta", { id: item.id }).then((res) => {
+        this.foto = res.data.file;
+        this.preloader();
+      });
+    },
   },
   computed: {
+    imagen() {
+      return this.imagenVer;
+    },
     total_venta() {
       return this.detalles.reduce((total, item) => {
         return total + item.precio * item.cantidad;

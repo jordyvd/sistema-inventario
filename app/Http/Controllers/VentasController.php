@@ -382,4 +382,34 @@ class VentasController extends Controller
         DB::select($procedure, $parameter);
         return $acumulado;
     }
+    public function insertFile(Request $request){
+        $file = $request->imagen;
+        $destinoPath = public_path().'/images/ventas';
+        $url_imagen = $file->getClientOriginalName();
+        $subir = $file->move($destinoPath,$file->getClientOriginalName());
+        $extension = explode(".", $url_imagen);
+        $statement = 'insert into archivos_ventas(url, extension, ventas_id, created_at) values(?,?,?,?)';
+        $parameter = [
+           $url_imagen,
+           $extension[1],
+           $request->venta_id,
+           date("Y-m-d H:i:s")
+        ];
+        DB::statement($statement, $parameter);
+    }
+    public function getFile(Request $request){
+        $statement = "select * from archivos_ventas where ventas_id = ? order by created_at desc limit 1";
+        $parameter = [
+           $request->id
+        ];
+        $data = DB::select($statement, $parameter);
+        if(count($data)){
+            return [
+                "file" => "images/ventas/" . $data[0]->url,
+            ];
+        }
+        return [
+            "file" => "images/upload.png"
+        ];
+    }
 }

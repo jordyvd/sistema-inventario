@@ -29,6 +29,7 @@
     @else
     <title>sistema de administración</title>
     @endif
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{asset('css/util.css')}}">
@@ -50,7 +51,7 @@
        </div>
     @endif
     <!-- importante -->
-       <script src="{{ asset('js/app.js?version=2022-04-13 23:48:00')}}"></script>
+       <script src="{{ asset('js/app.js?version=2022-04-23 23:48:00')}}"></script>
        <!-- <script src="{{ asset('js/app.js') }}"></script> -->
        <script src="{{asset('js/jquery.js')}}"></script>
        <script src="{{asset('js/main.js')}}"></script>
@@ -59,5 +60,12 @@
        <script src="{{asset('js/num-text.js')}}"></script>
        <script src="{{asset('js/funciones.js')}}"></script>
        <script src="{{asset('js/pace.min.js')}}"></script>
+       <script>
+             Echo.channel('notificacion').listen('.evento', (e) => {
+               alert("asasas");
+                console.log(e.message);
+                alert(e.message);
+             });
+        </script>
   </body>
 </html>

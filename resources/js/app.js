@@ -1,4 +1,5 @@
 require('./bootstrap');
+require('./pusher');
 window.Vue = require('vue');
 import VueHtmlToPaper from "vue-html-to-paper";
 import pdf from 'vue-pdf';

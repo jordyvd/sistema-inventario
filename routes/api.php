@@ -113,4 +113,5 @@ Route::post('/enviar-comprobante','SunatController@enviarComprobantes');
 Route::post('/enviar-comprobante-masivo','SunatController@enviarComprobantesMasivo');
 Route::get('/descargar-pdf','DownloadsController@downloadZip');
 Route::post('/exportar-documentos','DownloadsController@exportarDocumentos');
-
+Route::post('/insert-file-venta','VentasController@insertFile');
+Route::post('/get-file-venta','VentasController@getFile');
