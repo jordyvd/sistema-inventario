@@ -15,9 +15,13 @@ class CreateArchivosVentasTable extends Migration
     {
         Schema::create('archivos_ventas', function (Blueprint $table) {
             $table->id();
-            $table->text('url');
-            $table->text('extension');
-            $table->integer('ventas_id');
+            $table->integer('ventas_id')->nullable();
+            $table->text('url')->nullable();
+            $table->text('nombre')->nullable();
+            $table->text('extension')->nullable();
+            $table->text('tipo');
+            $table->text('padre')->nullable();
+            $table->text('descripcion')->nullable();
             $table->timestamps();
         });
     }

@@ -115,3 +115,7 @@ Route::get('/descargar-pdf','DownloadsController@downloadZip');
 Route::post('/exportar-documentos','DownloadsController@exportarDocumentos');
 Route::post('/insert-file-venta','VentasController@insertFile');
 Route::post('/get-file-venta','VentasController@getFile');
+Route::post('/files/insert-folder-venta','VentasController@insertFolder');
+Route::post('/files/guardar-description','VentasController@guardarDescripcion');
+Route::post('/files-ventas/delete-file','VentasController@deleteFile');
+

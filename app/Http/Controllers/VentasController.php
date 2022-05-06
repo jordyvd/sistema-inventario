@@ -383,33 +383,67 @@ class VentasController extends Controller
         return $acumulado;
     }
     public function insertFile(Request $request){
-        $file = $request->imagen;
-        $destinoPath = public_path().'/images/ventas';
-        $url_imagen = $file->getClientOriginalName();
-        $subir = $file->move($destinoPath,$file->getClientOriginalName());
-        $extension = explode(".", $url_imagen);
-        $statement = 'insert into archivos_ventas(url, extension, ventas_id, created_at) values(?,?,?,?)';
+        foreach($request['files'] as $file){
+            $folder = public_path().'/images/ventas';
+            $nombre = $file->getClientOriginalName();
+            $file->move($folder, $file->getClientOriginalName());
+            $extension = $file->getClientOriginalExtension();
+            $statement = "insert into archivos_ventas(ventas_id, url, nombre, extension, tipo, padre, descripcion, created_at, updated_at) values(?,?,?,?,?,?,?,?,?)";
+            $parameter = [
+                $request->venta_id,
+                '/images/ventas/'.$nombre,
+                $nombre,
+                $extension,
+                2,
+                $request->folder != "" ? $request->folder : null,
+                $request->descripcion,
+                date("Y-m-d H:i:s"),
+                date("Y-m-d H:i:s")
+            ];
+            DB::statement($statement, $parameter);
+        } 
+        return $this->getFile($request);
+    }
+    public function getFile(Request $request){
+        $statement = "call get_files_ventas(?,?)";
         $parameter = [
-           $url_imagen,
-           $extension[1],
            $request->venta_id,
-           date("Y-m-d H:i:s")
+           $request->folder != "" ? $request->folder : null,
+        ];
+        return DB::select($statement, $parameter);
+    }
+    public function insertFolder(Request $request){
+        $statement = "insert into archivos_ventas(ventas_id, url, nombre, extension, tipo, padre, descripcion, created_at, updated_at) values(?,?,?,?,?,?,?,?,?)";
+        $parameter = [
+            $request->venta_id,
+            null,
+            $request->nombre,
+            null,
+            1,
+            $request->folder != "" ? $request->folder : null,
+            $request->descripcion,
+            date("Y-m-d H:i:s"),
+            date("Y-m-d H:i:s")
+        ];
+        DB::statement($statement, $parameter);
+        return $this->getFile($request);
+    }
+
+    public function guardarDescripcion(Request $request){
+        $statement = "update archivos_ventas set descripcion = ? where id = ?";
+        $parameter = [
+            $request->descripcion,
+            $request->id,
         ];
         DB::statement($statement, $parameter);
     }
-    public function getFile(Request $request){
-        $statement = "select * from archivos_ventas where ventas_id = ? order by created_at desc limit 1";
+
+    public function deleteFile(Request $request){
+        $statement = "delete from archivos_ventas where id = ? or padre = ?";
         $parameter = [
+           $request->id,
            $request->id
         ];
-        $data = DB::select($statement, $parameter);
-        if(count($data)){
-            return [
-                "file" => "images/ventas/" . $data[0]->url,
-            ];
-        }
-        return [
-            "file" => "images/upload.png"
-        ];
+        DB::statement($statement, $parameter);
     }
 }

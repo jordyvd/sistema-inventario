@@ -160,6 +160,7 @@
                   <th scope="col">documento</th>
                   <th scope="col">fecha</th>
                   <th scope="col">print</th>
+                  <th scope="col">archivos</th>
                   <th scope="col">anular</th>
                 </tr>
               </thead>
@@ -215,6 +216,16 @@
                   </td>
                   <td>
                     <button
+                      class="text-dark"
+                      data-toggle="modal"
+                      data-target="#modalFile"
+                      @click="getFile(item)"
+                    >
+                      <img src="images/folder.png" class="text-icon" alt="" />
+                    </button>
+                  </td>
+                  <td>
+                    <button
                       class="text-danger"
                       @click="confimacionAnular(item, index)"
                     >
@@ -266,16 +277,40 @@
         </div>
       </div>
     </div>
+    <!-- Modal -->
+    <b-modal
+      size="xl"
+      v-model="modalFile"
+      hide-footer
+      :title="itemVenta.cod_sucursal"
+      content-class="border-modal"
+    >
+      <listado-archivos
+        :files="files"
+        @guardarImagen="guardarImagen"
+        @guardarFolder="guardarFolder"
+        @getArhivosFolder="getArhivosFolder"
+        @guardarDescripcion="guardarDescripcion"
+        @deleteFile="deleteFile"
+      ></listado-archivos>
+    </b-modal>
   </div>
 </template>
 <script>
+import ListadoArchivos from "../components/ListadoArchivos.vue";
 export default {
+  components: { ListadoArchivos },
   data() {
     return {
       ventas: [],
       sucursal: [],
       detalle_id_venta: [],
       search: "",
+      files: [],
+      modalFile: false,
+      itemVenta: {
+        cod_sucursal: null,
+      },
       detalles: [],
       nrof: "",
       page: "",
@@ -426,6 +461,68 @@ export default {
           this.loading_table = false;
         });
       }
+    },
+    guardarImagen(files, folder) {
+      this.preloader();
+      let formData = new FormData();
+      files.forEach((element) => {
+        formData.append("files[]", element);
+      });
+      formData.append("venta_id", this.itemVenta.id);
+      formData.append("folder", folder);
+      axios.post("/api/insert-file-venta", formData).then((res) => {
+        this.files = res.data;
+        this.preloader();
+        Vue.$toast.success("Guardado");
+      });
+    },
+    getFile(item) {
+      this.modalFile = true;
+      this.preloader();
+      this.itemVenta = item;
+      axios.post("/api/get-file-venta", { venta_id: item.id }).then((res) => {
+        this.files = res.data;
+        this.preloader();
+      });
+    },
+    guardarFolder(nombre, folder) {
+      this.preloader();
+      axios
+        .post("/api/files/insert-folder-venta", {
+          venta_id: this.itemVenta.id,
+          nombre: nombre,
+          folder: folder,
+        })
+        .then((res) => {
+          this.files = res.data;
+          this.preloader();
+        });
+    },
+    getArhivosFolder(folderId) {
+      this.preloader();
+      axios
+        .post("/api/get-file-venta", {
+          venta_id: this.itemVenta.id,
+          folder: folderId,
+        })
+        .then((res) => {
+          this.files = res.data;
+          this.preloader();
+        });
+    },
+    guardarDescripcion(id, descripcion) {
+      this.preloader();
+      const params = { id: id, descripcion: descripcion };
+      axios.post("/api/files/guardar-description", params).then((res) => {
+        this.preloader();
+      });
+    },
+    deleteFile(id) {
+      this.preloader();
+      const params = { id: id };
+      axios.post("/api/files-ventas/delete-file", params).then((res) => {
+        this.preloader();
+      });
     },
   },
   computed: {

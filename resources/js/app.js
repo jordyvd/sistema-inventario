@@ -4,7 +4,15 @@ window.Vue = require('vue');
 import VueHtmlToPaper from "vue-html-to-paper";
 import pdf from 'vue-pdf';
 import moment from 'moment';
+import Popover from 'vue-js-popover'
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+ 
+Vue.use(Popover, { tooltip: true })
+Vue.use(BootstrapVue)
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
 Vue.component('login_user', require('./components/LoginComponent.vue').default);
 Vue.component('menu_sistema', require('./components/MenuComponent.vue').default);
 Vue.component('bajos-stock', require('./components/BajosStock.vue').default);
