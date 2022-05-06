@@ -13,6 +13,7 @@ class CreateArchivosVentasTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('archivos_ventas');
         Schema::create('archivos_ventas', function (Blueprint $table) {
             $table->id();
             $table->integer('ventas_id')->nullable();
