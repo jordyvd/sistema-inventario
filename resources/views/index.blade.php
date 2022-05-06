@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="{{asset('css/main.css')}}">
     <link rel="stylesheet" href="{{asset('css/pace.css')}}">
     <link rel="stylesheet" href="{{asset('css/menu.css')}}">
-    <link rel="stylesheet" href="{{asset('css/estilos.css?version=2022-02-26-12:30:00')}}">
+    <link rel="stylesheet" href="{{asset('css/estilos.css?version=2022-05-05-23:53:00')}}">
     <link rel="stylesheet" href="{{asset('css/bienvenida.css')}}">
     <link rel="shortcut icon" type="image/x-icon" href="images/iconoApp.ico"/>
 </head>
