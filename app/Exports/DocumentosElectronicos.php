@@ -131,6 +131,8 @@ class DocumentosElectronicos implements FromCollection, WithColumnWidths, WithCu
                 $event->sheet->getStyle('A4:'.$letra_fin .'4')->getFill()->applyFromArray($bg_primary);
                 $event->sheet->getStyle('A4:'.$letra_fin .'4')->applyFromArray(array_merge($style_text_center, $bold, $color_white));
                 $event->sheet->getStyle('A4:'.$letra_fin .'4')->applyFromArray(array_merge($border));
+                $event->sheet->getColumnDimension('C')->setWidth(40);
+                $event->sheet->getColumnDimension('D')->setWidth(40);
                 $event->sheet->getColumnDimension('E')->setWidth(20);
                 $event->sheet->getColumnDimension('F')->setWidth(80);
             }
