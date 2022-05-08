@@ -31,9 +31,12 @@ class DocumentosElectronicos implements FromCollection, WithColumnWidths, WithCu
             }else if($value['tipo'] == 7){
                 $documento = "N. Credito";
             }    
+            $fecha = date_create($value['created_at']);
+            $fecha = date_format($fecha,"d/m/Y H:i:s");
             $return[] = [
                 "serie" => substr($value['serie'], -13),
                 "documento" => $documento,
+                "fecha" => $fecha,
                 "afectado" => substr($value['afectado'], -13),
                 "dni/ruc " => $value['ruc_dni_v'],
                 "cliente" => $value['nombre_cliente'],
@@ -115,7 +118,7 @@ class DocumentosElectronicos implements FromCollection, WithColumnWidths, WithCu
                         'color' => ['rgb' => '706d7d'],
                     ],
                 ];
-                $letra_fin = "F";
+                $letra_fin = "G";
                 foreach($this->return as $key => $value){
                     $number = (int)$key + 5;
                     $event->sheet->getStyle('A'. $number .':'.$letra_fin.$number)->applyFromArray(array_merge($style_text_center));
@@ -128,8 +131,8 @@ class DocumentosElectronicos implements FromCollection, WithColumnWidths, WithCu
                 $event->sheet->getStyle('A4:'.$letra_fin .'4')->getFill()->applyFromArray($bg_primary);
                 $event->sheet->getStyle('A4:'.$letra_fin .'4')->applyFromArray(array_merge($style_text_center, $bold, $color_white));
                 $event->sheet->getStyle('A4:'.$letra_fin .'4')->applyFromArray(array_merge($border));
-                $event->sheet->getColumnDimension('D')->setWidth(20);
-                $event->sheet->getColumnDimension('E')->setWidth(80);
+                $event->sheet->getColumnDimension('E')->setWidth(20);
+                $event->sheet->getColumnDimension('F')->setWidth(80);
             }
         ];
     }
