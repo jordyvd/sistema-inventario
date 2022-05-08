@@ -53,7 +53,7 @@ class DocumentosElectronicos implements FromCollection, WithColumnWidths, WithCu
 
     public function headings(): array
     {
-        return ['SERIE', ' DOCUMENTO ', ' AFECTADO ' ,' DNI/RUC ', ' CLIENTE ', ' TOTAL '];
+        return ['SERIE', ' DOCUMENTO ', 'FECHA', 'AFECTADO ' ,' DNI/RUC ', ' CLIENTE ', ' TOTAL '];
     }
     public function columnWidths(): array
     {
