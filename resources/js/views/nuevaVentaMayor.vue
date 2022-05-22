@@ -101,7 +101,9 @@
                   <option value="tarjeta">tarjeta</option>
                   <option value="trasnferencia">transferencia</option>
                   <option value="yape">yape</option>
+                  <option value="plin">plin</option>
                   <option value="0">credito</option>
+                  <option value="deposito">depósito</option>
                   <option value="cancelado">cancelado</option>
                   <option value="cambio">cambio</option>
                 </select>
