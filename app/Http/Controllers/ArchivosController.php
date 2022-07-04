@@ -58,7 +58,7 @@ class ArchivosController extends Controller
     }
 
     public function guardarDescripcion(Request $request){
-        $statement = "update archivos set descripcion = ? where foreign_id = ?";
+        $statement = "update archivos set descripcion = ? where id = ?";
         $parameter = [
             $request->descripcion,
             $request->id,
@@ -67,7 +67,7 @@ class ArchivosController extends Controller
     }
 
     public function deleteFile(Request $request){
-        $statement = "delete from archivos where foreign_id = ? or padre = ?";
+        $statement = "delete from archivos where id = ? or padre = ?";
         $parameter = [
            $request->id,
            $request->id
