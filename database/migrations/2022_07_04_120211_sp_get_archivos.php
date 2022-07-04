@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class SpGetFilesVentas extends Migration
+class SpGetArchivos extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +14,13 @@ class SpGetFilesVentas extends Migration
     public function up()
     {
         $procedure = "
-        CREATE PROCEDURE `get_files_ventas`(in venta_id int, in folder int)
+        CREATE PROCEDURE get_archivos(in id_p int, in folder int)
         begin
-            select * from archivos_ventas v where v.ventas_id = venta_id and 
-            if(folder is null, v.padre is null, v.padre = folder)
-            order by v.created_at asc;
+            select * from archivos a where a.foreign_id = id_p and 
+            if(folder is null, a.padre is null, a.padre = folder)
+            order by a.created_at asc;
         END";
-        DB::unprepared('DROP PROCEDURE IF EXISTS get_files_ventas');
+        DB::unprepared('DROP PROCEDURE IF EXISTS get_archivos');
         DB::unprepared($procedure);
     }
 

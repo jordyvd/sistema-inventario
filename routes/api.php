@@ -118,4 +118,12 @@ Route::post('/get-file-venta','VentasController@getFile');
 Route::post('/files/insert-folder-venta','VentasController@insertFolder');
 Route::post('/files/guardar-description','VentasController@guardarDescripcion');
 Route::post('/files-ventas/delete-file','VentasController@deleteFile');
+Route::post('/archivos/get-archivos', 'ArchivosController@getArchivos');
+Route::post('/archivos/insert-archivos', 'ArchivosController@insertArchivos');
+Route::post('/archivos/insert-folder', 'ArchivosController@insertFolder');
+Route::post('/archivos/guardar-descripcion', 'ArchivosController@guardarDescripcion');
+Route::post('/archivos/delete-file', 'ArchivosController@deleteFile');
+
+
+
 

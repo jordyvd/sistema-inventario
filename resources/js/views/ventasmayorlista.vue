@@ -287,6 +287,7 @@
     >
       <listado-archivos
         :files="files"
+        :ventas="true"
         @guardarImagen="guardarImagen"
         @guardarFolder="guardarFolder"
         @getArhivosFolder="getArhivosFolder"
