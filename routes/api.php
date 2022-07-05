@@ -91,6 +91,7 @@ Route::get('/listar_pedidos/{sucursal}/{fecha}','NotasController@listar_pedidos'
 Route::get('/detallesnotas_pedido/{codigo}','NotasController@detallesnotas_pedido');
 Route::get('/buscar_num_pedido/{search}/{sucursal}','NotasController@buscar_num_pedido');
 Route::get('/llenar_listaN/{nrof}','NotasController@llenar_listaN');
+Route::post('/compras/generar-traslado','NotasController@generarTraslado');
 // ************* SALIDA DE PRODUCTOS *************
 Route::get('/nrofsalidas/{sucursal}','SalidaProductController@nrofsalidas');
 Route::get('/listarsalidas/{sucursal}/{desde}/{hasta}','SalidaProductController@listarsalidas');
@@ -123,7 +124,6 @@ Route::post('/archivos/insert-archivos', 'ArchivosController@insertArchivos');
 Route::post('/archivos/insert-folder', 'ArchivosController@insertFolder');
 Route::post('/archivos/guardar-descripcion', 'ArchivosController@guardarDescripcion');
 Route::post('/archivos/delete-file', 'ArchivosController@deleteFile');
-
 
 
 

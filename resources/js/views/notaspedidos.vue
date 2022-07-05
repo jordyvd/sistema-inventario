@@ -47,6 +47,7 @@
               <th scope="col">proveedor</th>
               <th scope="col">fecha</th>
               <th scope="col">ingresado</th>
+              <th scope="col">trasladar</th>
               <th scope="col">eliminar</th>
             </tr>
           </thead>
@@ -68,6 +69,11 @@
               <td>{{ item.fecha }}</td>
               <td class="text-success">
                 <i class="fas fa-check-circle"></i>
+              </td>
+              <td>
+                <button @click="abrirModalTraslado(item)">
+                  <i class="fas fa-people-carry"></i>
+                </button>
               </td>
               <td v-if="permiso_eliminar">
                 <button
@@ -102,6 +108,11 @@
               <td>{{ item.fecha }}</td>
               <td class="text-danger">
                 <i class="far fa-times-circle"></i>
+              </td>
+              <td>
+                <button @click="abrirModalTraslado(item)">
+                  <i class="fas fa-people-carry"></i>
+                </button>
               </td>
               <td v-if="permiso_eliminar">
                 <button class="text-dark" @click="eliminar_nota(item)">
@@ -219,11 +230,11 @@
                     <td>{{ item.descuento }}</td>
                     <td>
                       {{
-                       ( parseFloat(
+                        parseFloat(
                           parseFloat(item.precio_com) *
                             parseFloat(item.cantidad) -
                             parseFloat(item.descuento)
-                        )).toFixed(2)
+                        ).toFixed(2)
                       }}
                     </td>
                   </tr>
@@ -287,11 +298,11 @@
                     <td>{{ item.descuento }}</td>
                     <td>
                       {{
-                       ( parseFloat(
+                        parseFloat(
                           parseFloat(item.precio_com) *
                             parseFloat(item.cantidad) -
                             parseFloat(item.descuento)
-                        )).toFixed(2)
+                        ).toFixed(2)
                       }}
                     </td>
                   </tr>
@@ -302,6 +313,33 @@
         </div>
       </div>
     </div>
+    <b-modal
+      v-model="modalTrasladar"
+      hide-footer
+      :title="item.codigo_nota"
+      content-class="border-modal"
+    >
+      <div class="container">
+        <div class="text-center">
+          <select class="form-control" v-model="sucursalTraslado">
+            <option :value="null" disabled>select sucursal</option>
+            <option
+              v-for="(item, index) in sucursal"
+              :key="index"
+              v-show="item.nombre != user_sucursal"
+              :value="item.nombre"
+            >
+              {{ item.nombre }}
+            </option>
+          </select>
+        </div>
+        <div class="text-center my-2">
+          <button class="btn btn-system" @click="generarTraslado()">
+            GENERAR
+          </button>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -322,6 +360,9 @@ export default {
       sucursal_search: "",
       sucursal_actual: "",
       permiso_eliminar: true,
+      item: {},
+      modalTrasladar: false,
+      sucursalTraslado: null,
     };
   },
   created() {
@@ -433,6 +474,22 @@ export default {
             Vue.$toast.info("eliminado");
           });
         }
+      });
+    },
+    abrirModalTraslado(item) {
+      this.item = item;
+      this.modalTrasladar = true;
+    },
+    generarTraslado() {
+      this.preloader();
+      const params = {
+        codigo: this.item.codigo_nota,
+        sucursal: this.item.sucursal,
+        para: this.sucursalTraslado,
+      };
+      axios.post("/api/compras/generar-traslado", params).then((res) => {
+        this.preloader();
+        this.modalTrasladar = false;
       });
     },
     bajar_stock_nota(item) {

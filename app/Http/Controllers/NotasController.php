@@ -196,4 +196,38 @@ class NotasController extends Controller
       ->where('detalle_notas.cod_nota',trim($nrof))
       ->get();
   }
+
+  public function codigoTraslado($sucursal)
+  {
+      return DB::select("select nro from traslados where sucursal = ? order by id desc limit 1", [$sucursal])[0]->nro;
+  }
+
+  public function generarTraslado(Request $request)
+  {
+      $productos = DB::select("select * from detalle_notas where cod_nota = ?",[$request['codigo']]);
+      $sucursal = DB::select("select id from sucursal where nombre = ?", [$request['sucursal']])[0]->id;
+      $numero = $this->formatNumber($this->codigoTraslado($request['sucursal']) + 1);
+      $codigo = 'G00'. $sucursal . '-' . $numero;
+      DB::statement("insert into traslados(nro,sucursal,cod_sucursal,estado,recibido,para,fecha,created_at,updated_at) 
+      values(?,?,?,?,?,?,?,?,?)", 
+         [$numero, $request['sucursal'], $codigo, 0, 0, $request['para'], date('Y-m-d'), date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]
+      );
+      foreach($productos as $value)
+      {
+         DB::statement("insert into detalle_traslado(nro_tras, barra_tras, cantidad, de, para, created_at, updated_at) values(?,?,?,?,?,?,?)",
+           [$codigo, $value->barra_nota, $value->cantidad, $request['sucursal'], $request['para'], date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]
+         );
+      }
+  }
+
+  public function formatNumber($number)
+  {
+      $length = 9;
+      $char = 0;
+      $type = 'd';
+      $format = "%{$char}{$length}{$type}"; // or "$010d";
+      //store to a variable
+      $newFormat = sprintf($format, $number);
+      return $newFormat;
+  }
 }
