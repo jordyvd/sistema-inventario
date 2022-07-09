@@ -14,7 +14,7 @@ class SpGetArchivos extends Migration
     public function up()
     {
         $procedure = "
-        CREATE PROCEDURE get_archivos(in id_p int, in folder int)
+        CREATE PROCEDURE get_archivos(in id_p text COLLATE utf8_unicode_ci, in folder int)
         begin
             select * from archivos a where a.foreign_id = id_p and 
             if(folder is null, a.padre is null, a.padre = folder)
