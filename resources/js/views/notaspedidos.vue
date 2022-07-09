@@ -48,6 +48,7 @@
               <th scope="col">fecha</th>
               <th scope="col">ingresado</th>
               <th scope="col">trasladar</th>
+              <th scope="col">archivos</th>
               <th scope="col">eliminar</th>
             </tr>
           </thead>
@@ -73,6 +74,16 @@
               <td>
                 <button @click="abrirModalTraslado(item)">
                   <i class="fas fa-people-carry"></i>
+                </button>
+              </td>
+              <td>
+                <button
+                  class="text-dark"
+                  data-toggle="modal"
+                  data-target="#modalFile"
+                  @click="getFile(item)"
+                >
+                  <img src="images/folder.png" class="text-icon" alt="" />
                 </button>
               </td>
               <td v-if="permiso_eliminar">
@@ -112,6 +123,16 @@
               <td>
                 <button @click="abrirModalTraslado(item)">
                   <i class="fas fa-people-carry"></i>
+                </button>
+              </td>
+              <td>
+                <button
+                  class="text-dark"
+                  data-toggle="modal"
+                  data-target="#modalFile"
+                  @click="getFile(item)"
+                >
+                  <img src="images/folder.png" class="text-icon" alt="" />
                 </button>
               </td>
               <td v-if="permiso_eliminar">
@@ -340,16 +361,37 @@
         </div>
       </div>
     </b-modal>
+    <!-- Modal -->
+    <b-modal
+      size="xl"
+      v-model="modalFile"
+      hide-footer
+      :title="item.codigo_nota"
+      content-class="border-modal"
+    >
+      <listado-archivos
+        :files="files"
+        @guardarImagen="guardarImagen"
+        @guardarFolder="guardarFolder"
+        @getArhivosFolder="getArhivosFolder"
+        @guardarDescripcion="guardarDescripcion"
+        @deleteFile="deleteFile"
+      ></listado-archivos>
+    </b-modal>
   </div>
 </template>
 <script>
+import ListadoArchivos from "../components/ListadoArchivos.vue";
 export default {
+  components: { ListadoArchivos },
   data() {
     return {
       pedidos: [],
       spinner: false,
       fecha: "1",
+      modalFile: false,
       detalles: [],
+      files: [],
       id_nota: "",
       codigo_nota: "",
       spinner_modal: false,
@@ -372,6 +414,66 @@ export default {
     });
   },
   methods: {
+    // *************** FILES **************
+    getFile(item, folder = null) {
+      this.preloader();
+      this.modalFile = true;
+      this.item = item;
+      axios
+        .post("/api/archivos/get-archivos", {
+          id: item.codigo_nota,
+          folder: folder,
+        })
+        .then((res) => {
+          this.preloader();
+          this.files = res.data;
+        });
+    },
+    guardarImagen(files, folder) {
+      this.preloader();
+      let formData = new FormData();
+      files.forEach((element) => {
+        formData.append("files[]", element);
+      });
+      formData.append("id", this.item.codigo_nota);
+      formData.append("folder", folder);
+      axios.post("/api/archivos/insert-archivos", formData).then((res) => {
+        this.preloader();
+        Vue.$toast.success("Guardado");
+        this.files = res.data;
+      });
+    },
+    guardarFolder(nombre, folder) {
+      this.preloader();
+      axios
+        .post("/api/archivos/insert-folder", {
+          id: this.item.codigo_nota,
+          nombre: nombre,
+          folder: folder,
+        })
+        .then(async (res) => {
+          this.preloader();
+          this.files = res.data;
+        });
+    },
+    guardarDescripcion(id, descripcion) {
+      this.preloader();
+      const params = { id: id, descripcion: descripcion };
+      axios.post("/api/archivos/guardar-descripcion", params).then((res) => {
+        this.preloader();
+      });
+    },
+    deleteFile(id) {
+      this.preloader();
+      const params = { id: id };
+      axios.post("/api/archivos/delete-file", params).then((res) => {
+        this.preloader();
+      });
+    },
+    getArhivosFolder(folderId) {
+      this.getFile(this.item, folderId);
+    },
+    // ************* FIN FILES ************
     listar(page) {
       this.spinner = true;
       let url =
