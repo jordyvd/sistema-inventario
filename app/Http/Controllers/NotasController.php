@@ -218,6 +218,7 @@ class NotasController extends Controller
            [$codigo, $value->barra_nota, $value->cantidad, $request['sucursal'], $request['para'], date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]
          );
       }
+      DB::statement("update notas set traslado = ? where codigo_nota = ?", [$request['para'], $request['codigo']]);
   }
 
   public function formatNumber($number)

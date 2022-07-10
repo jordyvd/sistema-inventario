@@ -47,7 +47,7 @@
               <th scope="col">proveedor</th>
               <th scope="col">fecha</th>
               <th scope="col">ingresado</th>
-              <th scope="col">trasladar</th>
+              <th scope="col">traslado</th>
               <th scope="col">archivos</th>
               <th scope="col">eliminar</th>
             </tr>
@@ -121,9 +121,10 @@
                 <i class="far fa-times-circle"></i>
               </td>
               <td>
-                <button @click="abrirModalTraslado(item)">
+                <button @click="abrirModalTraslado(item)" v-if="item.traslado == null">
                   <i class="fas fa-people-carry"></i>
                 </button>
+                 {{ item.traslado }}
               </td>
               <td>
                 <button
@@ -591,6 +592,7 @@ export default {
       };
       axios.post("/api/compras/generar-traslado", params).then((res) => {
         this.preloader();
+        this.item.traslado = this.sucursalTraslado;
         this.modalTrasladar = false;
       });
     },
