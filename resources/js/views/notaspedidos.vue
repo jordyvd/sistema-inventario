@@ -81,10 +81,14 @@
               <td class="text-success">
                 <i class="fas fa-check-circle"></i>
               </td>
-              <td>
-                <button @click="abrirModalTraslado(item)">
+               <td>
+                <button
+                  @click="abrirModalTraslado(item)"
+                  v-if="item.traslado == null"
+                >
                   <i class="fas fa-people-carry"></i>
                 </button>
+                {{ item.traslado }}
               </td>
               <td>
                 <button
