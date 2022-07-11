@@ -74,6 +74,20 @@
                 />
               </div>
               <div class="col">
+                <select class="custom-select" v-model="condicionPago">
+                  <option value disabled>seleccionar...</option>
+                  <option value="1">efectivo</option>
+                  <option value="tarjeta">tarjeta</option>
+                  <option value="trasnferencia">transferencia</option>
+                  <option value="yape">yape</option>
+                  <option value="plin">plin</option>
+                  <option value="0">credito</option>
+                  <option value="deposito">depósito</option>
+                  <option value="cancelado">cancelado</option>
+                  <option value="cambio">cambio</option>
+                </select>
+              </div>
+              <div class="col">
                 <router-link
                   class="btn btn-system form-control"
                   :to="{ name: 'proveedor' }"
@@ -325,6 +339,7 @@ export default {
       codigo_nota: [],
       codigo_nota: "",
       codigo: [],
+      condicionPago: ""
     };
   },
   created() {
@@ -456,7 +471,8 @@ export default {
         if (willDelete) {
           if (
             this.proveedor.ruc.trim() === "" ||
-            this.proveedor.empresa.trim() === ""
+            this.proveedor.empresa.trim() === "" ||
+            this.condicionPago.trim() === ""
           ) {
             Vue.$toast.error("completar todos los campos");
           } else {
@@ -480,9 +496,11 @@ export default {
         total: this.total_general,
         ruc: this.proveedor.ruc,
         empresa: this.proveedor.empresa,
+        condicion_pago: this.condicionPago
       };
       axios.post("/agregar_nota", params).then((res) => {
         this.agregar_detalles();
+        this.condicionPago = "";
       });
     },
     agregar_detalles() {

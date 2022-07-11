@@ -52,6 +52,7 @@ class NotasController extends Controller
       $nota->fecha = date('Y-m-d');
       $nota->estado = '0';
       $nota->anulado = '0';
+      $nota->condicion = $request->condicion_pago;
       $nota->save();
       return back();
    }

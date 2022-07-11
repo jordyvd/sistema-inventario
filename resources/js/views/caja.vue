@@ -30,6 +30,7 @@
           v-model="seleccion_sucursal"
           style="padding: 12.5px 0px"
           v-if="sucursal_ventas > 0"
+          @change="listar(1)"          
         >
           <option value="seleccionar...">seleccionar...</option>
           <option
@@ -285,6 +286,7 @@
 </template>
 <script>
 import ListadoArchivos from "../components/ListadoArchivos.vue";
+import moment from "moment";
 export default {
   components: { ListadoArchivos },
   data() {
@@ -314,6 +316,7 @@ export default {
     };
   },
   created() {
+    this.fecha = moment().format("YYYY-MM-DD");
     this.seleccion_sucursal = this.user_sucursal;
     this.listar(1);
     axios.get("/api/listsucursal").then((res) => {
@@ -430,6 +433,7 @@ export default {
     refrescar() {
       this.$data.fecha = "1";
       this.$data.descripsea = "";
+      this.fecha = moment().format("YYYY-MM-DD");
       this.listar();
     },
     limpiar_form() {

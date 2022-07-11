@@ -46,6 +46,7 @@
               <th scope="col">total</th>
               <th scope="col">proveedor</th>
               <th scope="col">fecha</th>
+              <th scope="col">condicion</th>
               <th scope="col">ingresado</th>
               <th scope="col">traslado</th>
               <th scope="col">archivos</th>
@@ -68,6 +69,15 @@
               <td>{{ parseFloat(item.total).toFixed(2) }}</td>
               <td>{{ item.empresa }}</td>
               <td>{{ item.fecha }}</td>
+              <td>
+                {{
+                  item.condicion == "1"
+                    ? "efectivo"
+                    : item.condicion == "0"
+                    ? "credito"
+                    : item.condicion
+                }}
+              </td>
               <td class="text-success">
                 <i class="fas fa-check-circle"></i>
               </td>
@@ -117,14 +127,26 @@
               <td>{{ parseFloat(item.total).toFixed(2) }}</td>
               <td>{{ item.empresa }}</td>
               <td>{{ item.fecha }}</td>
+              <td>
+                {{
+                  item.condicion == "1"
+                    ? "efectivo"
+                    : item.condicion == "0"
+                    ? "credito"
+                    : item.condicion
+                }}
+              </td>
               <td class="text-danger">
                 <i class="far fa-times-circle"></i>
               </td>
               <td>
-                <button @click="abrirModalTraslado(item)" v-if="item.traslado == null">
+                <button
+                  @click="abrirModalTraslado(item)"
+                  v-if="item.traslado == null"
+                >
                   <i class="fas fa-people-carry"></i>
                 </button>
-                 {{ item.traslado }}
+                {{ item.traslado }}
               </td>
               <td>
                 <button
