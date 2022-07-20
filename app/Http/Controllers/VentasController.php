@@ -191,11 +191,10 @@ class VentasController extends Controller
             $this->detalleVenta($request);
             if($request->tipo_v != "ticked"){
                 $objeto = new SunatController();
-                return $objeto->generarDocumento($request, $data[0]->serie);
+                $objeto->generarDocumento($request, $data[0]->serie);
             }
-        }else{
-            return back();
         }
+        return $data;
     }
     public function docSunat(Request $request){
         $doc = null;

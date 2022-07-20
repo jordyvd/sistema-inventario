@@ -537,9 +537,13 @@
               />
             </div>
           </div>
-          <div class="modal-footer" style="justify-content: center!important;">
-            <div style="width: 60%;">
-             <button type="button" class="form-control btn btn-system" @click="generar_venta()">
+          <div class="modal-footer" style="justify-content: center !important">
+            <div style="width: 60%">
+              <button
+                type="button"
+                class="form-control btn btn-system"
+                @click="generar_venta()"
+              >
                 <i class="fas fa-piggy-bank"></i> guardar
               </button>
             </div>
@@ -773,14 +777,18 @@ export default {
             return;
           } else {
             this.spinner_table = true;
-            document.getElementById('cerrarModalDescripcion').click();
+            document.getElementById("cerrarModalDescripcion").click();
             document.getElementById("clickButtonSpinner").click();
             axios
               .post("/generar_venta", params)
               .then((res) => {
-                if (this.tipo_v != "ticked") {
-                  this.openDocumento(res.data);
+                if(res.data[0].serie == 0){
+                  return
+                }
+                else if (this.tipo_v != "ticked") {
                   //this.editarDocumento(res.data);
+                } else {
+                  Full_W_P(res.data[0]);
                 }
                 this.generar_nuevo_numer_f();
                 this.vaciar_datos();
