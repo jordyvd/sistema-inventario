@@ -786,7 +786,7 @@ export default {
                   return
                 }
                 else if (this.tipo_v != "ticked") {
-                  //this.editarDocumento(res.data);
+                  this.openDocumento(res.data[0].serie);
                 } else {
                   Full_W_P(res.data[0]);
                 }
