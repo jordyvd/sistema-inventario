@@ -44,7 +44,7 @@
               <th scope="col" v-if="user_id == 1">enviar</th>
               <th scope="col">serie</th>
               <th scope="col">documento</th>
-              <th scope="col" v-if="[1, 21].includes(user_id)">estado</th>
+              <th scope="col">estado</th>
               <th scope="col">afectado</th>
               <th scope="col">total</th>
               <th scope="col">pdf</th>
@@ -63,12 +63,12 @@
               </td>
               <td>{{ item.serie }}</td>
               <td>{{ tipoDocumento(item.tipo) }}</td>
-              <td v-if="user_id == 1 || (user_id == 21 && show_d)">
+              <td v-if="[true, 1].includes(show_d)">
                 <p v-if="item.estado == null" class="text-warning">pendiente</p>
                 <p v-else-if="item.estado == 1" class="text-success">enviado</p>
                 <p v-else class="text-danger">envio fallido</p>
               </td>
-              <td v-else-if="user_id == 21 && [false, 0].includes(show_d)">--</td>
+              <td v-else>--</td>
               <td>{{ item.afectado }}</td>
               <td>{{ item.total }}</td>
               <td v-if="item.estado_pdf">
