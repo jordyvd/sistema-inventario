@@ -63,7 +63,7 @@
               </td>
               <td>{{ item.serie }}</td>
               <td>{{ tipoDocumento(item.tipo) }}</td>
-              <td v-if="[true, 1].includes(item.show_d) && [1, 21].includes(user_id)">
+              <td v-if="item.show_d == 1 && (user_id == 1 || user_id == 21)">
                 <p v-if="item.estado == null" class="text-warning">pendiente</p>
                 <p v-else-if="item.estado == 1" class="text-success">enviado</p>
                 <p v-else class="text-danger">envio fallido</p>
