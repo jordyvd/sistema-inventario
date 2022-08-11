@@ -63,7 +63,7 @@
               </td>
               <td>{{ item.serie }}</td>
               <td>{{ tipoDocumento(item.tipo) }}</td>
-              <td v-if="[true, 1].includes(show_d)">
+              <td v-if="[true, 1].includes(item.show_d)">
                 <p v-if="item.estado == null" class="text-warning">pendiente</p>
                 <p v-else-if="item.estado == 1" class="text-success">enviado</p>
                 <p v-else class="text-danger">envio fallido</p>
