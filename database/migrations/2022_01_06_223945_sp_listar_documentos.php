@@ -17,7 +17,7 @@ class SpListarDocumentos extends Migration
         CREATE PROCEDURE listar_documentos(in sucursal_p text, in fecha_p date, in fecha_end date)
             begin
             select dl.serie, dl.estado,dl.total ,dl.estado_pdf, dl.created_at, CAST(dl.tipo AS int) tipo,'--' afectado,
-            v.nombre_cliente , v.ruc_dni_v 
+            v.nombre_cliente , v.ruc_dni_v, date(dl.created_at) >= '2022-08-01' show_d 
             from documentos_electronicos dl 
             join ventas v on dl.serie = v.serie
             where date(dl.created_at) between fecha_p and fecha_end
@@ -25,7 +25,7 @@ class SpListarDocumentos extends Migration
             and dl.deleted_at is null
             union 
             select cs.serie , cs.estado ,dl.total total, null estado_pdf, cs.created_at, 7 tipo, v.serie afectado,
-            v.nombre_cliente , v.ruc_dni_v 
+            v.nombre_cliente , v.ruc_dni_v, date(dl.created_at) >= '2022-08-01' show_d
             from credito_debito_sunat cs 
             join ventas v on cs.venta_id = v.id
             join documentos_electronicos dl on v.serie = dl.serie 
