@@ -174,7 +174,7 @@ class VentasController extends Controller
             $request->estado,
             0,
             $request->tipo_v,
-            $request->total_v,
+            $request->estado != 'sunat' ? $request->total_v : 0,
             $request->total_ganancia,
             $request->ruc_dni,
             $request->nom_cliente,
@@ -223,6 +223,7 @@ class VentasController extends Controller
             $detalle->sucursal = $value['sucursal'];
             $detalle->save();
             //bajar stock
+            if($request->condicion == 'sunat') return;
             $almacen = almacen::where('barra_almacen',$value['barra'])
             ->where('sucursal',$value['sucursal'])->first();
             $stock = almacen::find($almacen->id);
@@ -250,7 +251,9 @@ class VentasController extends Controller
         $venta->save();
         $productos = $this->listdetalles($request->nrof, $request->sucursal);
         detalle_venta::where('nrof',$request->nrof)->where('sucursal',$request->sucursal)->delete();
-        $this->subir_stock_venta($productos);
+        
+        if($request->condicion != 'sunat') $this->subir_stock_venta($productos);
+        
         if($request->d_sunat == 1){
             $objeto = new SunatController();
             return $objeto->generarNotaCredito($request, $productos);

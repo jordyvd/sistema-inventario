@@ -105,7 +105,8 @@
                   <option value="0">credito</option>
                   <option value="deposito">depósito</option>
                   <option value="cancelado">cancelado</option>
-                  <option value="cambio">cambio</option>
+                  <option value="cambio">cambio</option>  
+                  <option value="sunat">sunat</option>
                 </select>
               </div>
               <div class="col-md-3 mb-3">

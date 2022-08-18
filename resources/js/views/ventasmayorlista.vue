@@ -439,6 +439,7 @@ export default {
         sucursal: this.user_sucursal,
         serie: item.serie,
         d_sunat: item.doc_sunat != null ? 1 : 0,
+        condicion: item.estado
       };
       axios.post("/anularfactura", params).then((res) => {
         this.ventas.splice(index, 1);
