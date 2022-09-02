@@ -271,7 +271,7 @@ class SunatController extends Controller
                "codeInterno" => $request->nrof,
                "tipoDocumento" => $codigoTypoDocumento['codigo'],
                "productos" => json_encode($productos),
-               "fecha" => date("Y-m-d h:i:s a"),
+               "fecha" => "2022-08-31 00:00:00",
                "fechaPdf" => date("d-m-Y h:i:s a"),
                "igv" => str_replace(",","", number_format($igv, 2)),
                "total" => str_replace(",","", number_format($total, 2)),
