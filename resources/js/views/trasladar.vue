@@ -178,7 +178,6 @@
                       <td>
                         {{ item.cantidad }}
                         <button
-                          class="text-white"
                           data-toggle="modal"
                           data-target="#cantidadModal"
                           @click="editar_cantidad_modal(item)"
@@ -188,7 +187,6 @@
                       </td>
                       <td>
                         <button
-                          class="text-white"
                           @click="eliminar_pro(item, index)"
                         >
                           <i class="fas fa-trash-alt"></i>
