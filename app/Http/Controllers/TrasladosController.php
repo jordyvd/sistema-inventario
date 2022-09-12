@@ -90,7 +90,7 @@ class TrasladosController extends Controller
       // ->where('detalle_traslado.nro_tras',$nro)
       // ->orderBy('id','DESC')
       // ->get();
-      $sql = "select dt.*,al.*,ps.* from detalle_traslado dt join products ps on dt.barra_tras = ps.barra
+      $sql = "select dt.*,al.*,ps.*, dt.id from detalle_traslado dt join products ps on dt.barra_tras = ps.barra
       join almacen al on dt.de = al.sucursal and dt.barra_tras = al.barra_almacen where dt.nro_tras = ?
       order by dt.id desc";
       $parameter = [
