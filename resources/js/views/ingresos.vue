@@ -35,6 +35,7 @@
                 <th scope="col">#</th>
                 <th scope="col">nro</th>
                 <th scope="col">sucursal</th>
+                <th scope="col">descripcion</th>
                 <th scope="col">fecha</th>
                 <th scope="col">recibido</th>
               </tr>
@@ -54,6 +55,7 @@
                   </button>
                 </td>
                 <td>{{ item.sucursal }}</td>
+                <td>{{ item.descripcion }}</td>
                 <td>{{ FormatDate(item.fecha) }}</td>
                 <td>
                   <p class="text-grande text-success" title="enviado">
@@ -75,6 +77,7 @@
                   </button>
                 </td>
                 <td>{{ item.sucursal }}</td>
+                <td>{{ item.descripcion }}</td>
                 <td>{{ FormatDate(item.fecha) }}</td>
                 <td class="text-danger text-grande" title="no enviado">
                   <i class="fas fa-times-circle"></i>

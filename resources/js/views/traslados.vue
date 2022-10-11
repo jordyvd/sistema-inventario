@@ -45,6 +45,7 @@
                 <th scope="col">#</th>
                 <th scope="col">nro</th>
                 <th scope="col">destino</th>
+                <th scope="col">descripcion</th>
                 <th scope="col">fecha</th>
                 <th scope="col">imprimir</th>
                 <th scope="col">enviado</th>
@@ -65,6 +66,7 @@
                   </button>
                 </td>
                 <td>{{ item.para }}</td>
+                <td>{{item.descripcion}}</td>
                 <td>{{ item.updated_at.substring(0, 10) }}</td>
                 <td>
                   <button class="text-primary" @click="imprimir_guia(item)">
@@ -91,6 +93,7 @@
                   </button>
                 </td>
                 <td>{{ item.para }}</td>
+                <td>{{item.descripcion}}</td>
                 <td>{{ FormatDate(item.fecha) }}</td>
                 <td>
                   <button class="text-primary" @click="imprimir_guia(item)">

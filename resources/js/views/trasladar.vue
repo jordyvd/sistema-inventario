@@ -42,6 +42,7 @@
                 <th scope="col">#</th>
                 <th scope="col">nro</th>
                 <th scope="col">destino</th>
+                <th scope="col">descripcion</th>
                 <th scope="col">fecha</th>
                 <th scope="col">eliminar</th>
               </tr>
@@ -62,6 +63,17 @@
                   </button>
                 </td>
                 <td>{{ item.para }}</td>
+                <td>
+                  {{ item.descripcion }}
+                  <button
+                    class="btn"
+                    @click="
+                     openModalDescripcion(item)
+                    "
+                  >
+                    <i class="fa fa-edit"></i>
+                  </button>
+                </td>
                 <td>{{ FormatDate(item.fecha) }}</td>
                 <td>
                   <button
@@ -186,9 +198,7 @@
                         </button>
                       </td>
                       <td>
-                        <button
-                          @click="eliminar_pro(item, index)"
-                        >
+                        <button @click="eliminar_pro(item, index)">
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </td>
@@ -389,10 +399,34 @@
         <!-- FIN DETALLE MODAL -->
       </div>
     </div>
+    <!-- **************** descripcion ******************* -->
+    <b-modal
+      v-model="modalDescripcion"
+      hide-footer
+      centered
+      :title="item.cod_sucursal"
+      size="lg"
+      content-class="border-modal"
+    >
+      <b-form-textarea
+        id="textarea"
+        v-model="descripcion"
+        placeholder="Enter something..."
+        rows="3"
+        max-rows="6"
+      ></b-form-textarea>
+      <div class="text-center my-2">
+        <b-button
+          class="border-white btn btn-system"
+          @click="guardarDescripcion()"
+          >Guardar</b-button
+        >
+      </div>
+    </b-modal>
   </div>
 </template>
 <script>
-import moment from 'moment';
+import moment from "moment";
 export default {
   data() {
     return {
@@ -417,6 +451,9 @@ export default {
       fecha: "1",
       search: "",
       page: "",
+      item: {},
+      descripcion: null,
+      modalDescripcion: false,
     };
   },
   created() {
@@ -656,9 +693,25 @@ export default {
       this.pagination.current_page = page;
       this.listar(page);
     },
-    FormatDate(fecha){
-       return moment(fecha).format('DD-MM-YYYY');
+    FormatDate(fecha) {
+      return moment(fecha).format("DD-MM-YYYY");
     },
+    guardarDescripcion() {
+      this.clickSpinner();
+      const params = { descripcion: this.descripcion, id: this.item.id };
+      axios
+        .post("/api/traslados/guardar-descripcion", params)
+        .then((res) => {
+          this.clickSpinner();
+          this.modalDescripcion = false;
+          this.item.descripcion = this.descripcion;
+          this.descripcion = null;
+        });
+    },
+    openModalDescripcion(item){
+       this.modalDescripcion = true;
+       this.item = item;
+    }
   },
 };
 </script>

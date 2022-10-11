@@ -295,4 +295,13 @@ class TrasladosController extends Controller
       $traslado->recibido = "1";
       $traslado->save();
     }
+    public function guardarDescripcion(Request $request)
+    {
+      $statement = 'update traslados set descripcion = ? where id = ?';
+      $parameter = [
+        $request->descripcion,
+        $request->id
+      ];
+      DB::statement($statement, $parameter);
+    }
 }

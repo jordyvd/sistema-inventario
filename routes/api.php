@@ -75,6 +75,7 @@ Route::get('/detalles_pen/{nro}/{de}/{para}','TrasladosController@detalles_pen')
 Route::get('/ingresos_requer/{sucursal}/{fecha}','TrasladosController@ingresos_requer');
 Route::get('/buscar_numero_tras/{sucursal}/{search}/{estado}','TrasladosController@buscar_numero_tras');
 Route::get('/buscar_numero_ingresos/{sucursal}/{search}/{estado}','TrasladosController@buscar_numero_ingresos');
+Route::post('/traslados/guardar-descripcion', 'TrasladosController@guardarDescripcion');
 // ******************** GRAFICOS **************
 Route::get('/grafico_ventas/{desde}/{hasta}/{sucursal}','GraficosController@ventas');
 Route::get('/listclientes_select','GraficosController@listclientes_select');
