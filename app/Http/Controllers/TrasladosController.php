@@ -230,6 +230,9 @@ class TrasladosController extends Controller
     ]; 
     }
     public function stock_pendiente(Request $request,$sucursal){
+      if(count($request['ArrayDate']) == 0){
+        return response()->json(["message" => "algo salio mal"], 500);
+      }
       foreach($request['ArrayDate'] as $value){
           $stock_almacen = almacen::where('barra_almacen',$value['barra'])
           ->where('sucursal',$sucursal)
@@ -253,6 +256,9 @@ class TrasladosController extends Controller
       return back();
     }
     public function stock_ingresos_tras(Request $request,$sucursal){
+      if(count($request['ArrayDate']) == 0){
+        return response()->json(["message" => "algo salio mal"], 500);
+      }
       foreach($request['ArrayDate'] as $value){
           $stock_almacen = almacen::where('barra_almacen',$value['barra'])
           ->where('sucursal',$sucursal)
