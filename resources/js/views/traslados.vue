@@ -496,7 +496,6 @@ export default {
           document.getElementById("close_detalle").click();
           this.spinner = true;
           this.bajar_stock();
-          this.cambiar_estado();
         }
       });
     },
@@ -507,6 +506,7 @@ export default {
       let url = "/stock_pendiente/" + this.user_sucursal;
       axios.post(url, params).then((res) => {
         Vue.$toast.info("enviado con éxito");
+        this.cambiar_estado();
       });
     },
     cambiar_estado() {

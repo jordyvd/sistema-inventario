@@ -119,6 +119,14 @@
             >
               <i class="fas fa-fill-drip"></i>
             </button>
+            <!-- <button
+            class="btn btn-system float-rigth"
+            title="agregar descripcion"
+            data-toggle="modal"
+            data-target="#modalDescripcion"
+          >
+            <i class="fas fa-plus"></i>
+          </button> -->
           </div>
           <div class="card-body">
             <div class="table-scroll">
@@ -546,3 +554,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.float-rigth {
+  margin: 0px 5px !important;
+}
+</style>
