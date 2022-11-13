@@ -453,7 +453,8 @@ export default {
             cantidad: this.producto.cantidad,
             descuento: this.producto.descuento,
             url_imagen: this.producto.img,
-            nrof:"S00" + this.user_id_sucursal + "-" + this.producto.numfactura,
+            nrof:
+              "S00" + this.user_id_sucursal + "-" + this.producto.numfactura,
             sucursal: this.user_sucursal,
           });
           localStorage.setItem(
@@ -500,13 +501,16 @@ export default {
       this.producto.img = item.url_imagen;
       this.producto.nompro = item.producto;
     },
-    generar_salida() {
+    async generar_salida() {
       if (
         this.producto.descripcion.trim() === "" ||
-        this.producto.condicion.trim() === ""
+        this.producto.condicion.trim() === "" ||
+        this.agregados.length < 1
       ) {
         Vue.$toast.error("completar todos los campos");
       } else {
+        document.getElementById("clickButtonSpinner").click();
+        Vue.$toast.info("ESPERE UN MOMENNTO POR FAVOR!");
         const params1 = {
           cod_sucursal:
             "S00" + this.user_id_sucursal + "-" + this.producto.numfactura,
@@ -515,18 +519,23 @@ export default {
           total: this.total_pagar,
           descripcion: this.producto.descripcion,
           sucursal: this.user_sucursal,
+          arrayDate: this.agregados,
         };
-        axios.post("/agregar_salida", params1).then((res) => {
-          const params = {
-            arrayDate: this.agregados,
-            condicion: this.producto.condicion,
-          };
-          axios.post("/detalle_product", params).then((res) => {
-            Vue.$toast.success("Guardado con éxito");
-            this.$data.producto.descripcion = "";
+        await axios.post("/agregar_salida", params1).then(async (res) => {
+          // const params = {
+            
+          //   condicion: this.producto.condicion,
+          // };
+          // await axios.post("/detalle_product", params).then((res) => {
+          //   Vue.$toast.success("Guardado con éxito");
+          //   this.$data.producto.descripcion = "";
             this.agregados = [];
-            localStorage.setItem("salida_product", JSON.stringify(this.agregados));
-          });
+            localStorage.setItem(
+              "salida_product",
+              JSON.stringify(this.agregados)
+            );
+            document.getElementById("clickButtonSpinner").click();
+          // });
         });
       }
     },

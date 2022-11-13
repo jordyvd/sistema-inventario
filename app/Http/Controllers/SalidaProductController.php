@@ -25,10 +25,13 @@ class SalidaProductController extends Controller
         $salida->fecha = date('Y-m-d');
         $salida->sucursal = $request->sucursal;
         $salida->save();
+        $this->detalle_product($request);
         return back();
     }
     public function detalle_product(Request $request){
+        $total = 0;
         foreach($request['arrayDate'] as $value){
+            $total += ($value['precio'] * $value['cantidad']) - $value['descuento'];
             $salida = new detalle_salidap;
             $salida->barra_salida = $value['barra'];
             $salida->precio = $value['precio'];
@@ -56,6 +59,7 @@ class SalidaProductController extends Controller
              $movimiento->sucursal = $value['sucursal'];
              $movimiento->save();
         }
+        return $total;
     }
     public function listarsalidas($sucursal,$desde,$hasta){
         if($desde === "1")
