@@ -510,7 +510,6 @@ export default {
         Vue.$toast.error("completar todos los campos");
       } else {
         document.getElementById("clickButtonSpinner").click();
-        Vue.$toast.info("ESPERE UN MOMENNTO POR FAVOR!");
         const params1 = {
           cod_sucursal:
             "S00" + this.user_id_sucursal + "-" + this.producto.numfactura,
@@ -534,7 +533,11 @@ export default {
               "salida_product",
               JSON.stringify(this.agregados)
             );
+            await this.generar_nuevo_numer_f()
+            this.$data.producto.descripcion = "";
+            this.$data.producto.condicion = "";
             document.getElementById("clickButtonSpinner").click();
+            Vue.$toast.success("Guardado con éxito");
           // });
         });
       }
