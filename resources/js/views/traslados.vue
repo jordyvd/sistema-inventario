@@ -500,25 +500,33 @@ export default {
       });
     },
     bajar_stock() {
+      this.preloader();
       const params = {
         ArrayDate: this.detalles,
+        traslado_id: this.pendiente.id
       };
       let url = "/stock_pendiente/" + this.user_sucursal;
       axios.post(url, params).then((res) => {
-        Vue.$toast.info("enviado con éxito");
-        this.cambiar_estado();
-      });
-    },
-    cambiar_estado() {
-      axios.post("/estado_pendiente/" + this.pendiente.id).then((res) => {
         swal({
           text: "se envió con éxito",
           icon: "success",
           button: "aceptar",
         });
+        this.preloader();
         this.actualizar();
+        //this.cambiar_estado();
       });
     },
+    // cambiar_estado() {
+    //   axios.post("/estado_pendiente/" + this.pendiente.id).then((res) => {
+    //     swal({
+    //       text: "se envió con éxito",
+    //       icon: "success",
+    //       button: "aceptar",
+    //     });
+    //     this.actualizar();
+    //   });
+    // },
     detalles_pen(item) {
       this.pendiente.id = item.id;
       this.spinner_detalle = true;

@@ -230,6 +230,7 @@ class TrasladosController extends Controller
     ]; 
     }
     public function stock_pendiente(Request $request,$sucursal){
+      DB::beginTransaction();
       if(count($request['ArrayDate']) == 0){
         return response()->json(["message" => "algo salio mal"], 500);
       }
@@ -253,9 +254,12 @@ class TrasladosController extends Controller
           $movimiento->sucursal = $sucursal;
           $movimiento->save();
       }
+      $this->estado_pendiente($request->traslado_id);
+      DB::commit();
       return back();
     }
     public function stock_ingresos_tras(Request $request,$sucursal){
+      DB::beginTransaction();
       if(count($request['ArrayDate']) == 0){
         return response()->json(["message" => "algo salio mal"], 500);
       }
@@ -294,6 +298,8 @@ class TrasladosController extends Controller
           $movimiento->sucursal = $sucursal;
           $movimiento->save();
       }
+      $this->estado_ingresos($request->traslado_id);
+      DB::commit();
       return back();
     }
     public function estado_ingresos($id){

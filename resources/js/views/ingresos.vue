@@ -338,30 +338,36 @@ export default {
           document.getElementById("close_detalle").click();
           this.spinner = true;
           this.subir_stock();
-          this.estado();
+          // this.estado();
         }
       });
     },
     subir_stock() {
       const params = {
         ArrayDate: this.detalles,
+        traslado_id: this.ingreso.id,
       };
       let url = "/stock_ingresos_tras/" + this.user_sucursal;
       axios.post(url, params).then((res) => {
-        Vue.$toast.info("ingresado con éxito");
-      });
-    },
-    estado() {
-      let url = "/estado_ingresos/" + this.ingreso.id;
-      axios.post(url).then((res) => {
+        this.listar();
         swal({
           text: "se ingresó con exito",
           icon: "success",
           button: "aceptar",
         });
-        this.listar();
       });
     },
+    // estado() {
+    //   let url = "/estado_ingresos/" + this.ingreso.id;
+    //   axios.post(url).then((res) => {
+    //     swal({
+    //       text: "se ingresó con exito",
+    //       icon: "success",
+    //       button: "aceptar",
+    //     });
+    //     this.listar();
+    //   });
+    // },
     changePage(page) {
       this.pagination.current_page = page;
       this.listar(page);
