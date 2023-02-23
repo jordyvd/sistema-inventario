@@ -235,24 +235,32 @@ class TrasladosController extends Controller
         return response()->json(["message" => "algo salio mal"], 500);
       }
       foreach($request['ArrayDate'] as $value){
-          $stock_almacen = almacen::where('barra_almacen',$value['barra'])
-          ->where('sucursal',$sucursal)
-          ->first();
-          $almacen = almacen::find($stock_almacen->id);
-          $almacen->stock_almacen = intval($stock_almacen->stock_almacen) - intval($value['cantidad']);
-          $almacen->save();
-          //movimiento
-          $movimiento = new Movimientos;
-          $movimiento->nro_documento = $value['nro_tras'];
-          $movimiento->barra_mov = $value['barra'];
-          $movimiento->precio = $almacen->precio_venta;
-          $movimiento->condicion = "salida";
-          $movimiento->fecha = date('Y-m-d');
-          $movimiento->detalle = "enviado para ".$value['para'];
-          $movimiento->tipo = "traslado";
-          $movimiento->cantidad = $value['cantidad'];
-          $movimiento->sucursal = $sucursal;
-          $movimiento->save();
+         
+          $validate = DB::select("select count(*) cc from movimientos m 
+          where m.nro_documento = ? and m.barra_mov = ? and sucursal = ?;", 
+          [$value['nro_tras'], $value['barra'], $sucursal])[0]->cc;
+
+          if($validate == 0){
+              $stock_almacen = almacen::where('barra_almacen',$value['barra'])
+              ->where('sucursal',$sucursal)
+              ->first();
+              $almacen = almacen::find($stock_almacen->id);
+              $almacen->stock_almacen = intval($stock_almacen->stock_almacen) - intval($value['cantidad']);
+              $almacen->save();
+              //movimiento
+              $movimiento = new Movimientos;
+              $movimiento->nro_documento = $value['nro_tras'];
+              $movimiento->barra_mov = $value['barra'];
+              $movimiento->precio = $almacen->precio_venta;
+              $movimiento->condicion = "salida";
+              $movimiento->fecha = date('Y-m-d');
+              $movimiento->detalle = "enviado para ".$value['para'];
+              $movimiento->tipo = "traslado";
+              $movimiento->cantidad = $value['cantidad'];
+              $movimiento->sucursal = $sucursal;
+              $movimiento->save();
+          }
+         
       }
       $this->estado_pendiente($request->traslado_id);
       DB::commit();
