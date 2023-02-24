@@ -61,6 +61,7 @@
               <th scope="col">condición</th>
               <th scope="col">fecha</th>
               <th scope="col">sucursal</th>
+              <th scope="col" v-if="[1, 29, 21].includes(parseInt(user_id))">eliminar</th>
             </tr>
           </thead>
           <tbody v-for="(item, index) in movimiento" :key="index">
@@ -70,17 +71,28 @@
               <td>{{ item.marca }}</td>
               <td>{{ parseFloat(item.precio).toFixed(2) }}</td>
               <td>{{ item.cantidad }}</td>
-              <td v-if="item.descuento != null">{{ parseFloat(item.descuento).toFixed(2) }}</td>
+              <td v-if="item.descuento != null">
+                {{ parseFloat(item.descuento).toFixed(2) }}
+              </td>
               <td v-else>--</td>
               <td v-if="item.condicion == 'salida'">--</td>
               <td v-else>{{ item.condicion }}</td>
               <td>{{ item.fecha }}</td>
               <td>{{ item.sucursal }}</td>
+              <td v-if="[1, 29, 21].includes(parseInt(user_id))">
+                <i
+                  class="fas fa-trash cursor"
+                  @click="deleteMovimiento(item.id)"
+                ></i>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <nav aria-label="Page navigation example" v-if="dataPaginacion.cantidad > 0">
+      <nav
+        aria-label="Page navigation example"
+        v-if="dataPaginacion.cantidad > 0"
+      >
         <ul class="pagination">
           <li class="page-item" :disabled="dataPaginacion.currentPage == 1">
             <a
@@ -219,6 +231,22 @@ export default {
       } else {
         return false;
       }
+    },
+    deleteMovimiento(id) {
+      swal({
+        text: "¿estas seguro?",
+        icon: "error",
+        buttons: ["no", "si"],
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.clickSpinner();
+          axios.delete("/api/delete-movimiento/" + id).then((res) => {
+            this.clickSpinner();
+            this.listar(this.dataPaginacion.currentPage);
+          });
+        }
+      });
     },
   },
 };

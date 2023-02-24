@@ -45,6 +45,7 @@ Route::get('/exportar_excel/{marca}/{sucursal}','SystemController@exportar_excel
 Route::post('/listado_movimiento','SystemController@list_movimiento');
 Route::get('/list_kardex/{desde}/{hasta}/{cond}/{sucursal}/{barra}','SystemController@kardex');
 Route::get('/exportar_movimiento/{desde}/{hasta}/{cond}/{sucursal}','SystemController@exportarmovimiento');
+Route::delete('/delete-movimiento/{id}','SystemController@deleteMovimiento');
 // VENTAS 
 Route::get('/agregadosP/{sucursal}','VentasController@agregadosP');
 Route::get('/listventas/{sucursal}/{fecha}/{desde}/{estado}','VentasController@listventas');

@@ -22,10 +22,12 @@ class SpGetMovimientos extends Migration
     
         set npage = perpage*(npage-1);
         
-            select m.descuento descuento, p.nompro , p.marca, m.precio , m.cantidad , m.fecha,  if(m.tipo = 'compra', m.detalle, m.condicion) condicion , m.detalle,m.sucursal,m.nro_documento, @count count
+            select m.id, m.descuento descuento, p.nompro , p.marca, m.precio , m.cantidad , m.fecha,  if(m.tipo = 'compra', m.detalle, m.condicion) condicion , m.detalle,m.sucursal,m.nro_documento, @count count
             from movimientos m 
             join products p on m.barra_mov = p.barra
-            where m.sucursal = sucursal_p and m.tipo = tipo_p and m.fecha between desde_p and hasta_p 
+            where m.sucursal = sucursal_p and m.tipo = tipo_p 
+            and m.deleted_at is null
+            and m.fecha between desde_p and hasta_p 
             order by p.nompro asc limit perpage offset npage; 
         END";
         DB::unprepared('DROP PROCEDURE IF EXISTS get_movimientos');

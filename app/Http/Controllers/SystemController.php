@@ -108,6 +108,12 @@ class SystemController extends Controller
         }
         return ["data" => $data, "count" => $count, "perpage" => 10, "paginas" => round($count / 10)];
     }
+
+    public function deleteMovimiento($id)
+    {
+        DB::statement("update movimientos set deleted_at = ? where id = ?", [date('Y-m-d H:i:s'), $id]);
+    }
+
     public function exportarmovimiento($desde,$hasta,$tipo,$sucursal){
         if($desde === "000-00-00" || $hasta === "000-00-00"){
             $movimiento = Movimientos::select('movimientos.nro_documento as DOCUMENTO','products.codigo as CODIGO','products.nompro as PRODUCTO/DESCRIPCION','products.marca as MARCA','movimientos.precio as PRECIO','movimientos.cantidad as CANTIDAD','movimientos.detalle as DETALLES','movimientos.sucursal as SUCURSAL','movimientos.fecha as FECHA')
