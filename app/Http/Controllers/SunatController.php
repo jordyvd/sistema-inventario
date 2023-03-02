@@ -331,6 +331,10 @@ class SunatController extends Controller
             $direccion = "JR. Castilla 148, Barranca";  
             $telefono = "5984852"; 
         }
+        else if($request['sucursal'] == "VENTANILLA"){
+            $direccion = "Urb. Ex zona Comercial e Industrial de Ventanilla Mz. C1 Lt.14 Unidad Inmobiliaria N°1, Ventanilla.";
+            $telefono = "955347316";
+        }
         return [
             "direccion" => $direccion,
             "telefono" => $telefono

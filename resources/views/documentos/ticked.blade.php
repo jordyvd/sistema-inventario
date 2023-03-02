@@ -127,6 +127,8 @@ $medidaTicket = 180;
                 echo "Av. Abancay # 368 Int. 1090 - Galería La Casona, Lima";
             }else if($venta['sucursal'] == "barranca"){
                 echo "JR. Castilla 148, Barranca";
+            }else if($venta['sucursal'] == "VENTANILLA"){
+                echo "Urb. Ex zona Comercial e Industrial de Ventanilla Mz. C1 Lt.14 Unidad Inmobiliaria N°1, Ventanilla.";
             }
         } ?></p>
         <p>Teléfono: 
@@ -138,6 +140,8 @@ $medidaTicket = 180;
                     echo "937522124";
                 }else if($venta['sucursal'] == "barranca"){
                     echo "2289229";
+                }else if($venta['sucursal'] == "VENTANILLA"){
+                    echo "955347316";
                 }
             }
         ?> </p>
