@@ -111,6 +111,15 @@ class SystemController extends Controller
 
     public function deleteMovimiento($id)
     {
+        $movimiento = DB::selectOne("select cantidad, barra_mov barra, sucursal from movimientos where id = ?", [$id]);
+
+        $count = DB::selectOne("select count(*) cc from movimientos where id = ? and deleted_at is null", [$id])->cc;
+
+        if($count > 0){
+            DB::statement("update almacen set stock_almacen = stock_almacen + ? 
+            where barra_almacen = ? and sucursal = ?", [$movimiento->cantidad, $movimiento->barra, $movimiento->sucursal]);
+        }
+
         DB::statement("update movimientos set deleted_at = ? where id = ?", [date('Y-m-d H:i:s'), $id]);
     }
 
