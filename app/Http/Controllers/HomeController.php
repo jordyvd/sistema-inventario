@@ -106,15 +106,15 @@ class HomeController extends Controller
             $date
         ];
         $data = DB::select($procedure, $parameter);
-        $ingreso = 0;
-        $salida = 0;
+        $ingreso = [];
+        $salida = [];
         foreach($data as $value){
             if($value->condicion == "salida"){
-                $salida += str_replace("soles", "", $value->monto);
+                $salida[] = str_replace("SOLES", "", $value->monto);
             }else{
                 if($value->condicion_cp !== 2)
                 {
-                    $ingreso += str_replace("soles", "", $value->monto);
+                    $ingreso[] = str_replace("SOLES", "", $value->monto);
                 }
             }
         }
