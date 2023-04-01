@@ -110,11 +110,11 @@ class HomeController extends Controller
         $salida = 0;
         foreach($data as $value){
             if($value->condicion == "salida"){
-                $salida += (($value->monto == null || $value->monto == "" || $value->monto == "00") ? 0 : $value->monto);
+                $salida += str_replace("soles", "", $value->monto);
             }else{
                 if($value->condicion_cp !== 2)
                 {
-                    $ingreso += (($value->monto == null || $value->monto == "" || $value->monto == "00") ? 0 : $value->monto);
+                    $ingreso += str_replace("soles", "", $value->monto);
                 }
             }
         }
