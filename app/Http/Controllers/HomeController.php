@@ -106,17 +106,15 @@ class HomeController extends Controller
             $date
         ];
         $data = DB::select($procedure, $parameter);
-        $ingreso = [];
-        $salida = [];
+        $ingreso = 0;
+        $salida = 0;
         foreach($data as $value){
             if($value->condicion == "salida"){
-                //$salida += (($value->monto == null || $value->monto == "") ? 0 : $value->monto);
-                $salida[] = $value->monto;
+                $salida += (($value->monto == null || $value->monto == "" || $value->monto == "00") ? 0 : $value->monto);
             }else{
                 if($value->condicion_cp !== 2)
                 {
-                    $ingreso[] = $value->monto;
-                    //$ingreso += (($value->monto == null || $value->monto == "") ? 0 : $value->monto);
+                    $ingreso += (($value->monto == null || $value->monto == "" || $value->monto == "00") ? 0 : $value->monto);
                 }
             }
         }
