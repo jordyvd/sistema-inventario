@@ -106,8 +106,8 @@ class HomeController extends Controller
             $date
         ];
         $data = DB::select($procedure, $parameter);
-        $ingreso = 0;
-        $salida = 0;
+        $ingreso = [];
+        $salida = [];
         foreach($data as $value){
             if($value->condicion == "salida"){
                 //$salida += (($value->monto == null || $value->monto == "") ? 0 : $value->monto);
