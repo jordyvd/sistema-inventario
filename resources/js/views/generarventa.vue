@@ -798,7 +798,7 @@ export default {
               })
               .catch((error) => {
                 this.spinner_table = false;
-                swal("ERROR", "comprobar conexión", "info");
+                swal("ERROR", error , "info");
                 document.getElementById("clickButtonSpinner").click();
               });
           }
