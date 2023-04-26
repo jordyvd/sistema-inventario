@@ -796,12 +796,12 @@ export default {
                 this.eliminar_productos();
                 document.getElementById("clickButtonSpinner").click();
               })
-              .catch((error) => {
-                this.spinner_table = false;
-                console.log(error);
-                swal("ERROR", "comprobar conexión", "info");
-                document.getElementById("clickButtonSpinner").click();
-              });
+              // .catch((error) => {
+              //   this.spinner_table = false;
+              //   console.log(error);
+              //   swal("ERROR", "comprobar conexión", "info");
+              //   document.getElementById("clickButtonSpinner").click();
+              // });
           }
         }
       });
