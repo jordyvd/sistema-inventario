@@ -32,7 +32,7 @@ export default {
       params += ", status=no";
       params += ", toolbar=no";
 
-      let newwin = window.open(url, "FullWindowAll", params);
+      let newwin = window.open(url, "open"+pdf, params);
       if (window.focus) {
         newwin.focus();
       }

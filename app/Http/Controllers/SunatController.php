@@ -13,9 +13,9 @@ class SunatController extends Controller
 
     public $count = 0;
 
-    public $api = "http://facturadorgiomar.site/api_cpe/ReceiveInformation.php"; //pro
+    //public $api = "http://facturadorgiomar.site/api_cpe/ReceiveInformation.php"; //pro
 
-    //public $api = "http://localhost/FacturadorSunat/api_cpe/ReceiveInformation.php"; //local
+    public $api = "http://localhost/FacturadorSunat/api_cpe/ReceiveInformation.php"; //local
 
     public function getRuc($number){
         $token = '';
