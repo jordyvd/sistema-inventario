@@ -15,7 +15,7 @@ class MigrateTotalGanancias extends Migration
     {
         $ventas = DB::select("
             select v.id, v.cod_sucursal from ventas v 
-            where date(v.fecha) between '2023-01-01' and '2023-03-11';
+            where date(v.fecha) between '2023-02-01' and '2023-04-26';
         ");
 
         foreach($ventas as $venta){
