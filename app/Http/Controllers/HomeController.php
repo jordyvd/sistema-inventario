@@ -106,16 +106,15 @@ class HomeController extends Controller
             $date
         ];
         $data = DB::select($procedure, $parameter);
-        dd($data);
         $ingreso = 0;
         $salida = 0;
         foreach($data as $value){
             if($value->condicion == "salida"){
-                $salida += str_replace(" ", "", str_replace("SOLES", "", $value->monto));
+                $salida += str_replace(":", ".", str_replace(" ", "", str_replace("SOLES", "", $value->monto)));
             }else{
                 if($value->condicion_cp !== 2)
                 {
-                    $ingreso += str_replace(" ", "", str_replace("SOLES", "", $value->monto));
+                    $ingreso += str_replace(":", ".", str_replace(" ", "", str_replace("SOLES", "", $value->monto)));
                 }
             }
         }
