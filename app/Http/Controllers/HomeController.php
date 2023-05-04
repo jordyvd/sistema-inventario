@@ -106,6 +106,7 @@ class HomeController extends Controller
             $date
         ];
         $data = DB::select($procedure, $parameter);
+        dd($data);
         $ingreso = 0;
         $salida = 0;
         foreach($data as $value){
