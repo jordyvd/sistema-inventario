@@ -218,7 +218,7 @@ export default {
             this.clickSpinner();
             let lista = [];
             this.documentos.forEach((element) => {
-                if (element.estado != 1) {
+                if (element.estado == 1) {
                     lista.push(element);
                 }
             });
