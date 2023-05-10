@@ -66,7 +66,7 @@
                             <td
                                 v-if="
                                     item.show_d == 1 &&
-                                        (user_id == 1 || user_id == 21)
+                                    (user_id == 1 || user_id == 21)
                                 "
                             >
                                 <p
@@ -118,7 +118,7 @@ export default {
         return {
             documentos: [],
             fecha: null,
-            fecha_end: null
+            fecha_end: null,
         };
     },
     created() {
@@ -129,9 +129,9 @@ export default {
             const params = {
                 sucursal: this.user_sucursal,
                 fecha: this.fecha,
-                fecha_end: this.fecha_end
+                fecha_end: this.fecha_end,
             };
-            axios.post("/api/listar-documentos", params).then(res => {
+            axios.post("/api/listar-documentos", params).then((res) => {
                 this.documentos = res.data;
             });
         },
@@ -140,9 +140,9 @@ export default {
             const params = {
                 sucursal: this.user_sucursal,
                 fecha: this.fecha,
-                fecha_end: this.fecha_end
+                fecha_end: this.fecha_end,
             };
-            axios.post("/api/listar-documentos", params).then(res => {
+            axios.post("/api/listar-documentos", params).then((res) => {
                 this.documentos = res.data;
                 document.getElementById("clickButtonSpinner").click();
             });
@@ -158,16 +158,20 @@ export default {
                 text: "¿estas seguro?",
                 icon: "error",
                 buttons: ["no", "si"],
-                dangerMode: true
-            }).then(willDelete => {
+                dangerMode: true,
+            }).then((willDelete) => {
                 if (willDelete) {
                     document.getElementById("clickButtonSpinner").click();
                     const params = { serie: item.serie, tipo: item.tipo };
-                    axios.post("/api/enviar-comprobante", params).then(res => {
-                        swal("", "comprobante enviado", "success");
-                        this.listar();
-                        document.getElementById("clickButtonSpinner").click();
-                    });
+                    axios
+                        .post("/api/enviar-comprobante", params)
+                        .then((res) => {
+                            swal("", "comprobante enviado", "success");
+                            this.listar();
+                            document
+                                .getElementById("clickButtonSpinner")
+                                .click();
+                        });
                 }
             });
         },
@@ -176,21 +180,21 @@ export default {
                 text: "¿estas seguro?",
                 icon: "error",
                 buttons: ["no", "si"],
-                dangerMode: true
-            }).then(willDelete => {
+                dangerMode: true,
+            }).then((willDelete) => {
                 if (willDelete) {
                     document.getElementById("clickButtonSpinner").click();
                     const params = { documentos: this.documentos };
                     axios
                         .post("/api/enviar-comprobante-masivo", params)
-                        .then(res => {
+                        .then((res) => {
                             swal("", res.data, "info");
                             this.listar();
                             document
                                 .getElementById("clickButtonSpinner")
                                 .click();
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             swal(
                                 "",
                                 "algo salio mal, vuelvo a intentar",
@@ -213,7 +217,7 @@ export default {
         exportExcel() {
             this.clickSpinner();
             let lista = [];
-            this.documentos.forEach(element => {
+            this.documentos.forEach((element) => {
                 if (element.estado != 1) {
                     lista.push(element);
                 }
@@ -221,13 +225,13 @@ export default {
             const params = {
                 documentos: lista,
                 fecha: this.fecha,
-                fecha_end: this.fecha_end
+                fecha_end: this.fecha_end,
             };
             axios
                 .post("/api/exportar-documentos", params, {
-                    responseType: "blob"
+                    responseType: "blob",
                 })
-                .then(response => {
+                .then((response) => {
                     this.forceFileDownload(response);
                     this.clickSpinner();
                 })
@@ -251,26 +255,26 @@ export default {
             link.setAttribute("download", namefile + ".xlsx");
             document.body.appendChild(link);
             link.click();
-        }
+        },
     },
     computed: {
         totalDocumentos() {
             let array = this.documentos;
             let total = 0;
-            array.forEach(element => {
+            array.forEach((element) => {
                 if (element.tipo != 7) {
                     total += parseFloat(element.total);
                 }
             });
             let anulado = 0;
-            array.forEach(element => {
+            array.forEach((element) => {
                 if (element.tipo == 7) {
                     anulado += parseFloat(element.total);
                 }
             });
             return parseFloat(total) - parseFloat(anulado);
-        }
-    }
+        },
+    },
 };
 </script>
 <style scoped>
