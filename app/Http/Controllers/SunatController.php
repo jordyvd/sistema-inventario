@@ -463,7 +463,7 @@ class SunatController extends Controller
         $procedure = "call listar_documentos(?,?,?)";
         $parameter = [
             "huaral",
-            '2023-06-01',
+            '2023-06-27',
             date('Y-m-d', $date),
         ];
         $data = DB::select($procedure, $parameter);
