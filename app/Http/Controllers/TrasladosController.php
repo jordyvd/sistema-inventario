@@ -230,7 +230,6 @@ class TrasladosController extends Controller
     ]; 
     }
     public function stock_pendiente(Request $request,$sucursal){
-      dd($sucursal);
       DB::beginTransaction();
       if(count($request['ArrayDate']) == 0){
         return response()->json(["message" => "algo salio mal"], 500);
