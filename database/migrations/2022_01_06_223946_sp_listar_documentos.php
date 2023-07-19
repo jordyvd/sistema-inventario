@@ -21,7 +21,7 @@ class SpListarDocumentos extends Migration
             from documentos_electronicos dl 
             join ventas v on dl.serie = v.serie
             where date(dl.created_at) between fecha_p and fecha_end
-            and if(sucursal_p != 'huaral' and sucursal_p != 'ALMACEN HUARAL', dl.sucursal = sucursal_p, true)
+            and if(sucursal_p != 'huaral' and sucursal_p != 'BUZON DE DESCARTE', dl.sucursal = sucursal_p, true)
             and dl.deleted_at is null
             union 
             select cs.serie , cs.estado ,dl.total total, null estado_pdf, cs.created_at, 7 tipo, v.serie afectado,
@@ -29,7 +29,7 @@ class SpListarDocumentos extends Migration
             from credito_debito_sunat cs 
             join ventas v on cs.venta_id = v.id
             join documentos_electronicos dl on v.serie = dl.serie 
-            where date(cs.created_at) between fecha_p and fecha_end and if(sucursal_p != 'huaral' and sucursal_p != 'ALMACEN HUARAL', cs.sucursal = sucursal_p, true)
+            where date(cs.created_at) between fecha_p and fecha_end and if(sucursal_p != 'huaral' and sucursal_p != 'BUZON DE DESCARTE', cs.sucursal = sucursal_p, true)
             and cs.deleted_at is null; 
         END";
         DB::unprepared('DROP PROCEDURE IF EXISTS listar_documentos');
