@@ -58,8 +58,8 @@ class TrasladosController extends Controller
     }
     public function gennro($sucursal)
     {
-      return traslados::where('sucursal',$sucursal)
-      ->max('nro');
+      $traslado = traslados::select('nro')->where('sucursal',$sucursal)->orderBy('id', 'desc')->first();
+      return $traslado->nro;
     }
     public function agregar_numero(Request $request){
       $correlative = $this->gennro($request->de);
