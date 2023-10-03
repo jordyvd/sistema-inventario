@@ -71,7 +71,7 @@ class TrasladosController extends Controller
       $traslados->para = $request->para;
       $traslados->fecha = date('Y-m-d');
       $traslados->save();
-      return back();
+      return $traslados->nro;
     }
     public function agregarRequer(Request $request){
       $detalle = new detalle_traslado;
