@@ -62,9 +62,10 @@ class TrasladosController extends Controller
       ->max('nro');
     }
     public function agregar_numero(Request $request){
+      $correlative = $this->gennro($request->de);
       $traslados = new traslados;
-      $traslados->nro = $request->nro;
-      $traslados->cod_sucursal = $request->cod_sucursal;
+      $traslados->nro = str_replace("NaN", $correlative, $request->nro);
+      $traslados->cod_sucursal = str_replace("NaN", $correlative, $request->cod_sucursal);
       $traslados->sucursal = $request->de;
       $traslados->estado = '0';
       $traslados->para = $request->para;
